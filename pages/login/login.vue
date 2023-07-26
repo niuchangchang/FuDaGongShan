@@ -1,21 +1,20 @@
 <template>
 	<view class="container">
 		<view class="intro">
-			<image src="/static/images/logo.png"></image>
-			<view class="tips">
-				一杯好茶，一口软欧包
-				<br>
-				在奈雪遇见两种美好
+			<view class="intro-logo"></view>
+			<view class="wx-logo">
+				<image src="/static/images/mine/wechat.png"></image>
+			</view>
+			<text class="text-login">微信手机号授权登录</text>
+			<view class="shouquan">
+				<view class="gouxuan"></view>
+				<text class="tongyi">我已阅读并同意</text>
+				<a class="xieyi" href="http://">《用户协议》</a>
+				<!-- <text class="xieyi"></text> -->
 			</view>
 		</view>
-		<view class="bottom">
-			<button type="primary" size="default" class="login-btn" open-type="getUserInfo" lang="zh_CN" @getuserinfo="getUserInfo">
-				<image src="/static/images/mine/wechat.png"></image>
-				微信一键登录
-			</button>
-		</view>
 	</view>
-</template>
+</template> 
 
 <script>
 	import Member from '@/api/member'
@@ -24,7 +23,7 @@
 	export default {
 		data() {
 			return {
-				
+				show: true
 			}
 		},
 		methods: {
@@ -54,6 +53,12 @@
 			login() {
 				this.SET_MEMBER(Member)
 				uni.navigateBack()
+			},
+			close() {
+				
+			},
+			open() {
+				
 			}
 		}
 	}
@@ -62,56 +67,56 @@
 <style lang="scss" scoped>
 	.intro {
 		width: 100%;
-		height: 60vh;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		justify-content: space-evenly;
+		gap: 22rpx;
+		margin-top: 160rpx;
 		font-size: $font-size-base;
 		color: $text-color-assist;
-		
-		image {
-			width: 165rpx;
-			height: 165rpx;
-		}
-		
-		.tips {
-			line-height: 72rpx;
-			text-align: center;
-		}
-	}
-	
-	.bottom {
-		height: 40vh;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		padding: 0 40rpx;
-		
-		.login-btn {
-			width: 100%;
-			border-radius: 50rem !important;
+		.shouquan {
+			margin-top: 36rpx;
+			height: 48rpx;
 			display: flex;
 			align-items: center;
-			justify-content: center;
-			padding: 10rpx 0;
-			
-			image {
+			.xieyi {
+				font-size: 28rpx;
+				color: rgba(77, 113, 111, 1);
+			}
+			.tongyi {
+				font-size: 28rpx;
+				color: rgba(152, 161, 175, 1);
+			}
+			.gouxuan {
 				width: 36rpx;
-				height: 30rpx;
-				margin-right: 10rpx;
+				height: 36rpx;
+				display: flex;
 			}
 		}
 		
-		.row {
-			.grid {
-				width: 20%;
-				image {
-					width: 60rpx;
-					height: 60rpx;
-					margin-bottom: 10rpx;
-				}
-			}
+		.text-login {
+			font-size: 24rpx;
+			color: rgba(128, 128, 128, 1);
+		}
+		.intro-logo {
+			width: 440rpx;
+			height: 360rpx;
+			opacity: 1;
+			background: url(https://img.js.design/assets/img/6479542fc53e8201f148e193.png#c3647572e7973da388e63df27b70a033);
+			background-size: 100% 100%;
+		}
+	}
+	.wx-logo {
+		width: 100rpx;
+		height: 100rpx;
+		display: flex;
+		justify-content: center;
+	    align-items: center;
+		border-radius: 10rpx;
+		background: rgba(40, 196, 69, 1);
+		image {
+			width: 64rpx;
+			height: 54rpx;
 		}
 	}
 </style>

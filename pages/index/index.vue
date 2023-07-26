@@ -1,22 +1,28 @@
 <template>
 	<view class="container">
 		<view class="banner">
-			<image src="https://img-shop.qmimg.cn/s23107/2020/04/26/3eb7808bf105262604.jpg" mode="" class="bg"></image>
-			<view class="intro">
-				<view class="greet">您好，{{ isLogin ? member.nickname : '游客' }}</view>
-				<view class="note">一杯奶茶，一口软欧包，在奈雪遇见两种美好</view>
-			</view>
 		</view>
 		<view class="content">
 			<view class="entrance">
-				<view class="item" @tap="takein">
-					<image src="/static/images/index/zq.png" class="icon"></image>
-					<view class="title">预约</view>
+				<text class="hi">Hi，您好</text>
+				<text class="huanying">欢迎来到复达供膳</text>
+				<view class="yupiao">
+					<image src="/static/images/mine/wechat.png"></image>
+					<text class="yupiao-text">预约</text>
 				</view>
-				<view class="item" @tap="takeout">
+				<view class="yupiao">
+					<image src="/static/images/mine/wechat.png"></image>
+					<text class="yupiao-text">票券</text>
+				</view>
+				<!-- <view class="item" @tap="takein"> -->
+					
+					<!-- <image src="/static/images/index/zq.png" class="icon"></image>
+					<view class="title">预约</view> -->
+				<!-- </view> -->
+				<!-- <view class="item" @tap="takeout">
 					<image src="/static/images/index/wm.png" class="icon"></image>
 					<view class="title">外卖</view>
-				</view>
+				</view> -->
 			</view>
 			<view class="navigators">
 				<view class="left">
@@ -120,58 +126,62 @@
 </script>
 
 <style lang="scss" scoped>
-/* #ifdef H5 */
-page {
-	height: auto;
-	min-height: 100%;
-}
-/* #endif */
-
 .banner {
-	position: relative;
 	width: 100%;
-	height: 600rpx;
-	
-	.bg {
-		width: 100%;
-		height: 600rpx;
-	}
-	
-	.intro {
-		position: absolute;
-		top: calc(50rpx + var(--status-bar-height));
-		left: 40rpx;
-		color: #FFFFFF;
-		display: flex;
-		flex-direction: column;
-		
-		.greet {
-			font-size: $font-size-lg;
-			margin-bottom: 10rpx;
-		}
-		
-		.note {
-			font-size: $font-size-sm;
-		}
-	}
+	height: 480rpx;
+	background: url(https://img.js.design/assets/img/6438e8104539479518bf8310.jpg#2fabd401de51a66ad2e5df11b0481e6a);
+	background-size: 100% 100%;
 }
 
 .content {
 	padding: 0 30rpx;
+	margin-top: -50rpx;
 }
 
 .entrance {
-	position: relative;
-	margin-top: -80rpx;
-	margin-bottom: 30rpx;
-	border-radius: 10rpx;
-	background-color: #ffffff;
-	box-shadow: $box-shadow;
-	padding: 30rpx 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	
+	height: 204rpx;
+	border-radius: 20rpx;
+	background: rgba(255, 255, 255, 1);
+	box-shadow: 0px 0px 20px  rgba(132, 186, 168, 0.4);
+	margin-bottom: 44rpx;
+	.yupiao {
+		 width: 80rpx;
+		 height: 134rpx;
+		 display: flex;
+		 flex-direction: column;
+		 justify-content: center;
+		 align-items: center;
+		 position: relative;
+		 image {
+		 	width: 80rpx;
+		 	height: 80rpx;
+		 }
+		 .yupiao-button {
+			 width: 60rpx;
+			 height: 60rpx;
+		 }
+		 .yupiao-text {
+			 font-size: 32rpx;
+			 color: rgba(77, 113, 111, 1);
+			 text-align: left;
+			 vertical-align: top;
+
+		 }
+	}
+	.hi {
+		font-size: 48rpx;
+		color: rgba(77, 113, 111, 1);
+		text-align: left;
+		vertical-align: top;
+
+	}
+	.huanying {
+		font-size: 36rpx;
+		color: rgba(113, 130, 141, 1);
+		text-align: left;
+		vertical-align: top;
+
+	}
 	.item {
 		flex: 1;
 		display: flex;
