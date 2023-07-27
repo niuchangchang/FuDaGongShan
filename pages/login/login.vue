@@ -7,12 +7,33 @@
 			</view>
 			<text class="text-login">微信手机号授权登录</text>
 			<view class="shouquan">
-				<view class="gouxuan"></view>
+				<u-checkbox-group
+					v-model="checkboxValue"
+					placement="column"
+					@change="checkboxChange"
+				>
+					<u-checkbox
+						v-for="(item, index) in checkboxList"
+						:key="index"
+						:name="item.name"
+						shape="circle"
+						activeColor="green"
+					>
+					</u-checkbox>
+				</u-checkbox-group>
 				<text class="tongyi">我已阅读并同意</text>
-				<a class="xieyi" href="http://">《用户协议》</a>
-				<!-- <text class="xieyi"></text> -->
+				<text class="xieyi" @click="show = true">《用户协议》</text>
 			</view>
 		</view>
+		<u-popup :show="show" mode="center" :round="10">
+			<view class="">
+				<text>出淤泥而不染，濯清涟而不妖</text>
+				<view>
+					<u-button text="取消" @click="onCancel()"></u-button>
+					<u-button type="success" text="同意" @click="onConfirm()"></u-button>
+				</view>
+			</view>
+		</u-popup>
 	</view>
 </template> 
 
@@ -23,7 +44,11 @@
 	export default {
 		data() {
 			return {
-				show: true
+				checkboxValue: [],
+				checkboxList: [{
+					name: 'agree',
+				}],
+				show: false,
 			}
 		},
 		methods: {
@@ -54,11 +79,16 @@
 				this.SET_MEMBER(Member)
 				uni.navigateBack()
 			},
-			close() {
-				
+			checkboxChange(n) {
+				console.log('change', n);
 			},
-			open() {
-				
+			onCancel() {
+				this.show = false
+				this.checkboxValue = []
+			},
+			onConfirm() {
+				this.show = false
+				this.checkboxValue = ['agree']
 			}
 		}
 	}
@@ -71,7 +101,7 @@
 		flex-direction: column;
 		align-items: center;
 		gap: 22rpx;
-		margin-top: 160rpx;
+		padding-top: 160rpx;
 		font-size: $font-size-base;
 		color: $text-color-assist;
 		.shouquan {
@@ -86,11 +116,6 @@
 			.tongyi {
 				font-size: 28rpx;
 				color: rgba(152, 161, 175, 1);
-			}
-			.gouxuan {
-				width: 36rpx;
-				height: 36rpx;
-				display: flex;
 			}
 		}
 		

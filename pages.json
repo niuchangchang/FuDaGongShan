@@ -1,6 +1,13 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+		    "path" : "pages/login/login",
+		    "style" : {
+				"navigationBarTitleText": "登录",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		}, {
 			"path": "pages/index/index",
 			"style": {
 				"navigationStyle": "custom"
@@ -53,13 +60,6 @@
             "path" : "pages/balance/balance",
             "style" : {
 				"navigationBarTitleText": "会员储值",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#ffffff"
-			}
-        }, {
-            "path" : "pages/login/login",
-            "style" : {
-				"navigationBarTitleText": "登录",
 				"navigationBarTextStyle": "black",
 				"navigationBarBackgroundColor": "#ffffff"
 			}
