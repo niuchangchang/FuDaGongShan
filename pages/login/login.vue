@@ -7,40 +7,33 @@
 			</view>
 			<text class="text-login">微信手机号授权登录</text>
 			<view class="shouquan">
-				<u-checkbox-group
-					v-model="checkboxValue"
-					placement="column"
-					@change="checkboxChange"
-				>
-					<u-checkbox
-						v-for="(item, index) in checkboxList"
-						:key="index"
-						:name="item.name"
-						shape="circle"
-						activeColor="green"
-					>
-					</u-checkbox>
+				<u-checkbox-group v-model="checkboxValue" placement="column" @change="checkboxChange">
+					<u-checkbox v-for="(item, index) in checkboxList" :key="index" :name="item.name"
+						activeColor="#4d716f" />
 				</u-checkbox-group>
 				<text class="tongyi">我已阅读并同意</text>
 				<text class="xieyi" @click="show = true">《用户协议》</text>
 			</view>
 		</view>
-		<u-popup :show="show" mode="center" :round="10">
-			<view class="">
-				<text>出淤泥而不染，濯清涟而不妖</text>
-				<view>
-					<u-button text="取消" @click="onCancel()"></u-button>
-					<u-button type="success" text="同意" @click="onConfirm()"></u-button>
-				</view>
+		<u-popup :show="show" mode="center" :round="16" :safeAreaInsetBottom="false" @close="close">
+			<view class="xieyi-text">
+				<view class="title">用户协议</view>
+				<text>
+					一、【协议的范围】1.1【协议适用主体范围】本协议是用户（以下可称为“您”）与腾讯之间关于下载、安装、使用、登录本软件，以及使用本服务所订立的协议。1.2【协议关系及冲突条款】本协议被视为《腾讯服务协议》及《腾讯QQ软件许可及服务协议》、《QQ号码规则》的补充协议，是其不可分割的组成部分，与其构成统一整体。本协议与上述内容存在冲突的，以本协议为准。本协议内容同时包括腾讯可能不断发布的关于本服务的相
+					关协议、服务声明、业务规则及公告指引等内容（以下统称为“专项规则”）。专项规则一经正式发布，即为本协议不可分割的组成部分，您同样应当遵守。
+					二、【关于本服务】2.1【相关定义】（1）腾讯企点软件：指由腾讯开发、运营并享
+				</text>
 			</view>
 		</u-popup>
 	</view>
-</template> 
+</template>
 
 <script>
 	import Member from '@/api/member'
-	import {mapMutations} from 'vuex'
-	
+	import {
+		mapMutations
+	} from 'vuex'
+
 	export default {
 		data() {
 			return {
@@ -54,24 +47,41 @@
 		methods: {
 			...mapMutations(['SET_MEMBER']),
 			async getUserInfo(e) {
-				const {errMsg, userInfo} = e.detail
-				if(errMsg !== "getUserInfo:ok") {
+				const {
+					errMsg,
+					userInfo
+				} = e.detail
+				if (errMsg !== "getUserInfo:ok") {
 					uni.showModal({
 						title: '提示',
 						content: '您取消了授权登录，请重新授权',
 						showCancel: false
 					})
-					
+
 					//没有授权登录就用默认的用户信息
 					this.SET_MEMBER(Member)
 					uni.navigateBack()
-					
+
 					return
 				} else {
-					const {avatarUrl: avatar, city, country, gender, nickName: nickname, province} = userInfo
-					const member = Object.assign(Member, {avatar, city, country, gender, nickname, province})
+					const {
+						avatarUrl: avatar,
+						city,
+						country,
+						gender,
+						nickName: nickname,
+						province
+					} = userInfo
+					const member = Object.assign(Member, {
+						avatar,
+						city,
+						country,
+						gender,
+						nickname,
+						province
+					})
 					this.SET_MEMBER(member)
-					
+
 					uni.navigateBack()
 				}
 			},
@@ -82,13 +92,8 @@
 			checkboxChange(n) {
 				console.log('change', n);
 			},
-			onCancel() {
+			close() {
 				this.show = false
-				this.checkboxValue = []
-			},
-			onConfirm() {
-				this.show = false
-				this.checkboxValue = ['agree']
 			}
 		}
 	}
@@ -104,25 +109,29 @@
 		padding-top: 160rpx;
 		font-size: $font-size-base;
 		color: $text-color-assist;
+
 		.shouquan {
 			margin-top: 36rpx;
 			height: 48rpx;
 			display: flex;
 			align-items: center;
+
 			.xieyi {
 				font-size: 28rpx;
 				color: rgba(77, 113, 111, 1);
 			}
+
 			.tongyi {
 				font-size: 28rpx;
 				color: rgba(152, 161, 175, 1);
 			}
 		}
-		
+
 		.text-login {
 			font-size: 24rpx;
 			color: rgba(128, 128, 128, 1);
 		}
+
 		.intro-logo {
 			width: 440rpx;
 			height: 360rpx;
@@ -131,17 +140,42 @@
 			background-size: 100% 100%;
 		}
 	}
+
 	.wx-logo {
 		width: 100rpx;
 		height: 100rpx;
 		display: flex;
 		justify-content: center;
-	    align-items: center;
+		align-items: center;
 		border-radius: 10rpx;
 		background: rgba(40, 196, 69, 1);
+
 		image {
 			width: 64rpx;
 			height: 54rpx;
+		}
+	}
+
+	.xieyi-text {
+		width: 622rpx;
+		max-height: 1000rpx;
+		overflow-y: auto;
+		padding: 60rpx;
+
+		text {
+			font-size: 14px;
+			letter-spacing: 0px;
+			line-height: 24px;
+			color: rgba(100, 108, 119, 1);
+		}
+
+		.title {
+			font-size: 17px;
+			letter-spacing: 0px;
+			line-height: 24px;
+			color: rgba(0, 0, 0, 1);
+			text-align: center;
+			margin-bottom: 40rpx;
 		}
 	}
 </style>

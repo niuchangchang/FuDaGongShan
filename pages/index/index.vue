@@ -4,79 +4,62 @@
 		</view>
 		<view class="content">
 			<view class="entrance">
-				<text class="hi">Hi，您好</text>
-				<text class="huanying">欢迎来到复达供膳</text>
-				<view class="yupiao">
-					<image src="/static/images/mine/wechat.png"></image>
-					<text class="yupiao-text">预约</text>
+				<view class="left">
+					<text class="hi">Hi，您好</text>
+					<text class="huanying">欢迎来到复达供膳</text>
 				</view>
-				<view class="yupiao">
-					<image src="/static/images/mine/wechat.png"></image>
-					<text class="yupiao-text">票券</text>
+				<view class="right">
+					<view class="yupiao">
+						<image
+							src="https://img.js.design/assets/img/6438e8104539479518bf8310.jpg#2fabd401de51a66ad2e5df11b0481e6a">
+						</image>
+						<text class="yupiao-text">预约</text>
+					</view>
+					<view class="yupiao">
+						<image
+							src="https://img.js.design/assets/img/6438e8104539479518bf8310.jpg#2fabd401de51a66ad2e5df11b0481e6a">
+						</image>
+						<text class="yupiao-text">票券</text>
+					</view>
 				</view>
-				<!-- <view class="item" @tap="takein"> -->
-					
-					<!-- <image src="/static/images/index/zq.png" class="icon"></image>
-					<view class="title">预约</view> -->
-				<!-- </view> -->
-				<!-- <view class="item" @tap="takeout">
-					<image src="/static/images/index/wm.png" class="icon"></image>
-					<view class="title">外卖</view>
-				</view> -->
+
 			</view>
 			<view class="navigators">
 				<view class="left">
-					<view class="grid flex-column just-content-center">
-						<view class="d-flex align-items-center">
-							<image src="/static/images/index/csc.png" class="mark-img"></image>
-							<view class="font-size-sm text-color-base">今日推荐</view>
-						</view>
-						<view class="text-color-assist" style="margin-left: 40rpx; font-size: 20rpx;">优质茶礼盒，网红零食</view>
-					</view>
-					<view class="grid justify-content-end align-items-end">
-						<image src="/static/images/index/yzclh.png" class="yzclh-img" mode="heightFix"></image>
-					</view>
 				</view>
 				<view class="right">
-					<view class="tea-activity" @tap="takeout">
-						<image src="/static/images/index/mcsb.png" class="mark-img"></image>
-						<view>点餐</view>
-						<view class="right-img">
-							<image src="/static/images/index/mcsb_bg.png" mode="widthFix"></image>
+					<view class="waimai">
+						<view class="navigators-left">
+							<view class="dazi">外卖点餐</view>
+							<view class="xiaozi">快递送达</view>
 						</view>
+						<view class="navigators-right"></view>
 					</view>
-					<view class="member-gifts" @tap="packages">
-						<image src="/static/images/index/hyjb.png" class="mark-img"></image>
-						<view>会员劵包</view>
-						<view class="right-img">
-							<image src="/static/images/index/hyjb_bg.png" mode="widthFix"></image>
+					<view class="dingzhi">
+						<view class="navigators-left">
+							<view class="dazi">中小企业餐饮定制</view>
+							<view class="xiaozi">企业专属订餐通道</view>
 						</view>
+						<view class="navigators-right"></view>
 					</view>
 				</view>
 			</view>
 			<view class="member-news">
-				<view class="header">
-					<view class="title">会员新鲜事</view>
-					<view class="iconfont iconRightbutton"></view>
-				</view>
-				<view class="list">
-					<view class="item">
-						<image src="https://img-shop.qmimg.cn/s23107/2020/04/27/0039bf41c9ebd50a2c.jpg"></image>
-						<view class="title">"梅"你不行 | 霸气杨梅清爽回归</view>
-					</view>
-				</view>
+				<image src="https://img-shop.qmimg.cn/s23107/2020/04/27/0039bf41c9ebd50a2c.jpg"></image>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
-	import {mapState, mapGetters} from 'vuex'
-	
+	import {
+		mapState,
+		mapGetters
+	} from 'vuex'
+
 	export default {
 		data() {
-			return {
-			}
+			return {}
 		},
 		computed: {
 			...mapState(['member']),
@@ -90,17 +73,21 @@
 				})
 			},
 			takeout() {
-				if(!this.isLogin) {
-					uni.navigateTo({url: '/pages/login/login'})
+				if (!this.isLogin) {
+					uni.navigateTo({
+						url: '/pages/login/login'
+					})
 					return
 				}
 				uni.navigateTo({
-					url: "/pages/address/address?is_choose=true"	
+					url: "/pages/address/address?is_choose=true"
 				})
 			},
 			integrals() {
-				if(!this.isLogin) {
-					uni.navigateTo({url: '/pages/login/login'})
+				if (!this.isLogin) {
+					uni.navigateTo({
+						url: '/pages/login/login'
+					})
 					return
 				}
 				uni.navigateTo({
@@ -113,8 +100,10 @@
 				})
 			},
 			memberCode() {
-				if(!this.isLogin) {
-					uni.navigateTo({url: '/pages/login/login'})
+				if (!this.isLogin) {
+					uni.navigateTo({
+						url: '/pages/login/login'
+					})
 					return
 				}
 				uni.navigateTo({
@@ -126,273 +115,163 @@
 </script>
 
 <style lang="scss" scoped>
-.banner {
-	width: 100%;
-	height: 480rpx;
-	background: url(https://img.js.design/assets/img/6438e8104539479518bf8310.jpg#2fabd401de51a66ad2e5df11b0481e6a);
-	background-size: 100% 100%;
-}
-
-.content {
-	padding: 0 30rpx;
-	margin-top: -50rpx;
-}
-
-.entrance {
-	height: 204rpx;
-	border-radius: 20rpx;
-	background: rgba(255, 255, 255, 1);
-	box-shadow: 0px 0px 20px  rgba(132, 186, 168, 0.4);
-	margin-bottom: 44rpx;
-	.yupiao {
-		 width: 80rpx;
-		 height: 134rpx;
-		 display: flex;
-		 flex-direction: column;
-		 justify-content: center;
-		 align-items: center;
-		 position: relative;
-		 image {
-		 	width: 80rpx;
-		 	height: 80rpx;
-		 }
-		 .yupiao-button {
-			 width: 60rpx;
-			 height: 60rpx;
-		 }
-		 .yupiao-text {
-			 font-size: 32rpx;
-			 color: rgba(77, 113, 111, 1);
-			 text-align: left;
-			 vertical-align: top;
-
-		 }
-	}
-	.hi {
-		font-size: 48rpx;
-		color: rgba(77, 113, 111, 1);
-		text-align: left;
-		vertical-align: top;
-
-	}
-	.huanying {
-		font-size: 36rpx;
-		color: rgba(113, 130, 141, 1);
-		text-align: left;
-		vertical-align: top;
-
-	}
-	.item {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		position: relative;
-		
-		&:nth-child(1):after {
-			content: '';
-			position: absolute;
-			width: 1rpx;
-			background-color: #ddd;
-			right: 0;
-			height: 100%;
-			transform: scaleX(0.5) scaleY(0.8);
-		}
-		
-		.icon {
-			width: 84rpx;
-			height: 84rpx;
-			margin: 20rpx;
-		}
-		
-		.title {
-			font-size: 30rpx;
-			color: $text-color-base;
-			font-weight: 600;
-		}
-	}
-}
-
-.info {
-	position: relative;
-	margin-bottom: 30rpx;
-	border-radius: 10rpx;
-	background-color: #ffffff;
-	box-shadow: $box-shadow;
-	padding: 30rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	
-	.integral_section {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		
-		.top {
-			display: flex;
-			align-items: center;
-			
-			.title {
-				color: $text-color-base;
-				font-size: $font-size-base;
-				margin-right: 10rpx;
-			}
-			.value {
-				font-size: 44rpx;
-				font-weight: bold;
-			}
-		}
-		
-		.bottom {
-			font-size: $font-size-sm;
-			color: $text-color-assist;
-			display: flex;
-			align-items: center;
-		}
-	}
-	
-	.qrcode_section {
-		color: $color-primary;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		font-size: $font-size-sm;
-		
-		image {
-			width: 40rpx;
-			height: 40rpx;
-			margin-bottom: 10rpx;
-		}
-	}
-}
-
-.navigators {
-	width: 100%;
-	margin-bottom: 20rpx;	
-	border-radius: 10rpx;
-	background-color: #ffffff;
-	box-shadow: $box-shadow;
-	padding: 20rpx;
-	display: flex;
-	align-items: stretch;
-	
-	.left {
-		width: 340rpx;
-		margin-right: 20rpx;
-		display: flex;
-		padding: 0 20rpx;
-		flex-direction: column;
-		font-size: $font-size-sm;
-		color: $text-color-base;
-		background-color: #F2F2E6;
-		
-		.grid {
-			height: 50%;
-			display: flex;
-		}
-	}
-	
-	.right {
-		width: 290rpx;
-		display: flex;
-		flex-direction: column;
-		
-		.tea-activity, .member-gifts {
-			width: 100%;
-			display: flex;
-			padding: 20rpx;
-			font-size: $font-size-sm;
-			color: $text-color-base;
-			align-items: center;
-			position: relative;
-		}
-		
-		.tea-activity {
-			background-color: #FDF3F2;
-			margin-bottom: 20rpx;
-		}
-		
-		.member-gifts {
-			background-color: #FCF6D4;
-		}
-		
-		.right-img {
-			flex: 1;
-			position: relative;
-			margin-left: 20rpx;
-			margin-right: -20rpx;
-			margin-bottom: -20rpx;
-			display: flex;
-			align-items: flex-end;
-			
-			image {
-				width: 100%;
-			}
-		}
-	}
-	
-	.mark-img {
-		width: 30rpx;
-		height: 30rpx;
-		margin-right: 10rpx;
-	}
-	
-	.yzclh-img {
-		height: 122.96rpx;
-		width: 214.86rpx;
-	}
-}
-
-.member-news {
-	width: 100%;
-	margin-bottom: 30rpx;
-	.header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 20rpx 0;
-		
-		.title {
-			font-size: $font-size-lg;
-			font-weight: bold;
-		}
-		
-		.iconfont {
-			font-size: 52rpx;
-			color: $text-color-assist;
-		}
-	}
-	
-	.list {
+	.banner {
 		width: 100%;
+		height: 480rpx;
+		background: url(https://img.js.design/assets/img/6438e8104539479518bf8310.jpg#2fabd401de51a66ad2e5df11b0481e6a);
+		background-size: 100% 100%;
+	}
+
+	.content {
+		padding: 0 30rpx;
+		margin-top: -50rpx;
+	}
+
+	.entrance {
+		height: 204rpx;
+		border-radius: 20rpx;
+		background: rgba(255, 255, 255, 1);
+		box-shadow: 0px 0px 20px rgba(132, 186, 168, 0.4);
+		margin-bottom: 44rpx;
 		display: flex;
-		flex-direction: column;
-		
-		.item {
-			width: 100%;
-			height: 240rpx;
-			position: relative;
-			
-			image {
-				width: 100%;
-				height: 100%;
-				border-radius: 8rpx;
+		justify-content: space-between;
+		align-items: center;
+		padding: 24rpx 54rpx 44rpx 32rpx;
+
+		.left {
+			display: flex;
+			flex-direction: column;
+			gap: 12rpx;
+
+			.hi {
+				font-size: 48rpx;
+				color: rgba(77, 113, 111, 1);
+				text-align: left;
+				vertical-align: top;
+
 			}
-			
-			.title {
-				position: relative;
-				font-size: 32rpx;
-				font-weight: 500;
-				width: 100%;
-				top: -70rpx;
-				left: 16rpx;
-				color: #ffffff;
+
+			.huanying {
+				font-size: 36rpx;
+				color: rgba(113, 130, 141, 1);
+				text-align: left;
+				vertical-align: top;
+
 			}
 		}
+
+		.right {
+			display: flex;
+			gap: 42rpx;
+
+			.yupiao {
+				width: 80rpx;
+				height: 134rpx;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				gap: 6rpx;
+
+				image {
+					width: 80rpx;
+					height: 80rpx;
+				}
+
+				.yupiao-text {
+					font-size: 32rpx;
+					color: rgba(77, 113, 111, 1);
+				}
+			}
+
+		}
 	}
-}
+
+	.navigators {
+		height: 350rpx;
+		border-radius: 20rpx;
+		margin-bottom: 20rpx;
+		display: flex;
+		align-items: stretch;
+		gap: 20rpx;
+
+		.left {
+			height: 100%;
+			border-radius: 8px;
+			width: 308rpx;
+			display: flex;
+			background: url(https://img.js.design/assets/img/6438e80f7b58e9fa27fdd984.jpg#34140443cfbe601060a2e2e593747c39);
+			background-size: 100% 100%;
+			box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7), inset -1px -1px 0px rgba(255, 255, 255, 1), inset 1px 1px 0px rgba(255, 255, 255, 1), -3px -3px 7px rgba(255, 255, 255, 1), 3px 3px 7px rgba(113, 173, 145, 0.5);
+		}
+
+		.right {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			gap: 32rpx;
+
+			.waimai,
+			.dingzhi {
+				width: 100%;
+				display: flex;
+				flex: 1;
+				padding: 24rpx 18rpx 24rpx 30rpx;
+				align-items: center;
+				justify-content: space-between;
+				position: relative;
+				border-radius: 10rpx;
+				box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7), inset -1px -1px 0px rgba(255, 255, 255, 1), inset 1px 1px 0px rgba(255, 255, 255, 1), -3px -3px 7px rgba(255, 255, 255, 1), 3px 3px 7px rgba(113, 173, 145, 0.5);
+
+				.navigators-left {
+					background: none;
+					display: flex;
+					flex-direction: column;
+					gap: 12rpx;
+
+					.xiaozi {
+						font-size: 24rpx;
+						color: rgba(113, 130, 141, 1);
+					}
+
+					.dazi {
+						font-size: 32rpx;
+						color: rgba(113, 130, 141, 1);
+					}
+				}
+
+				.navigators-right {
+					width: 48rpx;
+					height: 48rpx;
+					background: rgba(255, 255, 255, 1);
+				}
+			}
+
+			.waimai {
+				background: rgba(228, 238, 232, 1);
+			}
+
+			.dingzhi {
+				background: rgba(242, 235, 211, 1);
+			}
+
+
+		}
+
+	}
+
+	.member-news {
+		width: 100%;
+		margin-bottom: 30rpx;
+		height: 368rpx;
+
+		image {
+			width: 100%;
+			height: 100%;
+			border-radius: 32rpx;
+		}
+
+
+
+	}
 </style>
