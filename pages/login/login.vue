@@ -144,7 +144,7 @@
 			width: 440rpx;
 			height: 360rpx;
 			opacity: 1;
-			background: url(https://img.js.design/assets/img/6479542fc53e8201f148e193.png#c3647572e7973da388e63df27b70a033);
+			// background: url(https://img.js.design/assets/img/6479542fc53e8201f148e193.png#c3647572e7973da388e63df27b70a033);
 			background-size: 100% 100%;
 		}
 	}
