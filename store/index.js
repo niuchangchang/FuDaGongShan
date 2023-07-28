@@ -13,7 +13,9 @@ const store = new Vuex.Store({
 		address: {},
 		addresses: addresses,
 		member: {},
-		order: {}
+		order: {},
+		// 网络状态
+		networkState: 'unknown',
 	},
 	getters: {
 		isLogin: state => Object.keys(state.member).length > 0	//是否登录
@@ -42,13 +44,19 @@ const store = new Vuex.Store({
 		},
 		SET_ORDER(state, order) {
 			state.order = order
-		}
+		},
+		setNetworkState(state, provider) {
+			state.networkState = provider;
+		},
 	},
 	actions: {
 		async getStore({commit}) {
 			const store = await api('store')
 			commit('SET_STORE', store)
-		}
+		},
+		networkStateChange({ commit }, info) {
+			commit('setNetworkState', info);
+		},
 	}
 })
 

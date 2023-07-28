@@ -1,68 +1,82 @@
 <template>
 	<view class="container">
-		<view class="banner"></view>
-		<view class="content">
-			<view class="entrance">
-				<view class="left">
-					<text class="hi">Hi，您好</text>
-					<text class="huanying">欢迎来到复达供膳</text>
-				</view>
-				<view class="right">
-					<view class="yupiao">
-						<image
-							src="https://img.js.design/assets/img/6438e8104539479518bf8310.jpg#2fabd401de51a66ad2e5df11b0481e6a">
-						</image>
-						<text class="yupiao-text">预约</text>
+		<content :has-top="false" :has-bottom="true">
+			<view class="banner"></view>
+			<view class="content">
+				<view class="entrance">
+					<view class="left">
+						<text class="hi">Hi，您好</text>
+						<text class="huanying">欢迎来到复达供膳</text>
 					</view>
-					<view class="yupiao">
-						<image
-							src="https://img.js.design/assets/img/6438e8104539479518bf8310.jpg#2fabd401de51a66ad2e5df11b0481e6a">
-						</image>
-						<text class="yupiao-text">票券</text>
-					</view>
-				</view>
-			</view>
-			<view class="navigators">
-				<view class="left">
-				</view>
-				<view class="right">
-					<view class="waimai">
-						<view class="navigators-left">
-							<view class="dazi">外卖点餐</view>
-							<view class="xiaozi">快递送达</view>
+					<view class="right">
+						<view class="yupiao">
+							<image
+								src="https://img.js.design/assets/img/6438e8104539479518bf8310.jpg#2fabd401de51a66ad2e5df11b0481e6a">
+							</image>
+							<text class="yupiao-text">预约</text>
 						</view>
-						<view class="navigators-right"></view>
-					</view>
-					<view class="dingzhi">
-						<view class="navigators-left">
-							<view class="dazi">中小企业餐饮定制</view>
-							<view class="xiaozi">企业专属订餐通道</view>
+						<view class="yupiao">
+							<image
+								src="https://img.js.design/assets/img/6438e8104539479518bf8310.jpg#2fabd401de51a66ad2e5df11b0481e6a">
+							</image>
+							<text class="yupiao-text">票券</text>
 						</view>
-						<view class="navigators-right"></view>
 					</view>
 				</view>
+				<view class="navigators">
+					<view class="left">
+					</view>
+					<view class="right">
+						<view class="waimai">
+							<view class="navigators-left">
+								<view class="dazi">外卖点餐</view>
+								<view class="xiaozi">快递送达</view>
+							</view>
+							<view class="navigators-right"></view>
+						</view>
+						<view class="dingzhi">
+							<view class="navigators-left">
+								<view class="dazi">中小企业餐饮定制</view>
+								<view class="xiaozi">企业专属订餐通道</view>
+							</view>
+							<view class="navigators-right"></view>
+						</view>
+					</view>
+				</view>
+				<view class="member-news">
+					<image src="https://img-shop.qmimg.cn/s23107/2020/04/27/0039bf41c9ebd50a2c.jpg"></image>
+				</view>
 			</view>
-			<view class="member-news">
-				<image src="https://img-shop.qmimg.cn/s23107/2020/04/27/0039bf41c9ebd50a2c.jpg"></image>
-			</view>
-		</view>
+		</content>
+		<u-tabbar :list="list" :mid-button="true" active-color="#2AB07D" inactive-color="#C0C4CC"></u-tabbar>
 	</view>
 </template>
 
 <script>
-	import {
-		mapState,
-		mapGetters
-	} from 'vuex'
+	// import { testApi } from '@/api/test';
+	import { mapState, mapGetters } from 'vuex'
 
 	export default {
 		data() {
-			return {}
+			return {
+				list: this.$mConstDataConfig.tabbarList,
+			}
 		},
 		computed: {
 			...mapState(['member']),
 			...mapGetters(['isLogin'])
 		},
+		// async onLoad() {
+		// 	await this.$http
+		// 		.post(`${testApi}`, {
+		// 			pageNumber: 1,
+		// 			pageSize: 10,
+		// 		})
+		// 		.then(async r => {
+		// 		})
+		// 		.catch(err => {
+		// 		});
+		// },
 		methods: {
 			takein() {
 				this.$store.commit('SET_ORDER_TYPE', 'takein')
@@ -121,8 +135,8 @@
 	}
 
 	.content {
-		padding: 0 30rpx;
-		margin-top: -50rpx;
+		padding: 0 30rpx 40rpx;
+		margin-top: -60rpx;
 	}
 
 	.entrance {
@@ -130,7 +144,7 @@
 		border-radius: 20rpx;
 		background: rgba(255, 255, 255, 1);
 		box-shadow: 0px 0px 20px rgba(132, 186, 168, 0.4);
-		margin-bottom: 44rpx;
+		margin-bottom: 40rpx;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -188,7 +202,7 @@
 	.navigators {
 		height: 350rpx;
 		border-radius: 20rpx;
-		margin-bottom: 20rpx;
+		margin-bottom: 40rpx;
 		display: flex;
 		align-items: stretch;
 		gap: 20rpx;
@@ -260,7 +274,6 @@
 
 	.member-news {
 		width: 100%;
-		margin-bottom: 30rpx;
 		height: 368rpx;
 
 		image {
@@ -268,8 +281,5 @@
 			height: 100%;
 			border-radius: 32rpx;
 		}
-
-
-
 	}
 </style>

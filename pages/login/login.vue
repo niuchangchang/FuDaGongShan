@@ -1,6 +1,13 @@
 <template>
 	<view class="container">
-		<u-navbar :autoBack="true" title="登录" bgColor="#91BBAA" leftIconColor="#FFFFFF" :titleStyle="{'color': '#FFFFFF'}" />
+		<u-navbar 
+			title="登录" 
+			title-color="#FFFFFF" 
+			title-bold="true"
+			back-icon-color="#FFFFFF" 
+			border-bottom="false"
+			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"
+		></u-navbar>
 		<content>
 			<view class="intro">
 				<view class="intro-logo"></view>
@@ -17,7 +24,7 @@
 				</view>
 			</view>
 		</content>
-		<u-popup :show="show" mode="center" :round="16" :safeAreaInsetBottom="false" @close="close">
+		<u-popup v-model="show" mode="center" border-radius="16">
 			<view class="xieyi-text">
 				<view class="title">用户协议</view>
 				<text>

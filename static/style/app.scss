@@ -23,6 +23,13 @@ page {
 	position: relative;
 }
 
+.content-container {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+
 button {
 	margin: 0;
 
@@ -485,8 +492,4 @@ uni-modal, uni-modal .uni-modal {
 
 .p-10 {
 	padding: 10rpx;
-}
-
-.u-status-bar, .u-navbar__content {
-	border: 1px solid #91BBAA;
 }
