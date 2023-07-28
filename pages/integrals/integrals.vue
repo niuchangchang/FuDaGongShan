@@ -1,6 +1,5 @@
 <template>
 	<view class="container">
-		<navbar-back-button></navbar-back-button>
 		<view class="header">
 			<image src="/static/images/integrals/bg.png" mode="scaleToFill"></image>
 			<view class="sign-in-info">
@@ -65,12 +64,10 @@
 </template>
 
 <script>
-	import navbarBackButton from '@/components/navbar-back-button'
 	import uniSteps from '@/components/uni-steps/uni-steps'
 	
 	export default {
 		components: {
-			navbarBackButton,
 			uniSteps
 		},
 		data() {

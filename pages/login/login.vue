@@ -1,20 +1,22 @@
 <template>
 	<view class="container">
-		<view class="intro">
-			<view class="intro-logo"></view>
-			<view class="wx-logo">
-				<image src="/static/images/mine/wechat.png"></image>
+		<u-navbar :autoBack="true" title="登录" bgColor="#91BBAA" leftIconColor="#FFFFFF" :titleStyle="{'color': '#FFFFFF'}" />
+		<content>
+			<view class="intro">
+				<view class="intro-logo"></view>
+				<view class="wx-logo">
+					<image src="/static/images/mine/wechat.png"></image>
+				</view>
+				<text class="text-login">微信手机号授权登录</text>
+				<view class="shouquan">
+					<u-checkbox-group v-model="checkboxValue" placement="column" @change="checkboxChange">
+						<u-checkbox v-for="(item, index) in checkboxList" :key="index" :name="item.name" activeColor="#4d716f" />
+					</u-checkbox-group>
+					<text class="tongyi">我已阅读并同意</text>
+					<text class="xieyi" @click="show = true">《用户协议》</text>
+				</view>
 			</view>
-			<text class="text-login">微信手机号授权登录</text>
-			<view class="shouquan">
-				<u-checkbox-group v-model="checkboxValue" placement="column" @change="checkboxChange">
-					<u-checkbox v-for="(item, index) in checkboxList" :key="index" :name="item.name"
-						activeColor="#4d716f" />
-				</u-checkbox-group>
-				<text class="tongyi">我已阅读并同意</text>
-				<text class="xieyi" @click="show = true">《用户协议》</text>
-			</view>
-		</view>
+		</content>
 		<u-popup :show="show" mode="center" :round="16" :safeAreaInsetBottom="false" @close="close">
 			<view class="xieyi-text">
 				<view class="title">用户协议</view>
@@ -102,11 +104,11 @@
 <style lang="scss" scoped>
 	.intro {
 		width: 100%;
+		padding-top: 200rpx;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		gap: 22rpx;
-		padding-top: 160rpx;
 		font-size: $font-size-base;
 		color: $text-color-assist;
 
@@ -116,14 +118,13 @@
 			display: flex;
 			align-items: center;
 
-			.xieyi {
-				font-size: 28rpx;
-				color: rgba(77, 113, 111, 1);
-			}
-
 			.tongyi {
 				font-size: 28rpx;
 				color: rgba(152, 161, 175, 1);
+			}
+			.xieyi {
+				font-size: 28rpx;
+				color: rgba(77, 113, 111, 1);
 			}
 		}
 

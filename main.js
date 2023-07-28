@@ -7,6 +7,9 @@ import store from './store'
 import uView from './uni_modules/uview-ui';
 Vue.use(uView);
 
+// 全局组件
+import content from '@/components/content.vue';
+Vue.component('content', content);
 
 Vue.config.productionTip = false
 

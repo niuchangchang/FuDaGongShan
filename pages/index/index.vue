@@ -1,7 +1,6 @@
 <template>
 	<view class="container">
-		<view class="banner">
-		</view>
+		<view class="banner"></view>
 		<view class="content">
 			<view class="entrance">
 				<view class="left">
@@ -22,7 +21,6 @@
 						<text class="yupiao-text">票券</text>
 					</view>
 				</view>
-
 			</view>
 			<view class="navigators">
 				<view class="left">

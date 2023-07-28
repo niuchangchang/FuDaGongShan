@@ -1,7 +1,7 @@
 <template>
 	<view class="container">
 		<view class="logo"></view>
-		<view class="button">点餐</view>
+		<view class="button" @click="toOrder">点餐</view>
 	</view>
 </template>
 
@@ -11,7 +11,13 @@
 			return {}
 		},
 		computed: {},
-		methods: {}
+		methods: {
+			toOrder() {
+				uni.navigateTo({
+					url: '/pages/login/login'
+				})
+			}
+		}
 	}
 </script>
 
@@ -20,12 +26,11 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 25%;
+		justify-content: space-around;
 		background: rgba(113, 173, 145, 1);
 		.logo{
 			width: 440rpx;
 			height: 366rpx;
-			margin: 70% auto 0;
 			background: url(https://img.js.design/assets/img/6479542fc53e8201f148e193.png#c3647572e7973da388e63df27b70a033);
 			background-size: 100% 100%;
 		}
@@ -39,8 +44,6 @@
 			text-align: center;
 			line-height: 72rpx;
 			color: rgba(255, 255, 255, 1);
-
-
 		}
 	}
 </style>
