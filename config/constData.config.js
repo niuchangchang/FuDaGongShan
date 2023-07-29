@@ -47,17 +47,13 @@ export default {
 		{ title: '积分', value: 0, url: '/pages/user/account/integral' }
 	],
 
-	// 订单状态 0-未付款，1-已付款，2-已发货，3-已收货（已完成待评价），4-待评价，5-已取消，6-交易完成（已完成已评价），7-仅退款，8-退货退款
+	// 订单状态
 	orderStatus: [
-		{ key: 0, value: '待支付' },
-		{ key: 1, value: '待发货' },
-		{ key: 2, value: '待收货' },
-		{ key: 3, value: '已收货' },
+		{ key: 1, value: '待付款' },
+		{ key: 2, value: '待配送' },
+		{ key: 3, value: '已完成' },
 		{ key: 4, value: '待评价' },
 		{ key: 5, value: '已取消' },
-		{ key: 6, value: '已完成' },
-		{ key: 7, value: '仅退款' },
-		{ key: 8, value: '退货退款' },
 	],
 
 	// 订单退货状态
@@ -80,10 +76,10 @@ export default {
 	// 订单状态导航
 	orderNavList: [
 		{ state: -1, text: '全部' },
-		{ state: 0, text: '待支付' },
-		{ state: 1, text: '待发货' },
-		{ state: 2, text: '待收货' },
-		{ state: 3, text: '待评价' }
+		{ state: 0, text: '待付款' },
+		{ state: 1, text: '待配送' },
+		{ state: 2, text: '已完成' },
+		{ state: 3, text: '已取消' }
 	],
 
 	// 支付方式
@@ -122,7 +118,7 @@ export default {
 			iconPath: "shopping-cart",
 			selectedIconPath: "shopping-cart",
 			text: '购物车',
-			pagePath: "/pages/orders/orders"
+			pagePath: "/pages/cart/cart"
 		},
 		{
 			iconPath: "account",

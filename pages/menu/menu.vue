@@ -1,482 +1,599 @@
 <template>
-	<view class="container" v-if="!loading">
-		<view class="main" v-if="goods.length">
-			<view class="nav">
-				<view class="header">
-					<view class="left" v-if="orderType == 'takein'">
-						<view class="store-name">
-							<text>{{ store.name }}</text>
-							<view class="iconfont iconarrow-right"></view>
-						</view>
-						<view class="store-location">
-							<image src='/static/images/order/location.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
-							<text>距离您 {{ store.distance_text }}</text>
-						</view>
-					</view>
-					<view class="left overflow-hidden" v-else>
-						<view class="d-flex align-items-center overflow-hidden">
-							<image src='/static/images/order/location.png' style="width: 30rpx; height: 30rpx;" class="mr-10"></image>
-							<view class="font-size-extra-lg text-color-base font-weight-bold text-truncate">
-								{{ address.street }}
-							</view>
-						</view>
-						<view class="font-size-sm text-color-assist overflow-hidden text-truncate">
-							由<text class="text-color-base" style="margin: 0 10rpx">{{ store.name }}</text>配送
-						</view>
-					</view>
-					<view class="right">
-						<view class="dinein" :class="{active: orderType == 'takein'}" @tap="SET_ORDER_TYPE('takein')">
-							<text>自取</text>
-						</view>
-						<view class="takeout" :class="{active: orderType == 'takeout'}" @tap="takout">
-							<text>外卖</text>
-						</view>
-					</view>
+	<view class="container">
+		<u-navbar title="点餐" title-color="#FFFFFF" title-bold="true" :is-back="false" :border-bottom="false"
+			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"></u-navbar>
+		<content :has-top="true" :has-bottom="true">
+			<view class="order-container">
+				<view class="swiper">
+					<u-tabs-swiper ref="tabs1" :list="swiperlist" gutter="80" :show-bar="false" font-size="28"
+						height="60" bg-color="#F2F7F0" active-color="#FFFFFF" inactive-color="#6E7C87"
+						:active-item-style="{background: '#71AD91', 'border-radius': '5px'}"></u-tabs-swiper>
 				</view>
-				<view class="coupon">
-					<text class="title">"霸气mini卡"超级购券活动，赶紧去购买</text>
-					<view class="iconfont iconarrow-right"></view>
-				</view>
-			</view>
-			<view class="content">
-				<scroll-view class="menus" :scroll-into-view="menuScrollIntoView" scroll-with-animation scroll-y>
-					<view class="wrapper">
-						<view class="menu" :id="`menu-${item.id}`" :class="{'current': item.id === currentCateId}" v-for="(item, index) in goods" 
-						:key="index" @tap="handleMenuTap(item.id)">
-							<text>{{ item.name }}</text>
-							<view class="dot" v-show="menuCartNum(item.id)">{{ menuCartNum(item.id) }}</view>
-						</view>
-					</view>
-				</scroll-view>
-				<!-- goods list begin -->
-				<scroll-view class="goods" scroll-with-animation scroll-y :scroll-top="cateScrollTop" @scroll="handleGoodsScroll">
-					<view class="wrapper">
-						<swiper class="ads" id="ads" autoplay :interval="3000" indicator-dots>
-							<swiper-item v-for="(item, index) in ads" :key='index'>
-								<image :src="item.image"></image>
-							</swiper-item>
-						</swiper>
-						<view class="list">
-							<!-- category begin -->
-							<view class="category" v-for="(item, index) in goods" :key="index" :id="`cate-${item.id}`">
-								<view class="title">
-									<text>{{ item.name }}</text>
-									<image :src="item.icon" class="icon"></image>
+				<view class="diancan-list">
+					<view v-for="(item, index) in productList" :key="index" class="diancan-item">
+						<view class="diancan-item-up">
+							<view class="diancan-item-up-left" @click="showInfo(item)"></view>
+							<view class="diancan-item-up-right">
+								<view class="diancan-item-up-right-jb">
+									<view class="diancan-item-up-right-bt">
+										{{item.title}}
+									</view>
+									<view class="diancan-item-up-right-jg">
+										￥{{item.price}}
+									</view>
 								</view>
-								<view class="items">
-									<!-- 商品 begin -->
-									<view class="good" v-for="(good, key) in item.goods_list" :key="key">
-										<image :src="good.images" class="image" @tap="showGoodDetailModal(item, good)"></image>
-										<view class="right">
-											<text class="name">{{ good.name }}</text>
-											<text class="tips">{{ good.content }}</text>
-											<view class="price_and_action">
-												<text class="price">￥{{ good.price }}</text>
-												<view class="btn-group" v-if="good.use_property">
-													<button type="primary" class="btn property_btn" hover-class="none"
-													 size="mini" @tap="showGoodDetailModal(item, good)">
-														选规格
-													</button>
-													<view class="dot" v-show="goodCartNum(good.id)">{{ goodCartNum(good.id) }}</view>
-												</view>
-												<view class="btn-group" v-else>
-													<button type="default" v-show="goodCartNum(good.id)" plain class="btn reduce_btn"
-													 size="mini" hover-class="none" @tap="handleReduceFromCart(item, good)">
-														<view class="iconfont iconsami-select"></view>
-													</button>
-													<view class="number" v-show="goodCartNum(good.id)">{{ goodCartNum(good.id) }}</view>
-													<button type="primary" class="btn add_btn" size="min" hover-class="none" 
-														@tap="handleAddToCart(item, good, 1)">
-														<view class="iconfont iconadd-select"></view>
-													</button>
-												</view>
+								<view class="diancan-item-up-right-js">
+									{{item.jieshao}}
+								</view>
+								<view class="diancan-item-up-right-mj">
+									<view v-for="(manjianitem, manjianindex) in item.manjianlist" :key="manjianindex"
+										class="manjian-item">
+										{{manjianitem.name}}
+									</view>
+								</view>
+								<view class="diancan-item-up-right-jk">
+									<view class="diancan-item-up-right-jk-up">
+										健康指数
+									</view>
+									<view class="diancan-item-up-right-jk-down">
+										<view v-for="(jkitem,jkindex) in item.jklist" :key="jkindex"
+											class="jk-down-item">
+											<view class="jk-down-item-up">
+												{{jkitem.value }}
+											</view>
+											<view class="jk-down-item-down">
+												{{jkitem.name}}
 											</view>
 										</view>
 									</view>
-									<!-- 商品 end -->
-								</view>
-							</view>
-							<!-- category end -->
-						</view>
-					</view>
-				</scroll-view>
-				<!-- goods list end -->
-			</view>
-			<!-- content end -->
-			<!-- 购物车栏 begin -->
-			<view class="cart-box" v-if="cart.length > 0">
-				<view class="mark">
-					<image src="/static/images/menu/cart.png" class="cart-img" @tap="openCartPopup"></image>
-					<view class="tag">{{ getCartGoodsNumber }}</view>
-				</view>
-				<view class="price">￥{{ getCartGoodsPrice }}</view>
-				<button type="primary" class="pay-btn" @tap="toPay" :disabled="disabledPay">
-					{{ disabledPay ? `差${spread}元起送` : '去结算' }}
-				</button>
-			</view>
-			<!-- 购物车栏 end -->
-		</view>
-		<!-- 商品详情模态框 begin -->
-		<modal :show="goodDetailModalVisible" class="good-detail-modal" color="#5A5B5C" 
-				width="90%" custom padding="0rpx" radius="12rpx">
-			<view class="cover">
-				<image v-if="good.images" :src="good.images" class="image"></image>
-				<view class="btn-group">
-					<image src="/static/images/menu/share-good.png"></image>
-					<image src="/static/images/menu/close.png" @tap="closeGoodDetailModal"></image>
-				</view>
-			</view>
-			<scroll-view class="detail" scroll-y>
-				<view class="wrapper">
-					<view class="basic">
-						<view class="name">{{ good.name }}</view>
-						<view class="tips">{{ good.content }}</view>
-					</view>
-					<view class="properties" v-if="good.use_property">
-						<view class="property" v-for="(item, index) in good.property" :key="index">
-							<view class="title">
-								<text class="name">{{ item.name }}</text>
-								<view class="desc" v-if="item.desc">({{ item.desc }})</view>
-							</view>
-							<view class="values">
-								<view class="value" v-for="(value, key) in item.values" :key="key" 
-								:class="{'default': value.is_default}" 
-								@tap="changePropertyDefault(index, key)">
-									{{ value.value }}
 								</view>
 							</view>
 						</view>
-					</view>
-				</view>
-			</scroll-view>
-			<view class="action">
-				<view class="left">
-					<view class="price">￥{{ good.price }}</view>
-					<view class="props" v-if="getGoodSelectedProps(good)">
-						{{ getGoodSelectedProps(good) }}
-					</view>
-				</view>
-				<view class="btn-group">
-					<button type="default" plain class="btn" size="mini" hover-class="none" 
-						@tap="handlePropertyReduce">
-						<view class="iconfont iconsami-select"></view>
-					</button>
-					<view class="number">{{ good.number }}</view>
-					<button type="primary" class="btn" size="min" hover-class="none" 
-						@tap="handlePropertyAdd">
-						<view class="iconfont iconadd-select"></view>
-					</button>
-				</view>
-			</view>
-			<view class="add-to-cart-btn" @tap="handleAddToCartInModal">
-				<view>加入购物车</view>
-			</view>
-		</modal>
-		<!-- 商品详情模态框 end -->
-		<!-- 购物车详情popup -->
-		<popup-layer direction="top" :show-pop="cartPopupVisible" class="cart-popup">
-			<template slot="content">
-				<view class="top">
-					<text @tap="handleCartClear">清空</text>
-				</view>
-				<scroll-view class="cart-list" scroll-y>
-					<view class="wrapper">
-						<view class="item" v-for="(item, index) in cart" :key="index">
-							<view class="left">
-								<view class="name">{{ item.name }}</view>
-								<view class="props">{{ item.props_text }}</view>
-							</view>
-							<view class="center">
-								<text>￥{{ item.price }}</text>
-							</view>
-							<view class="right">
-								<button type="default" plain size="mini" class="btn" hover-class="none"
-									@tap="handleCartItemReduce(index)">
-									<view class="iconfont iconsami-select"></view>
-								</button>
-								<view class="number">{{ item.number }}</view>
-								<button type="primary" class="btn" size="min" hover-class="none"
-									@tap="handleCartItemAdd(index)">
-									<view class="iconfont iconadd-select"></view>
-								</button>
-							</view>
-						</view>
-						<view class="item" v-if="orderType == 'takeout' && store.packing_fee">
-							<view class="left">
-								<view class="name">包装费</view>
-							</view>
-							<view class="center">
-								<text>￥{{ parseFloat(store.packing_fee) }}</text>
-							</view>
-							<view class="right invisible">
-								<button type="default" plain size="mini" class="btn" hover-class="none">
-									<view class="iconfont iconsami-select"></view>
-								</button>
-								<view class="number">1</view>
-								<button type="primary" class="btn" size="min" hover-class="none">
-									<view class="iconfont iconadd-select"></view>
-								</button>
-							</view>
+						<view class="diancan-item-down">
+							<text class="diancan-item-down-label">推荐度 {{item.tuijiansu}}%</text>
+							<u-line-progress class="diancan-item-down-jdt" active-color="#71AD91" :percent="70"
+								height="14" inactive-color="#F2F7F0" :show-percent="false"></u-line-progress>
 						</view>
 					</view>
-				</scroll-view>
-			</template>
-		</popup-layer>
-		<!-- 购物车详情popup -->
-	</view>
-	<view class="loading" v-else>
-		<image src="/static/images/loading.gif"></image>
+				</view>
+			</view>
+		</content>
+		<u-popup v-model="showPopup" mode="center" border-radius="16">
+			<view class="info">
+				<view class="info-icon">
+					<view class="icon">
+						<u-icon name="share" size="20"></u-icon>
+					</view>
+					<view class="icon" @close="close">
+						<u-icon name="close" size="20"></u-icon>
+					</view>
+				</view>
+				<view class="info-content">
+					<view class="info-up"></view>
+					<view class="info-center">
+						<view class="info-center-jb">
+							<view class="info-center-bt">
+								{{info.title}}
+							</view>
+						</view>
+						<view class="info-center-mj">
+							<view v-for="(manjianitem, manjianindex) in info.manjianlist" :key="manjianindex"
+								class="info-center-manjian">
+								{{manjianitem.name}}
+							</view>
+						</view>
+						<view class="info-center-jg">
+							￥{{info.price}}/份
+						</view>
+						<view class="info-center-jk">
+							<view class="info-center-jk-up">
+								健康指数
+							</view>
+							<view class="info-center-item-up-jk-down">
+								<view v-for="(jkitem,jkindex) in info.jklist" :key="jkindex"
+									class="info-center-jk-down-item">
+									<view class="info-center-jk-down-item-up">
+										{{jkitem.value }}
+									</view>
+									<view class="info-center-jk-down-item-down">
+										{{jkitem.name}}
+									</view>
+								</view>
+							</view>
+						</view>
+						<view class="info-center-tjd">
+							<text class="info-center-label">推荐度 {{info.tuijiansu}}%</text>
+							<u-line-progress class="info-center-jdt" active-color="#71AD91" :percent="70" height="14"
+								inactive-color="#F2F7F0" :show-percent="false"></u-line-progress>
+						</view>
+						<view class="info-center-js">
+							<text>详细介绍</text>
+							<view class="info-center-js-content"></view>
+						</view>
+					</view>
+				</view>
+				<view class="info-down">
+					<view class="info-down-left">
+						<u-icon name="shopping-cart" size="48"></u-icon>
+						购物车
+					</view>
+					<view class="info-down-right">
+						<view class="info-down-right-cart">
+							加入购物车
+						</view>
+						<view class="info-down-right-buy">
+							立即购买
+						</view>
+					</view>
+				</view>
+			</view>
+		</u-popup>
+		<u-tabbar :list="list" :mid-button="true" active-color="#2AB07D" inactive-color="#C0C4CC"></u-tabbar>
 	</view>
 </template>
 
 <script>
-import modal from '@/components/modal/modal'
-import popupLayer from '@/components/popup-layer/popup-layer'
-import {mapState, mapMutations, mapActions, mapGetters} from 'vuex'
+	export default {
+		components: {},
+		data() {
+			return {
+				list: this.$mConstDataConfig.tabbarList,
+				swiperlist: [{
+					name: '上榜餐厅'
+				}, {
+					name: '多年老店'
+				}, {
+					name: '人气餐厅',
+					// count: 5
+				}, {
+					name: '人气',
+				}],
+				showPopup: false,
+				info: {
+					title: '藕片',
+					price: 12.0,
+					jieshao: '菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍...',
+					manjianlist: [{
+						name: '20减3 40减7'
+					}, {
+						name: '新客减4'
+					}],
+					jklist: [{
+						name: '千卡',
+						value: '114'
+					}, {
+						name: '千克',
+						value: '1'
+					}],
+					tuijiansu: 80
+				},
+				productList: [{
+						title: '藕片',
+						price: 12.0,
+						jieshao: '菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍...',
+						manjianlist: [{
+							name: '20减3 40减7'
+						}, {
+							name: '新客减4'
+						}],
+						jklist: [{
+							name: '千卡',
+							value: '114'
+						}, {
+							name: '千克',
+							value: '1'
+						}],
+						tuijiansu: 80
+					},
+					{
+						title: '藕片1',
+						price: 12.0,
+						jieshao: '菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍...',
+						manjianlist: [{
+							name: '20减3 40减7'
+						}, {
+							name: '新客减4'
+						}],
+						jklist: [{
+							name: '千卡',
+							value: '114'
+						}, {
+							name: '千克',
+							value: '1'
+						}],
+						tuijiansu: 80
+					},
+					{
+						title: '藕片2',
+						price: 12.0,
+						jieshao: '菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍...',
+						manjianlist: [{
+							name: '20减3 40减7'
+						}, {
+							name: '新客减4'
+						}],
+						jklist: [{
+							name: '千卡',
+							value: '114'
+						}, {
+							name: '千克',
+							value: '1'
+						}],
+						tuijiansu: 80
+					},
+					{
+						title: '藕片3',
+						price: 12.0,
+						jieshao: '菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍...',
+						manjianlist: [{
+							name: '20减3 40减7'
+						}, {
+							name: '新客减4'
+						}],
+						jklist: [{
+							name: '千卡',
+							value: '114'
+						}, {
+							name: '千克',
+							value: '1'
+						}],
+						tuijiansu: 80
+					}
+				]
+			}
+		},
+		async onLoad() {},
+		computed: {
 
-export default {
-	components: {
-		modal,
-		popupLayer
-	},
-	data() {
-		return {
-			goods: [], //所有商品
-			ads: [
-				{image: 'https://img-shop.qmimg.cn/s23107/2020/04/27/4ebdb582a5185358c4.jpg?imageView2/2/w/600/h/600'},
-				{image: 'https://images.qmai.cn/s23107/2020/05/08/c25de6ef72d2890630.png?imageView2/2/w/600/h/600'},
-				{image: 'https://img-shop.qmimg.cn/s23107/2020/04/10/add546c1b1561f880d.jpg?imageView2/2/w/600/h/600'},
-				{image: 'https://images.qmai.cn/s23107/2020/04/30/b3af19e0de8ed42f61.jpg?imageView2/2/w/600/h/600'},
-				{image: 'https://img-shop.qmimg.cn/s23107/2020/04/17/8aeb78516d63864420.jpg?imageView2/2/w/600/h/600'}
-			],
-			loading: true,
-			currentCateId: 6905,//默认分类
-			cateScrollTop: 0,
-			menuScrollIntoView: '',
-			cart: [], //购物车
-			goodDetailModalVisible: false, //是否饮品详情模态框
-			good: {}, //当前饮品
-			category: {}, //当前饮品所在分类
-			cartPopupVisible: false,
-			sizeCalcState: false
+		},
+		methods: {
+			showInfo(item) {
+				this.showPopup = true
+			},
+			close() {
+				this.showPopup = false
+			},
 		}
-	},
-	async onLoad() {
-		await this.init()
-	},
-	computed: {
-		...mapState(['orderType', 'address', 'store']),
-		...mapGetters(['isLogin']),
-		goodCartNum() {	//计算单个饮品添加到购物车的数量
-			return (id) => this.cart.reduce((acc, cur) => {
-					if(cur.id === id) {
-						return acc += cur.number
-					}
-					return acc
-				}, 0)
-		},
-		menuCartNum() {
-			return (id) => this.cart.reduce((acc, cur) => {
-					if(cur.cate_id === id) {
-						return acc += cur.number
-					}
-					return acc
-			}, 0)
-		},
-		getCartGoodsNumber() { //计算购物车总数
-			return this.cart.reduce((acc, cur) => acc + cur.number, 0)
-		},
-		getCartGoodsPrice() {	//计算购物车总价
-			return this.cart.reduce((acc, cur) => acc + cur.number * cur.price, 0)
-		},
-		disabledPay() { //是否达到起送价
-			return this.orderType == 'takeout' && (this.getCartGoodsPrice < this.store.min_price) ? true : false
-		},
-		spread() { //差多少元起送
-			if(this.orderType != 'takeout') return
-			return parseFloat((this.store.min_price - this.getCartGoodsPrice).toFixed(2))
-		}
-	},
-	methods: {
-		...mapMutations(['SET_ORDER_TYPE']),
-		...mapActions(['getStore']),
-		async init() {	//页面初始化
-			this.loading = true
-			await this.getStore()
-			this.goods = await this.$api('goods')
-			this.loading = false
-			this.cart = uni.getStorageSync('cart') || []
-		},
-		takout() {
-			if(this.orderType == 'takeout') return
-			
-			if(!this.isLogin) {
-				uni.navigateTo({url: '/pages/login/login'})
-				return
-			}
-			
-			uni.navigateTo({
-				url: '/pages/address/address?is_choose=true'
-			})
-		},
-		handleMenuTap(id) {	//点击菜单项事件
-			if(!this.sizeCalcState) {
-				this.calcSize()
-			}
-			
-			this.currentCateId = id
-			this.$nextTick(() => this.cateScrollTop = this.goods.find(item => item.id == id).top)
-		},
-		handleGoodsScroll({detail}) {	//商品列表滚动事件
-			if(!this.sizeCalcState) {
-				this.calcSize()
-			}
-			const {scrollTop} = detail
-			let tabs = this.goods.filter(item=> item.top <= scrollTop).reverse()
-			if(tabs.length > 0){
-				this.currentCateId = tabs[0].id
-			}
-		},
-		calcSize() {
-			let h = 10
-			
-			let view = uni.createSelectorQuery().select('#ads')
-			view.fields({
-				size: true
-			}, data => {
-				h += Math.floor(data.height)
-			}).exec()
-			
-			this.goods.forEach(item => {
-				let view = uni.createSelectorQuery().select(`#cate-${item.id}`)
-				view.fields({
-					size: true
-				}, data => {
-					item.top = h
-					h += data.height
-					item.bottom = h
-				}).exec()
-			})
-			this.sizeCalcState = true
-		},
-		handleAddToCart(cate, good, num) {	//添加到购物车
-			const index = this.cart.findIndex(item => {
-				if(good.use_property) {
-					return (item.id === good.id) && (item.props_text === good.props_text)
-				} else {
-					return item.id === good.id
-				}
-			})
-			if(index > -1) {
-				this.cart[index].number += num
-			} else {
-				this.cart.push({
-					id: good.id,
-					cate_id: cate.id,
-					name: good.name,
-					price: good.price,
-					number: num,
-					image: good.images,
-					use_property: good.use_property,
-					props_text: good.props_text,
-					props: good.props
-				})
-			}
-		},
-		handleReduceFromCart(item, good) {
-			const index = this.cart.findIndex(item => item.id === good.id)
-			this.cart[index].number -= 1
-			if(this.cart[index].number <= 0) {
-				this.cart.splice(index, 1)
-			}
-		},
-		showGoodDetailModal(item, good) {
-			this.good = JSON.parse(JSON.stringify({...good, number: 1}))
-			this.category = JSON.parse(JSON.stringify(item))
-			this.goodDetailModalVisible = true
-		},
-		closeGoodDetailModal() { //关闭饮品详情模态框
-			this.goodDetailModalVisible = false
-			this.category = {}
-			this.good = {}
-		},
-		changePropertyDefault(index, key) { //改变默认属性值
-			this.good.property[index].values.forEach(value => this.$set(value, 'is_default', 0))
-			this.good.property[index].values[key].is_default = 1
-			this.good.number = 1
-		},
-		getGoodSelectedProps(good, type = 'text') {	//计算当前饮品所选属性
-			if(good.use_property) {
-				let props = []
-				good.property.forEach(({values}) => {
-					values.forEach(value => {
-						if(value.is_default) {
-							props.push(type === 'text' ? value.value : value.id)
-						}
-					})
-				})
-				return type === 'text' ? props.join('，') : props
-			}
-			return ''
-		},
-		handlePropertyAdd() {
-			this.good.number += 1
-		},
-		handlePropertyReduce() {
-			if(this.good.number === 1) return
-			this.good.number -= 1
-		},
-		handleAddToCartInModal() {
-			const product = Object.assign({}, this.good, {props_text: this.getGoodSelectedProps(this.good), props: this.getGoodSelectedProps(this.good, 'id')})
-			this.handleAddToCart(this.category, product, this.good.number)
-			this.closeGoodDetailModal()
-		},
-		openCartPopup() {	//打开/关闭购物车列表popup
-			this.cartPopupVisible = !this.cartPopupVisible
-		},
-		handleCartClear() {	//清空购物车
-			uni.showModal({
-				title: '提示',
-				content: '确定清空购物车么',
-				success: ({confirm}) =>  {
-					if(confirm) {
-						this.cartPopupVisible = false
-						this.cart = []
-					}
-				}
-			})
-		},
-		handleCartItemAdd(index) {
-			this.cart[index].number += 1
-		},
-		handleCartItemReduce(index) {
-			if(this.cart[index].number === 1) {
-				this.cart.splice(index, 1)
-			} else {
-				this.cart[index].number -= 1
-			}
-			if(!this.cart.length) {
-				this.cartPopupVisible = false
-			}
-		},
-		toPay() {
-			if(!this.isLogin) {
-				uni.navigateTo({url: '/pages/login/login'})
-				return
-			}
-			
-			uni.showLoading({title: '加载中'})
-			uni.setStorageSync('cart', JSON.parse(JSON.stringify(this.cart)))
-			
-			uni.navigateTo({
-				url: '/pages/pay/pay'
-			})
-			uni.hideLoading()
-		}
-	}
-};
+	};
 </script>
 
 <style lang="scss" scoped>
-	@import '~@/pages/menu/menu.scss';
+	.order-container {
+		height: 100%;
+	}
+
+	.swiper {
+		height: 150rpx;
+		padding: 40rpx 32rpx;
+	}
+
+	.info {
+		position: relative;
+		width: 670rpx;
+		height: 1300rpx;
+		border-radius: 20rpx;
+		background: #FFFFFF;
+
+		.info-icon {
+			position: absolute;
+			top: 10rpx;
+			right: 14rpx;
+			display: flex;
+			gap: 10rpx;
+			.icon{
+				width: 40rpx;
+				height: 40rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				background: #FFFFFF;
+				border-radius: 50%;
+			}
+		}
+
+		.info-content {
+			height: calc(100% - 140rpx);
+			overflow: auto;
+		}
+
+		.info-up {
+			height: 400rpx;
+			border-radius: 10px 10px, 0px, 0px;
+			background: url(https://img.js.design/assets/img/6438e80e82fcf570063255d3.jpg#9c2b20dc156cd83fdd1ca51a15ffe57f);
+			background-size: 100% 100%;
+		}
+
+		.info-center {
+			padding: 40rpx 24rpx;
+
+			.info-center-jb {
+				display: flex;
+				justify-content: space-between;
+				font-size: 30rpx;
+				color: rgba(77, 113, 111, 1);
+				margin-bottom: 14rpx;
+			}
+
+			.info-center-mj {
+				display: flex;
+				align-items: center;
+				gap: 8rpx;
+				margin-bottom: 14rpx;
+
+				.info-center-manjian {
+					padding: 2rpx 8rpx;
+					border-radius: 2px;
+					border: 0.5px solid rgba(77, 113, 111, 1);
+					font-size: 20rpx;
+					color: rgba(77, 113, 111, 1);
+
+				}
+			}
+
+			.info-center-jg {
+				font-size: 28rpx;
+				color: rgba(43, 115, 101, 1);
+				margin-bottom: 14rpx;
+			}
+
+			.info-center-jk {
+				margin-bottom: 14rpx;
+
+				.info-center-jk-up {
+					font-size: 24rpx;
+					color: rgba(77, 113, 111, 1);
+					margin-bottom: 14rpx;
+				}
+
+				.info-center-item-up-jk-down {
+					display: flex;
+					align-items: center;
+					gap: 12rpx;
+
+					.info-center-jk-down-item {
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+						justify-content: space-evenly;
+						width: 60rpx;
+						height: 90rpx;
+						background: rgba(242, 247, 240, 1);
+						border-radius: 50rpx;
+
+						.info-center-jk-down-item-up {
+							display: flex;
+							justify-content: center;
+							align-items: center;
+							width: 45rpx;
+							height: 45rpx;
+							background: rgba(255, 255, 255, 1);
+							font-size: 22rpx;
+							font-weight: 700;
+							color: rgba(77, 113, 111, 1);
+							border-radius: 50%;
+						}
+
+						.info-center-jk-down-item-down {
+							font-size: 14rpx;
+							color: rgba(77, 113, 111, 1);
+						}
+					}
+				}
+			}
+
+			.info-center-tjd {
+				display: flex;
+				align-items: center;
+				gap: 20rpx;
+				width: 544rpx;
+				height: 34rpx;
+				margin-bottom: 32rpx;
+
+				.info-center-label {
+					font-size: 22rpx;
+					font-weight: 500;
+					color: rgba(77, 113, 111, 1);
+				}
+
+				.info-center-jdt {
+					width: 400rpx;
+
+				}
+			}
+
+			.info-center-js {
+				font-size: 28rpx;
+				color: rgba(77, 113, 111, 1);
+
+				.info-center-js-content {
+					width: 100%;
+					height: 900rpx;
+					margin-top: 20rpx;
+					background: url(https://img.js.design/assets/img/646ad8d90c416ea114c76135.png#75b80287004e87b795f79cfeb9fc631b);
+					background-size: 100% 100%;
+				}
+			}
+		}
+
+		.info-down {
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			height: 140rpx;
+			padding: 20rpx;
+			background: #FFFFFF;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+
+			.info-down-left {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				width: 72rpx;
+				font-size: 24rpx;
+				color: rgba(110, 124, 135, 1);
+
+			}
+
+			.info-down-right {
+				display: flex;
+
+				.info-down-right-cart {
+					width: 190rpx;
+					height: 56rpx;
+					border-radius: 20px 0px 0px 0px;
+					background: #F2F7F0;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					font-size: 24rpx;
+					color: rgba(43, 115, 101, 1);
+
+
+				}
+
+				.info-down-right-buy {
+					width: 200rpx;
+					height: 56rpx;
+					border-radius: 0px 0px 20px 0px;
+					background: #2B7365;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					font-size: 24rpx;
+					color: #FFFFFF;
+				}
+			}
+		}
+
+	}
+
+	.diancan-list {
+		height: calc(100% - 150rpx);
+		overflow-y: auto;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 40rpx;
+		padding: 0 40rpx 80rpx;
+
+		.diancan-item {
+			background: rgba(255, 255, 255, 1);
+			border-radius: 16rpx;
+			box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7), inset -1px -1px 0px rgba(255, 255, 255, 1), inset 1px 1px 0px rgba(255, 255, 255, 1), -3px -3px 7px rgba(255, 255, 255, 1), 3px 3px 7px rgba(113, 173, 145, 0.5);
+			padding: 26rpx 26rpx 20rpx 22rpx;
+
+			.diancan-item-up {
+				display: flex;
+				justify-content: space-between;
+				gap: 28rpx;
+
+				.diancan-item-up-left {
+					width: 264rpx;
+					height: 290rpx;
+					background: url(https://img.js.design/assets/img/62e7b277b3784b2dc60dbcd2.png);
+					border-radius: 20rpx;
+				}
+
+				.diancan-item-up-right {
+					flex: 1;
+
+					.diancan-item-up-right-jb {
+						display: flex;
+						justify-content: space-between;
+						font-size: 32rpx;
+						font-weight: 700;
+						color: rgba(77, 113, 111, 1);
+						margin-bottom: 8rpx;
+					}
+
+					.diancan-item-up-right-js {
+						font-size: 24rpx;
+						color: rgba(110, 124, 135, 1);
+						margin-bottom: 14rpx;
+					}
+
+					.diancan-item-up-right-mj {
+						display: flex;
+						align-items: center;
+						gap: 8rpx;
+						margin-bottom: 16rpx;
+
+						.manjian-item {
+							padding: 2rpx 8rpx;
+							border-radius: 2px;
+							border: 0.5px solid rgba(77, 113, 111, 1);
+							font-size: 20rpx;
+							color: rgba(77, 113, 111, 1);
+
+						}
+					}
+
+					.diancan-item-up-right-jk {
+						.diancan-item-up-right-jk-up {
+							font-size: 24rpx;
+							color: rgba(77, 113, 111, 1);
+							margin-bottom: 8rpx;
+						}
+
+						.diancan-item-up-right-jk-down {
+							display: flex;
+							align-items: center;
+							gap: 12rpx;
+
+							.jk-down-item {
+								display: flex;
+								flex-direction: column;
+								align-items: center;
+								justify-content: space-evenly;
+								width: 60rpx;
+								height: 90rpx;
+								background: rgba(242, 247, 240, 1);
+								border-radius: 50rpx;
+
+								.jk-down-item-up {
+									display: flex;
+									justify-content: center;
+									align-items: center;
+									width: 45rpx;
+									height: 45rpx;
+									background: rgba(255, 255, 255, 1);
+									font-size: 22rpx;
+									font-weight: 700;
+									color: rgba(77, 113, 111, 1);
+									border-radius: 50%;
+								}
+
+								.jk-down-item-down {
+									font-size: 14rpx;
+									color: rgba(77, 113, 111, 1);
+								}
+							}
+						}
+					}
+				}
+			}
+
+			.diancan-item-down {
+				display: flex;
+				align-items: center;
+				gap: 20rpx;
+				width: 544rpx;
+				height: 34rpx;
+				margin-top: 12rpx;
+
+				.diancan-item-down-label {
+					font-size: 22rpx;
+					font-weight: 500;
+					color: rgba(77, 113, 111, 1);
+				}
+
+				.diancan-item-down-jdt {
+					width: 400rpx;
+
+				}
+			}
+		}
+	}
 </style>

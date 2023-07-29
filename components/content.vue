@@ -26,9 +26,9 @@
 				let styleObj = ''
 				const { hasTop, hasBottom } = this
 				const system = uni.getSystemInfoSync()
-				console.log('====system', system)
+				// console.log('====system', system)
 				const custom = wx.getMenuButtonBoundingClientRect()
-				console.log('====custom', custom)
+				// console.log('====custom', custom)
 				const tabbar = system.screenHeight - system.safeArea.bottom + 50;
 				// console.log('====tabbar', tabbar)
 				if(hasTop) {

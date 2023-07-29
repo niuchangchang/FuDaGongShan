@@ -25,6 +25,7 @@
 				</view>
 				<view class="navigators">
 					<view class="left">
+						<view class="jrtj">今日推荐</view>
 					</view>
 					<view class="right">
 						<view class="waimai">
@@ -54,7 +55,10 @@
 
 <script>
 	// import { testApi } from '@/api/test';
-	import { mapState, mapGetters } from 'vuex'
+	import {
+		mapState,
+		mapGetters
+	} from 'vuex'
 
 	export default {
 		data() {
@@ -207,14 +211,32 @@
 		align-items: stretch;
 		gap: 20rpx;
 
+
 		.left {
 			height: 100%;
 			border-radius: 8px;
 			width: 308rpx;
 			display: flex;
+			position: relative;
 			background: url(https://img.js.design/assets/img/6438e80f7b58e9fa27fdd984.jpg#34140443cfbe601060a2e2e593747c39);
 			background-size: 100% 100%;
 			box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7), inset -1px -1px 0px rgba(255, 255, 255, 1), inset 1px 1px 0px rgba(255, 255, 255, 1), -3px -3px 7px rgba(255, 255, 255, 1), 3px 3px 7px rgba(113, 173, 145, 0.5);
+
+			.jrtj {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 160rpx;
+				height: 48rpx;
+				font-size: 28rpx;
+				font-weight: 500;
+				line-height: 48rpx;
+				color: rgba(255, 255, 255, 1);
+				text-align: center;
+				border-radius: 10px 0px 10px 0px;
+				background: rgba(255, 195, 0, 1);
+
+			}
 		}
 
 		.right {
