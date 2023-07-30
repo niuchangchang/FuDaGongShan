@@ -49,6 +49,25 @@
 				</view>
 			</view>
 		</content>
+		<u-popup v-model="show" mode="center" border-radius="16">
+			<view class="qucanma">
+				<text>取餐码</text>
+				<view class="address">
+					<u-icon name="photo" size="40"></u-icon>
+					<text>上海市黄浦区XX路30号写字楼...</text>
+				</view>
+				<view class="address">
+					<u-icon name="photo" size="40"></u-icon>
+					<text>5号柜31号格子</text>
+				</view>
+				<view class="divi"></view>
+				<view class="erweima">
+				</view>
+				<view class="close-button">
+					关闭
+				</view>
+			</view>
+		</u-popup>
 		<u-tabbar :list="list" :mid-button="true" active-color="#2AB07D" inactive-color="#C0C4CC"></u-tabbar>
 	</view>
 </template>
@@ -64,7 +83,9 @@
 		data() {
 			return {
 				list: this.$mConstDataConfig.tabbarList,
+				show: true,
 			}
+
 		},
 		computed: {
 			...mapState(['member']),
@@ -136,6 +157,55 @@
 		height: 480rpx;
 		background: url(https://img.js.design/assets/img/6438e8104539479518bf8310.jpg#2fabd401de51a66ad2e5df11b0481e6a);
 		background-size: 100% 100%;
+	}
+
+	.qucanma {
+		width: 640rpx;
+		display: flex;
+		flex-direction: column;
+		gap: 15rpx;
+		padding: 66rpx 34rpx;
+		color: rgba(77, 113, 111, 1);
+
+		text:nth-child(1) {
+			text-align: center;
+			font-size: 40rpx;
+		}
+
+		.close-button {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 430rpx;
+			height: 80rpx;
+			border-radius: 20px 0px 20px 0px;
+			background: #2B7365;
+			margin: auto;
+			font-size: 40rpx;
+			color: rgba(255, 255, 255, 1);
+
+		}
+
+		.address {
+			display: flex;
+			gap: 8rpx;
+			font-size: 32rpx;
+		}
+
+		.divi {
+			width: 100%;
+			height: 1px;
+			background: #4D716F;
+			margin-top: 30rpx;
+		}
+
+		.erweima {
+			width: 430rpx;
+			height: 430rpx;
+			margin: 80rpx auto;
+			background: url(https://img.js.design/assets/img/60ebaa75695146d4363e03a8.png);
+			background-size: 100% 100%;
+		}
 	}
 
 	.content {

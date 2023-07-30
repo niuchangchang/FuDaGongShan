@@ -1,22 +1,18 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/orders/detail",
-			"style": {
-				"navigationStyle": "custom"
-			}
-		}, {
 			"path": "pages/orders/orders",
 			"style": {
 				"navigationStyle": "custom"
 			}
-		}, {
-			"path": "pages/cart/cart",
+		},{
+			"path": "pages/orders/detail",
 			"style": {
 				"navigationStyle": "custom"
 			}
-		}, {
-			"path": "pages/menu/menu",
+		},
+		{
+			"path": "pages/cart/cart",
 			"style": {
 				"navigationStyle": "custom"
 			}
@@ -31,10 +27,14 @@
 				"navigationStyle": "custom"
 			}
 		}, {
-			"path": "pages/login/login",
+			"path": "pages/orders/create",
 			"style": {
-				"navigationStyle": "custom",
-				"navigationBarTextStyle": "white"
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/menu/menu",
+			"style": {
+				"navigationStyle": "custom"
 			}
 		}, {
 			"path": "pages/login/loading",
@@ -42,6 +42,12 @@
 				"navigationStyle": "custom"
 			}
 		}, {
+			"path": "pages/login/login",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+		},  {
 			"path": "pages/take-foods/take-foods",
 			"style": {
 				"navigationBarTitleText": "富达供膳",

@@ -4,7 +4,10 @@ export default {
 
 	// 个人中心-设置中心菜单
 	settingList: [
-		{ icon: '', img: '/static/sz_icon.png', imageWidth: 34, imageHeight: 38, url: '/pages/set/set', title: '设置' },
+		{ icon: '', img: '', imageWidth: 34, imageHeight: 38, url: '/pages/set/set', title: '优惠券' },
+		{ icon: '', img: '', imageWidth: 34, imageHeight: 38, url: '/pages/set/set', title: '积分商城' },
+		{ icon: '', img: '', imageWidth: 34, imageHeight: 38, url: '/pages/set/set', title: '我的钱包' },
+		{ icon: '', img: '', imageWidth: 34, imageHeight: 38, url: '/pages/set/set', title: '意见反馈' },
 	],
 
 	// 设置-设置中心
@@ -15,7 +18,7 @@ export default {
 	// 个人中心-我的订单
 	orderSectionList: [
 		{
-			title: '待支付',
+			title: '待付款',
 			icon: 'iconfont icondaifukuan',
 			url: '/pages/order/order?state=0',
 			num: null
@@ -33,18 +36,25 @@ export default {
 			num: null
 		},
 		{
-			title: '待评价',
+			title: '已取消',
 			icon: 'iconfont iconpingjia',
 			url: '/pages/order/order?state=3',
+			num: null
+		},
+		{
+			title: '全部订单',
+			icon: 'iconfont icondaifukuan',
+			url: '/pages/order/order?state=0',
 			num: null
 		},
 	],
 
 	// 个人中心-积分余额
 	amountList: [
+		{ title: '积分', value: 0, url: '/pages/user/account/integral' },
 		{ title: '余额', value: 0, url: '/pages/user/account/account' },
 		{ title: '优惠券', value: 0, url: '/pages/user/coupon/coupon?type=1' },
-		{ title: '积分', value: 0, url: '/pages/user/account/integral' }
+		{ title: '卡券', value: 0, url: '/pages/user/coupon/coupon?type=1' },
 	],
 
 	// 订单状态
