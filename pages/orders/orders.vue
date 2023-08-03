@@ -11,7 +11,8 @@
 				<u-tabs-swiper name="text" :list="orderNavList" :is-scroll="false" height="100" font-size="32"
 					bg-color="#F2F7F0" active-color="#2B7365"></u-tabs-swiper>
 				<view class="order-list">
-					<view v-for="(item, index) in orderList" :key="index" class="order-item">
+					<view v-for="(item, index) in orderList" :key="index" class="order-item"
+						@tap="navTo('/pages/orders/detail')">
 						<view class="order-title">
 							<view>订单号：{{ item.orderNo }}</view>
 							<view class="status">{{ item.status | orderStatus }}</view>
@@ -129,7 +130,11 @@
 			}
 		},
 		methods: {
-
+			navTo(route) {
+				this.$mRouter.push({
+					route
+				});
+			},
 		}
 	}
 </script>

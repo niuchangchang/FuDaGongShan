@@ -10,9 +10,10 @@
 						:active-item-style="{background: '#71AD91', 'border-radius': '5px'}"></u-tabs-swiper>
 				</view>
 				<view class="diancan-list">
-					<view v-for="(item, index) in productList" :key="index" class="diancan-item">
+					<view v-for="(item, index) in productList" :key="index" class="diancan-item"
+						@click="showInfo(item)">
 						<view class="diancan-item-up">
-							<view class="diancan-item-up-left" @click="showInfo(item)"></view>
+							<view class="diancan-item-up-left"></view>
 							<view class="diancan-item-up-right">
 								<view class="diancan-item-up-right-jb">
 									<view class="diancan-item-up-right-bt">
@@ -54,6 +55,9 @@
 							<u-line-progress class="diancan-item-down-jdt" active-color="#71AD91" :percent="70"
 								height="14" inactive-color="#F2F7F0" :show-percent="false"></u-line-progress>
 						</view>
+						<view class="add">
+							<u-icon name="plus-circle-fill" color="#4D716F" size="60"></u-icon>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -64,7 +68,7 @@
 					<view class="icon">
 						<u-icon name="share" size="20"></u-icon>
 					</view>
-					<view class="icon" @close="close">
+					<view class="icon" @click="close">
 						<u-icon name="close" size="20"></u-icon>
 					</view>
 				</view>
@@ -113,7 +117,7 @@
 					</view>
 				</view>
 				<view class="info-down">
-					<view class="info-down-left">
+					<view class="info-down-left" @tap="navTo('/pages/cart/cart', 1)">
 						<u-icon name="shopping-cart" size="48"></u-icon>
 						购物车
 					</view>
@@ -253,6 +257,13 @@
 			close() {
 				this.showPopup = false
 			},
+			navTo(route, type) {
+				if (type) {
+					this.$mRouter.switchTab({ route });
+				} else {
+					this.$mRouter.push({ route });
+				}
+			},
 		}
 	};
 </script>
@@ -280,7 +291,8 @@
 			right: 14rpx;
 			display: flex;
 			gap: 10rpx;
-			.icon{
+
+			.icon {
 				width: 40rpx;
 				height: 40rpx;
 				display: flex;
@@ -479,6 +491,7 @@
 		padding: 0 40rpx 80rpx;
 
 		.diancan-item {
+			position: relative;
 			background: rgba(255, 255, 255, 1);
 			border-radius: 16rpx;
 			box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7), inset -1px -1px 0px rgba(255, 255, 255, 1), inset 1px 1px 0px rgba(255, 255, 255, 1), -3px -3px 7px rgba(255, 255, 255, 1), 3px 3px 7px rgba(113, 173, 145, 0.5);
@@ -593,6 +606,12 @@
 					width: 400rpx;
 
 				}
+			}
+
+			.add {
+				position: absolute;
+				bottom: 20rpx;
+				right: 20rpx;
 			}
 		}
 	}

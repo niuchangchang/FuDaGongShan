@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<u-navbar title="购物车" title-color="#FFFFFF" title-bold="true" back-icon-color="#FFFFFF" border-bottom="false"
+		<u-navbar  :is-back="false" title="购物车" title-color="#FFFFFF" title-bold="true" back-icon-color="#FFFFFF" border-bottom="false"
 			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"></u-navbar>
 		<content :has-top="true" :has-bottom="true">
 			<view class="cart-container">
@@ -42,7 +42,7 @@
 								合计：¥60.00
 							</view>
 						</view>
-						<view class="cart-buy">
+						<view class="cart-buy" @tap="navTo('/pages/orders/create')">
 							立即下单
 						</view>
 					</view>
@@ -94,7 +94,10 @@
 			},
 			valChange(e) {
 				console.log('当前值为: ' + e.value)
-			}
+			},
+			navTo(route) {
+				this.$mRouter.push({ route });
+			},
 		}
 	}
 </script>

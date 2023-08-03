@@ -7,7 +7,6 @@
 				<view class="public-container">
 					<view class="user-info">
 						<view class="user-info-image">
-
 						</view>
 						<view class="user-info-pv">
 							<view class="user-info-iphone">132****1244</view>
@@ -17,7 +16,7 @@
 						</view>
 					</view>
 					<view class="order-section">
-						<view v-for="(item,index) in orderSectionList" class="order-section-item">
+						<view v-for="(item,index) in orderSectionList" class="order-section-item" @tap="navTo('/pages/orders/orders')">
 							<u-icon name="photo" size="60"></u-icon>
 							<text>{{item.title}}</text>
 						</view>
@@ -60,7 +59,11 @@
 		},
 		computed: {},
 		onLoad() {},
-		methods: {}
+		methods: {
+			navTo(route) {
+				this.$mRouter.push({ route });
+			},
+		}
 	}
 </script>
 

@@ -40,9 +40,9 @@
 							<view class="">合计: ¥80.00</view>
 						</view>
 						<u-cell-group :border="false">
-							<u-cell-item title="卡券"></u-cell-item>
-							<u-cell-item title="红包" value="新版本"></u-cell-item>
-							<u-cell-item title="备注" :border-bottom="false"></u-cell-item>
+							<u-cell-item title="卡券" value="请选择"></u-cell-item>
+							<u-cell-item title="红包" value="请选择"></u-cell-item>
+							<!-- <u-cell-item title="备注" :border-bottom="false"></u-cell-item> -->
 						</u-cell-group>
 					</view>
 					<view class="price-container">
@@ -142,7 +142,7 @@
 			display: flex;
 			justify-content: space-between;
 			gap: 20rpx;
-			margin-bottom: 28rpx;
+			margin-bottom: 46rpx;
 			padding: 32rpx;
 			background: #FFFFFF;
 			border-radius: 10px;
@@ -206,7 +206,7 @@
 			background: #FFFFFF;
 			border-radius: 10px;
 			box-shadow: 0px 10px 40px rgba(26, 77, 160, 0.16);
-			margin-bottom: 28rpx;
+			margin-bottom: 46rpx;
 
 			.sku-title {
 				font-size: 40rpx;
@@ -278,7 +278,7 @@
 			display: flex;
 			flex-direction: column;
 			padding: 32rpx;
-			margin-bottom: 28rpx;
+			margin-bottom: 46rpx;
 			background: #FFFFFF;
 			border-radius: 10px;
 			box-shadow: 0px 10px 40px rgba(26, 77, 160, 0.16);
@@ -288,6 +288,7 @@
 			display: flex;
 			flex-direction: column;
 			padding: 32rpx;
+			margin-bottom: 140rpx;
 			background: #FFFFFF;
 			border-radius: 10px;
 			box-shadow: 0px 10px 40px rgba(26, 77, 160, 0.16);
@@ -299,6 +300,7 @@
 			justify-content: space-between;
 			align-items: center;
 			font-size: 40rpx;
+			background: #FFFFFF;
 
 			text {
 				padding-left: 40rpx;

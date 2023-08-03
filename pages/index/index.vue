@@ -28,7 +28,7 @@
 						<view class="jrtj">今日推荐</view>
 					</view>
 					<view class="right">
-						<view class="waimai">
+						<view class="waimai" @tap="navTo('/pages/menu/menu', 1)">
 							<view class="navigators-left">
 								<view class="dazi">外卖点餐</view>
 								<view class="xiaozi">快递送达</view>
@@ -83,7 +83,7 @@
 		data() {
 			return {
 				list: this.$mConstDataConfig.tabbarList,
-				show: true,
+				show: false,
 			}
 
 		},
@@ -103,50 +103,13 @@
 		// 		});
 		// },
 		methods: {
-			takein() {
-				this.$store.commit('SET_ORDER_TYPE', 'takein')
-				uni.switchTab({
-					url: '/pages/menu/menu'
-				})
-			},
-			takeout() {
-				if (!this.isLogin) {
-					uni.navigateTo({
-						url: '/pages/login/login'
-					})
-					return
+			navTo(route, type) {
+				if (type) {
+					this.$mRouter.switchTab({ route });
+				} else {
+					this.$mRouter.push({ route });
 				}
-				uni.navigateTo({
-					url: "/pages/address/address?is_choose=true"
-				})
 			},
-			integrals() {
-				if (!this.isLogin) {
-					uni.navigateTo({
-						url: '/pages/login/login'
-					})
-					return
-				}
-				uni.navigateTo({
-					url: '/pages/integrals/integrals'
-				})
-			},
-			packages() {
-				uni.navigateTo({
-					url: '/pages/packages/index'
-				})
-			},
-			memberCode() {
-				if (!this.isLogin) {
-					uni.navigateTo({
-						url: '/pages/login/login'
-					})
-					return
-				}
-				uni.navigateTo({
-					url: '/pages/mine/member-code'
-				})
-			}
 		}
 	}
 </script>

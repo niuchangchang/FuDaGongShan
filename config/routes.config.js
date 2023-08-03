@@ -24,10 +24,6 @@ export default {
 		name: '首页',
 		path: '/pages/index/index'
 	},
-	product: {
-		name: '商城',
-		path: '/pages/product/list'
-	},
 	login: {
 		name: '登录',
 		path: '/pages/public/login'

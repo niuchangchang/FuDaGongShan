@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<u-navbar title="我的订单" title-color="#FFFFFF" title-bold="true" back-icon-color="#FFFFFF" :border-bottom="false"
+		<u-navbar title="订单详情" title-color="#FFFFFF" title-bold="true" back-icon-color="#FFFFFF" :border-bottom="false"
 			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"></u-navbar>
 		<content :has-bottom="false">
 			<view class="order-container">
