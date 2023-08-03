@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import App from './App'
-import api from './api'
 import util from './common/util'
 import store from './store';
 
@@ -80,7 +79,6 @@ $mRouter.beforeEach((navType, to) => {
 App.mpType = 'app'
 
 Vue.prototype.$store = store
-Vue.prototype.$api = api
 Vue.prototype.$util = util
 
 // 挂载全局自定义方法

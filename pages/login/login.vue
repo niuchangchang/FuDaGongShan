@@ -12,7 +12,7 @@
 			<view class="intro">
 				<view class="intro-logo"></view>
 				<view class="wx-logo">
-					<image src="/static/images/mine/wechat.png"></image>
+					<image src="/static/images/wechat.png"></image>
 				</view>
 				<text class="text-login">微信手机号授权登录</text>
 				<view class="shouquan">
@@ -38,7 +38,6 @@
 </template>
 
 <script>
-	import Member from '@/api/member'
 	import {
 		mapMutations
 	} from 'vuex'
@@ -55,55 +54,6 @@
 		},
 		methods: {
 			...mapMutations(['SET_MEMBER']),
-			async getUserInfo(e) {
-				const {
-					errMsg,
-					userInfo
-				} = e.detail
-				if (errMsg !== "getUserInfo:ok") {
-					uni.showModal({
-						title: '提示',
-						content: '您取消了授权登录，请重新授权',
-						showCancel: false
-					})
-
-					//没有授权登录就用默认的用户信息
-					this.SET_MEMBER(Member)
-					uni.navigateBack()
-
-					return
-				} else {
-					const {
-						avatarUrl: avatar,
-						city,
-						country,
-						gender,
-						nickName: nickname,
-						province
-					} = userInfo
-					const member = Object.assign(Member, {
-						avatar,
-						city,
-						country,
-						gender,
-						nickname,
-						province
-					})
-					this.SET_MEMBER(member)
-
-					uni.navigateBack()
-				}
-			},
-			login() {
-				this.SET_MEMBER(Member)
-				uni.navigateBack()
-			},
-			checkboxChange(n) {
-				console.log('change', n);
-			},
-			close() {
-				this.show = false
-			}
 		}
 	}
 </script>

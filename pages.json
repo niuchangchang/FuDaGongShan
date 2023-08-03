@@ -6,6 +6,11 @@
 				"navigationStyle": "custom"
 			}
 		}, {
+			"path": "pages/index/index_copy",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
 			"path": "pages/login/login",
 			"style": {
 				"navigationStyle": "custom",
@@ -46,106 +51,6 @@
 			"style": {
 				"navigationStyle": "custom"
 			}
-		}, {
-			"path": "pages/take-foods/take-foods",
-			"style": {
-				"navigationBarTitleText": "富达供膳",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#ffffff"
-			}
-		}, {
-			"path": "pages/pay/pay",
-			"style": {
-				"navigationBarTitleText": "富达供膳",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#ffffff"
-			}
-		}, {
-			"path": "pages/packages/index",
-			"style": {
-				"navigationBarTitleText": "券包商品",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#ffffff",
-				"enablePullDownRefresh": true
-			}
-		}, {
-			"path": "pages/packages/detail",
-			"style": {
-				"navigationBarTitleText": "购买劵包",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#ffffff",
-				"enablePullDownRefresh": true
-			}
-		}, {
-			"path": "pages/balance/balance",
-			"style": {
-				"navigationBarTitleText": "会员储值",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#ffffff"
-			}
-		}, {
-			"path": "pages/address/address",
-			"style": {
-				"navigationBarTitleText": "我的地址",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#ffffff"
-			}
-		}, {
-			"path": "pages/address/add",
-			"style": {
-				"navigationBarTitleText": "富达供膳",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#ffffff"
-			}
-		}, {
-			"path": "pages/integrals/integrals",
-			"style": {
-				"navigationStyle": "custom",
-				"onReachBottomDistance": 50
-			}
-		}, {
-			"path": "pages/mine/member-code",
-			"style": {
-				"navigationBarTitleText": "会员码",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#ffffff"
-			}
-		}, {
-			"path": "pages/coupons/coupons",
-			"style": {
-				"navigationBarTitleText": "我的卡券",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#ffffff"
-			}
-		}, {
-			"path": "pages/integrals/flow",
-			"style": {
-				"navigationBarTitleText": "积分明细",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#ffffff"
-			}
-		}, {
-			"path": "pages/integrals/detail",
-			"style": {
-				"navigationBarTitleText": "兑换详情",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#ffffff"
-			}
-		}, {
-			"path": "pages/review/review",
-			"style": {
-				"navigationBarTitleText": "富达供膳",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#ffffff"
-			}
-		}, {
-			"path": "pages/giftcard/giftcard",
-			"style": {
-				"navigationBarTitleText": "礼品卡列表",
-				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#ffffff",
-				"disableScroll": true
-			}
 		}
 	],
 	"globalStyle": {
@@ -160,7 +65,7 @@
 		}, {
 			"pagePath": "pages/menu/menu"
 		}, {
-			"pagePath": "pages/take-foods/take-foods"
+			"pagePath": "pages/index/index_copy"
 		}, {
 			"pagePath": "pages/cart/cart"
 		}, {
