@@ -6,7 +6,7 @@
 				<view class="entrance">
 					<view class="left">
 						<text class="hi">Hi，您好</text>
-						<text class="huanying">欢迎来到复达供膳</text>
+						<text class="huanying">欢迎来到青与食堂</text>
 					</view>
 					<view class="right">
 						<view class="yupiao">

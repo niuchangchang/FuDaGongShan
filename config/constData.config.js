@@ -1,6 +1,6 @@
 export default {
 	// app应用名称
-	appName: '复达供膳',
+	appName: '青与食堂',
 
 	// 个人中心-设置中心菜单
 	settingList: [
