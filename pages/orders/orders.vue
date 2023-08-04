@@ -8,61 +8,69 @@
 					<u-search placeholder="请输入订单号" v-model="keyword" bg-color="#FFFFFF" height="80"
 						:show-action="false"></u-search>
 				</view>
-				<u-tabs-swiper name="text" :list="orderNavList" :is-scroll="false" height="100" font-size="32"
+				<u-tabs-swiper ref="tabs1" name="text" :list="orderNavList" :is-scroll="false" :current="current" @change="tabsChange" height="100" font-size="32"
 					bg-color="#F2F7F0" active-color="#2B7365"></u-tabs-swiper>
-				<view class="order-list">
-					<view v-for="(item, index) in orderList" :key="index" class="order-item"
-						@tap="navTo('/pages/orders/detail')">
-						<view class="order-title">
-							<view>订单号：{{ item.orderNo }}</view>
-							<view class="status">{{ item.status | orderStatus }}</view>
-						</view>
-						<view class="sku-list">
-							<view v-for="(sku, skuIndex) in item.skuList" :key="skuIndex" class="sku-item">
-								<image :src="sku.img"></image>
-								<view class="sku-content">
-									<view class="title">{{ sku.title }}</view>
-									<view class="content">
-										<view class="content-price">
-											<text>¥{{ sku.current }}</text>
-											<text>¥{{ sku.price }}</text>
+				<!--订单列表-->
+					<swiper :current="swiperCurrent"  @transition="transition" @animationfinish="animationfinish" class="swiper-box" duration="300">
+						<swiper-item class="tab-content" v-for="(tabItem, tabIndex) in orderNavList" :key="tabIndex">
+							<scroll-view class="order-list" scroll-y @scrolltolower="onreachBottom">
+								<!-- <view class="order-list"> -->
+									<view v-for="(item, index) in orderList" :key="index" class="order-item"
+										@tap="navTo('/pages/orders/detail')">
+										<view class="order-title">
+											<view>订单号：{{ item.orderNo }}</view>
+											<view class="status">{{ item.status | orderStatus }}</view>
 										</view>
-										<view class="content-num">x {{ sku.num }}</view>
+										<view class="sku-list">
+											<view v-for="(sku, skuIndex) in item.skuList" :key="skuIndex" class="sku-item">
+												<image :src="sku.img"></image>
+												<view class="sku-content">
+													<view class="title">{{ sku.title }}</view>
+													<view class="content">
+														<view class="content-price">
+															<text>¥{{ sku.current }}</text>
+															<text>¥{{ sku.price }}</text>
+														</view>
+														<view class="content-num">x {{ sku.num }}</view>
+													</view>
+												</view>
+											</view>
+										</view>
+										<!-- 待付款 -->
+										<view v-if="item.status === 1" class="button-group">
+											<u-button type="info"
+												:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
+											<u-button type="info"
+												:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">取消订单</u-button>
+											<u-button type="info"
+												:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">付款</u-button>
+										</view>
+										<!-- 待配送 -->
+										<view v-if="item.status === 2" class="button-group">
+											<u-button type="info"
+												:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
+											<u-button type="info"
+												:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">查看订单</u-button>
+											<u-button type="info"
+												:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">付款</u-button>
+										</view>
+										<!-- 已完成 -->
+										<view v-if="item.status === 3" class="button-group">
+											<u-button type="info"
+												:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
+											<u-button type="info"
+												:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">删除订单</u-button>
+											<u-button type="info"
+												:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">查看订单</u-button>
+											<u-button type="info"
+												:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">待评价</u-button>
+										</view>
 									</view>
-								</view>
-							</view>
-						</view>
-						<!-- 待付款 -->
-						<view v-if="item.status === 1" class="button-group">
-							<u-button type="info"
-								:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
-							<u-button type="info"
-								:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">取消订单</u-button>
-							<u-button type="info"
-								:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">付款</u-button>
-						</view>
-						<!-- 待配送 -->
-						<view v-if="item.status === 2" class="button-group">
-							<u-button type="info"
-								:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
-							<u-button type="info"
-								:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">查看订单</u-button>
-							<u-button type="info"
-								:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">付款</u-button>
-						</view>
-						<!-- 已完成 -->
-						<view v-if="item.status === 3" class="button-group">
-							<u-button type="info"
-								:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
-							<u-button type="info"
-								:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">删除订单</u-button>
-							<u-button type="info"
-								:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">查看订单</u-button>
-							<u-button type="info"
-								:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">待评价</u-button>
-						</view>
-					</view>
-				</view>
+								<!-- </view> -->
+							</scroll-view>
+						</swiper-item>
+				</swiper>
+				
 			</view>
 		</content>
 	</view>
@@ -74,6 +82,8 @@
 		components: {},
 		data() {
 			return {
+				current: 0,
+				swiperCurrent: 0,
 				orderNavList: this.$mConstDataConfig.orderNavList,
 				orderList: [{
 					orderId: 1,
@@ -135,6 +145,27 @@
 					route
 				});
 			},
+			// tabs通知swiper切换
+			tabsChange(index) {
+				this.swiperCurrent = index;
+			},
+			// swiper-item左右移动，通知tabs的滑块跟随移动
+			transition(e) {
+				let dx = e.detail.dx;
+				this.$refs.tabs1.setDx(dx);
+			},
+			// 由于swiper的内部机制问题，快速切换swiper不会触发dx的连续变化，需要在结束时重置状态
+			// swiper滑动结束，分别设置tabs和swiper的状态
+			animationfinish(e) {
+				let current = e.detail.current;
+				this.$refs.tabs1.setFinishCurrent(current);
+				this.swiperCurrent = current;
+				this.current = current;
+			},
+			// scroll-view到底部加载更多
+			onreachBottom() {
+				
+			}
 		}
 	}
 </script>
@@ -147,12 +178,20 @@
 		.search-container {
 			padding: 0 30rpx;
 		}
+		
+		.swiper-box {
+			height: calc(100% - 210rpx);
+		}
+		
+		.uni-swiper-item {
+			height: auto;
+		}
 
 		.order-list {
 			display: flex;
 			flex-direction: column;
 			gap: 34rpx;
-			height: calc(100% - 210rpx);
+			height: 100%;
 			padding: 30rpx;
 			overflow: auto;
 

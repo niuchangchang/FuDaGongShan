@@ -88,8 +88,8 @@
 
 		},
 		computed: {
-			...mapState(['member']),
-			...mapGetters(['isLogin'])
+			...mapState(['userInfo']),
+			...mapGetters(['hasLogin'])
 		},
 		// async onLoad() {
 		// 	await this.$http

@@ -247,6 +247,9 @@
 			}
 		},
 		async onLoad() {},
+		onShow() {
+			this.showPopup = false
+		},
 		computed: {
 
 		},
