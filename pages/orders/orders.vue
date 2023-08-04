@@ -8,12 +8,12 @@
 					<u-search placeholder="请输入订单号" v-model="keyword" bg-color="#FFFFFF" height="80"
 						:show-action="false"></u-search>
 				</view>
-				<u-tabs-swiper name="text" :list="orderNavList" :is-scroll="false" height="100" font-size="32"
+				<u-tabs-swiper ref="tabs1" name="text" :list="orderNavList" :is-scroll="false" :current="current" @change="tabsChange" height="100" font-size="32"
 					bg-color="#F2F7F0" active-color="#2B7365"></u-tabs-swiper>
 				<!--订单列表-->
-					<swiper class="swiper-box" duration="300" @change="changeTab">
-						<swiper-item class="tab-content" v-for="(tabItem, tabIndex) in navList" :key="tabIndex">
-							<scroll-view class="order-list" scroll-y @scrolltolower="getMoreOrderList">
+					<swiper :current="swiperCurrent"  @transition="transition" @animationfinish="animationfinish" class="swiper-box" duration="300">
+						<swiper-item class="tab-content" v-for="(tabItem, tabIndex) in orderNavList" :key="tabIndex">
+							<scroll-view class="order-list" scroll-y @scrolltolower="onreachBottom">
 								<!-- <view class="order-list"> -->
 									<view v-for="(item, index) in orderList" :key="index" class="order-item"
 										@tap="navTo('/pages/orders/detail')">
@@ -82,6 +82,8 @@
 		components: {},
 		data() {
 			return {
+				current: 0,
+				swiperCurrent: 0,
 				orderNavList: this.$mConstDataConfig.orderNavList,
 				orderList: [{
 					orderId: 1,
@@ -143,6 +145,27 @@
 					route
 				});
 			},
+			// tabs通知swiper切换
+			tabsChange(index) {
+				this.swiperCurrent = index;
+			},
+			// swiper-item左右移动，通知tabs的滑块跟随移动
+			transition(e) {
+				let dx = e.detail.dx;
+				this.$refs.tabs1.setDx(dx);
+			},
+			// 由于swiper的内部机制问题，快速切换swiper不会触发dx的连续变化，需要在结束时重置状态
+			// swiper滑动结束，分别设置tabs和swiper的状态
+			animationfinish(e) {
+				let current = e.detail.current;
+				this.$refs.tabs1.setFinishCurrent(current);
+				this.swiperCurrent = current;
+				this.current = current;
+			},
+			// scroll-view到底部加载更多
+			onreachBottom() {
+				
+			}
 		}
 	}
 </script>

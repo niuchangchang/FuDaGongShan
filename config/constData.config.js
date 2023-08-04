@@ -119,10 +119,10 @@ export default {
 			pagePath: "/pages/menu/menu"
 		},
 		{
-			iconPath: "https://cdn.uviewui.com/uview/common/min_button.png",
-			selectedIconPath: "https://cdn.uviewui.com/uview/common/min_button_select.png",
+			iconPath: "plus-circle-fill",
+			selectedIconPath: "plus-circle-fill",
 			midButton: true,
-			customIcon: false,
+			pagePath: "/pages/index/index_copy"
 		},
 		{
 			iconPath: "shopping-cart",

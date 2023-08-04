@@ -63,12 +63,12 @@
 				<view class="divi"></view>
 				<view class="erweima">
 				</view>
-				<view class="close-button">
+				<view class="close-button" @click="close">
 					关闭
 				</view>
 			</view>
 		</u-popup>
-		<u-tabbar :list="list" :mid-button="true" active-color="#2AB07D" inactive-color="#C0C4CC"></u-tabbar>
+		<u-tabbar :list="list" @change="tabChange" :mid-button="true" active-color="#2AB07D" inactive-color="#C0C4CC"></u-tabbar>
 	</view>
 </template>
 
@@ -83,7 +83,7 @@
 		data() {
 			return {
 				list: this.$mConstDataConfig.tabbarList,
-				show: false,
+				show: true,
 			}
 
 		},
@@ -102,6 +102,9 @@
 		// 		.catch(err => {
 		// 		});
 		// },
+		onShow() {
+			this.show = true
+		},
 		methods: {
 			navTo(route, type) {
 				if (type) {
@@ -109,6 +112,15 @@
 				} else {
 					this.$mRouter.push({ route });
 				}
+			},
+			tabChange(index) {
+				console.log('===index', index)
+				if(index === 2) {
+					this.show = true
+				}
+			},
+			close() {
+				this.show = false
 			},
 		}
 	}

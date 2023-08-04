@@ -33,9 +33,9 @@
 				// console.log('====tabbar', tabbar)
 				if(hasTop) {
 					if(hasBottom) {
-						styleObj = `top: ${44 + custom.top - 1}px; height: calc(100% - ${44 + custom.top + tabbar}px);`
+						styleObj = `top: ${44 + custom.top - 6}px; height: calc(100% - ${44 + custom.top + tabbar - 6}px);`
 					} else {
-						styleObj = `top: ${44 + custom.top - 1}px; height: calc(100% - ${44 + custom.top}px);`
+						styleObj = `top: ${44 + custom.top - 6}px; height: calc(100% - ${44 + custom.top - 6}px);`
 					}
 				} else {
 					if(hasBottom) {
