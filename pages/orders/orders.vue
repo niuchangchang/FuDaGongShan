@@ -10,59 +10,67 @@
 				</view>
 				<u-tabs-swiper name="text" :list="orderNavList" :is-scroll="false" height="100" font-size="32"
 					bg-color="#F2F7F0" active-color="#2B7365"></u-tabs-swiper>
-				<view class="order-list">
-					<view v-for="(item, index) in orderList" :key="index" class="order-item"
-						@tap="navTo('/pages/orders/detail')">
-						<view class="order-title">
-							<view>订单号：{{ item.orderNo }}</view>
-							<view class="status">{{ item.status | orderStatus }}</view>
-						</view>
-						<view class="sku-list">
-							<view v-for="(sku, skuIndex) in item.skuList" :key="skuIndex" class="sku-item">
-								<image :src="sku.img"></image>
-								<view class="sku-content">
-									<view class="title">{{ sku.title }}</view>
-									<view class="content">
-										<view class="content-price">
-											<text>¥{{ sku.current }}</text>
-											<text>¥{{ sku.price }}</text>
+				<!--订单列表-->
+					<swiper class="swiper-box" duration="300" @change="changeTab">
+						<swiper-item class="tab-content" v-for="(tabItem, tabIndex) in navList" :key="tabIndex">
+							<scroll-view class="order-list" scroll-y @scrolltolower="getMoreOrderList">
+								<!-- <view class="order-list"> -->
+									<view v-for="(item, index) in orderList" :key="index" class="order-item"
+										@tap="navTo('/pages/orders/detail')">
+										<view class="order-title">
+											<view>订单号：{{ item.orderNo }}</view>
+											<view class="status">{{ item.status | orderStatus }}</view>
 										</view>
-										<view class="content-num">x {{ sku.num }}</view>
+										<view class="sku-list">
+											<view v-for="(sku, skuIndex) in item.skuList" :key="skuIndex" class="sku-item">
+												<image :src="sku.img"></image>
+												<view class="sku-content">
+													<view class="title">{{ sku.title }}</view>
+													<view class="content">
+														<view class="content-price">
+															<text>¥{{ sku.current }}</text>
+															<text>¥{{ sku.price }}</text>
+														</view>
+														<view class="content-num">x {{ sku.num }}</view>
+													</view>
+												</view>
+											</view>
+										</view>
+										<!-- 待付款 -->
+										<view v-if="item.status === 1" class="button-group">
+											<u-button type="info"
+												:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
+											<u-button type="info"
+												:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">取消订单</u-button>
+											<u-button type="info"
+												:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">付款</u-button>
+										</view>
+										<!-- 待配送 -->
+										<view v-if="item.status === 2" class="button-group">
+											<u-button type="info"
+												:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
+											<u-button type="info"
+												:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">查看订单</u-button>
+											<u-button type="info"
+												:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">付款</u-button>
+										</view>
+										<!-- 已完成 -->
+										<view v-if="item.status === 3" class="button-group">
+											<u-button type="info"
+												:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
+											<u-button type="info"
+												:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">删除订单</u-button>
+											<u-button type="info"
+												:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">查看订单</u-button>
+											<u-button type="info"
+												:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">待评价</u-button>
+										</view>
 									</view>
-								</view>
-							</view>
-						</view>
-						<!-- 待付款 -->
-						<view v-if="item.status === 1" class="button-group">
-							<u-button type="info"
-								:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
-							<u-button type="info"
-								:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">取消订单</u-button>
-							<u-button type="info"
-								:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">付款</u-button>
-						</view>
-						<!-- 待配送 -->
-						<view v-if="item.status === 2" class="button-group">
-							<u-button type="info"
-								:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
-							<u-button type="info"
-								:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">查看订单</u-button>
-							<u-button type="info"
-								:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">付款</u-button>
-						</view>
-						<!-- 已完成 -->
-						<view v-if="item.status === 3" class="button-group">
-							<u-button type="info"
-								:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
-							<u-button type="info"
-								:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">删除订单</u-button>
-							<u-button type="info"
-								:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">查看订单</u-button>
-							<u-button type="info"
-								:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">待评价</u-button>
-						</view>
-					</view>
-				</view>
+								<!-- </view> -->
+							</scroll-view>
+						</swiper-item>
+				</swiper>
+				
 			</view>
 		</content>
 	</view>
@@ -147,12 +155,20 @@
 		.search-container {
 			padding: 0 30rpx;
 		}
+		
+		.swiper-box {
+			height: calc(100% - 210rpx);
+		}
+		
+		.uni-swiper-item {
+			height: auto;
+		}
 
 		.order-list {
 			display: flex;
 			flex-direction: column;
 			gap: 34rpx;
-			height: calc(100% - 210rpx);
+			height: 100%;
 			padding: 30rpx;
 			overflow: auto;
 
