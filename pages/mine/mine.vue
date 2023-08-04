@@ -17,7 +17,7 @@
 					</view>
 					<view class="order-section">
 						<view v-for="(item,index) in orderSectionList" class="order-section-item" @tap="navTo('/pages/orders/orders')">
-							<u-icon name="photo" size="60"></u-icon>
+							<i class="iconfont" :class="[item.icon]" />
 							<text>{{item.title}}</text>
 						</view>
 					</view>
@@ -156,6 +156,11 @@
 			padding: 0 40rpx;
 			border-radius: 5px;
 			background: #FFFFFF;
+		}
+	}
+	.iconfont {
+		&::before {
+			font-size: 40rpx;
 		}
 	}
 </style>

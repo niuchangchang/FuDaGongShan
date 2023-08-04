@@ -19,31 +19,31 @@ export default {
 	orderSectionList: [
 		{
 			title: '待付款',
-			icon: 'iconfont icondaifukuan',
+			icon: 'iconfont icon-qianbao',
 			url: '/pages/order/order?state=0',
 			num: null
 		},
 		{
 			title: '待配送',
-			icon: 'iconfont iconshouye',
+			icon: 'iconfont icon-wuliu',
 			url: '/pages/order/order?state=1',
 			num: null
 		},
 		{
 			title: '已完成',
-			icon: 'iconfont iconyishouhuo',
+			icon: 'iconfont icon-wancheng',
 			url: '/pages/order/order?state=2',
 			num: null
 		},
 		{
 			title: '已取消',
-			icon: 'iconfont iconpingjia',
+			icon: 'iconfont icon-shousuo',
 			url: '/pages/order/order?state=3',
 			num: null
 		},
 		{
 			title: '全部订单',
-			icon: 'iconfont icondaifukuan',
+			icon: 'iconfont icon-wenjian',
 			url: '/pages/order/order?state=0',
 			num: null
 		},
