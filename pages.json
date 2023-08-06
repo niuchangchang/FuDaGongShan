@@ -42,6 +42,11 @@
 				"navigationStyle": "custom"
 			}
 		}, {
+			"path": "pages/orders/pay",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
 			"path": "pages/menu/menu",
 			"style": {
 				"navigationStyle": "custom"

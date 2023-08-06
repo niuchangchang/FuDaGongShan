@@ -77,7 +77,7 @@
 				</view>
 				<view class="button-group">
 					<text>实付款：¥80.00</text>
-					<view class="buy-button">去结算</view>
+					<view class="buy-button" @tap="navTo('/pages/orders/pay')">去结算</view>
 				</view>
 			</view>
 		</content>
@@ -120,6 +120,9 @@
 			// 选中某个单选框时，由radio时触发
 			radioChange(e) {
 				console.log(e);
+			},
+			navTo(route) {
+				this.$mRouter.push({ route });
 			},
 		}
 	};
