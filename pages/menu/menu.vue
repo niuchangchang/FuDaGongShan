@@ -11,25 +11,27 @@
 				</view>
 				<view class="diancan-list">
 					<view v-for="(item, index) in productList" :key="index" class="diancan-item"
-						@click="showInfo(item)">
+						@click="showInfo(item,index)">
 						<view class="diancan-item-up">
-							<view class="diancan-item-up-left"></view>
+							<view class="diancan-item-up-left">
+								<image :src="getImageUrl(item.imageCover)"></image>
+							</view>
 							<view class="diancan-item-up-right">
 								<view class="diancan-item-up-right-jb">
 									<view class="diancan-item-up-right-bt">
 										{{item.title}}
 									</view>
 									<view class="diancan-item-up-right-jg">
-										￥{{item.price}}
+										￥{{item.pricesFormat}}
 									</view>
 								</view>
 								<view class="diancan-item-up-right-js">
-									{{item.jieshao}}
+									{{item.remark}}
 								</view>
 								<view class="diancan-item-up-right-mj">
-									<view v-for="(manjianitem, manjianindex) in item.manjianlist" :key="manjianindex"
+									<view v-for="(manjianitem, manjianindex) in item.couponsList" :key="manjianindex"
 										class="manjian-item">
-										{{manjianitem.name}}
+										{{manjianitem}}
 									</view>
 								</view>
 								<view class="diancan-item-up-right-jk">
@@ -37,13 +39,13 @@
 										健康指数
 									</view>
 									<view class="diancan-item-up-right-jk-down">
-										<view v-for="(jkitem,jkindex) in item.jklist" :key="jkindex"
+										<view v-for="(jkitem,jkindex) in item.health" :key="jkindex"
 											class="jk-down-item">
 											<view class="jk-down-item-up">
-												{{jkitem.value }}
+												{{jkitem.key }}
 											</view>
 											<view class="jk-down-item-down">
-												{{jkitem.name}}
+												{{jkitem.value}}
 											</view>
 										</view>
 									</view>
@@ -51,7 +53,7 @@
 							</view>
 						</view>
 						<view class="diancan-item-down">
-							<text class="diancan-item-down-label">推荐度 {{item.tuijiansu}}%</text>
+							<text class="diancan-item-down-label">推荐度 {{item.remNumber}}%</text>
 							<u-line-progress class="diancan-item-down-jdt" active-color="#71AD91" :percent="70"
 								height="14" inactive-color="#F2F7F0" :show-percent="false"></u-line-progress>
 						</view>
@@ -81,38 +83,40 @@
 							</view>
 						</view>
 						<view class="info-center-mj">
-							<view v-for="(manjianitem, manjianindex) in info.manjianlist" :key="manjianindex"
+							<view v-for="(manjianitem, manjianindex) in info.couponsList" :key="manjianindex"
 								class="info-center-manjian">
-								{{manjianitem.name}}
+								{{manjianitem}}
 							</view>
 						</view>
 						<view class="info-center-jg">
-							￥{{info.price}}/份
+							￥{{info.pricesFormat}}/份
 						</view>
 						<view class="info-center-jk">
 							<view class="info-center-jk-up">
 								健康指数
 							</view>
 							<view class="info-center-item-up-jk-down">
-								<view v-for="(jkitem,jkindex) in info.jklist" :key="jkindex"
+								<view v-for="(jkitem,jkindex) in info.health" :key="jkindex"
 									class="info-center-jk-down-item">
 									<view class="info-center-jk-down-item-up">
-										{{jkitem.value }}
+										{{jkitem.key }}
 									</view>
 									<view class="info-center-jk-down-item-down">
-										{{jkitem.name}}
+										{{jkitem.value}}
 									</view>
 								</view>
 							</view>
 						</view>
 						<view class="info-center-tjd">
-							<text class="info-center-label">推荐度 {{info.tuijiansu}}%</text>
+							<text class="info-center-label">推荐度 {{info.remNumber}}%</text>
 							<u-line-progress class="info-center-jdt" active-color="#71AD91" :percent="70" height="14"
 								inactive-color="#F2F7F0" :show-percent="false"></u-line-progress>
 						</view>
 						<view class="info-center-js">
 							<text>详细介绍</text>
-							<view class="info-center-js-content"></view>
+							<view class="info-center-js-content">
+								{{info.contents}}
+							</view>
 						</view>
 					</view>
 				</view>
@@ -137,116 +141,81 @@
 </template>
 
 <script>
+	import { productCategoryUrl,productUrl } from '@/api/url';
+	import indexConfig from '@/config/index.config';
 	export default {
 		components: {},
 		data() {
 			return {
 				list: this.$mConstDataConfig.tabbarList,
-				swiperlist: [{
-					name: '上榜餐厅'
-				}, {
-					name: '多年老店'
-				}, {
-					name: '人气餐厅',
-					// count: 5
-				}, {
-					name: '人气',
-				}],
+				swiperlist: [],
 				showPopup: false,
 				info: {
 					title: '藕片',
 					price: 12.0,
-					jieshao: '菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍...',
-					manjianlist: [{
-						name: '20减3 40减7'
-					}, {
-						name: '新客减4'
-					}],
-					jklist: [{
-						name: '千卡',
+					pricesFormat: 20,
+					remark: '菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍...',
+					couponsList: ['20减3 40减7', '新客减4'],
+					health: [{
+						key: '千卡',
 						value: '114'
 					}, {
-						name: '千克',
+						key: '千克',
 						value: '1'
 					}],
-					tuijiansu: 80
+					remNumber: 80
 				},
 				productList: [{
 						title: '藕片',
 						price: 12.0,
-						jieshao: '菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍...',
-						manjianlist: [{
-							name: '20减3 40减7'
-						}, {
-							name: '新客减4'
-						}],
-						jklist: [{
-							name: '千卡',
+						pricesFormat: 20,
+						remark: '菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍...',
+						couponsList: ['20减3', '40减7', '新客减4'],
+						health: [{
+							key: '千卡',
 							value: '114'
 						}, {
-							name: '千克',
+							key: '千克',
 							value: '1'
 						}],
-						tuijiansu: 80
-					},
-					{
-						title: '藕片1',
-						price: 12.0,
-						jieshao: '菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍...',
-						manjianlist: [{
-							name: '20减3 40减7'
-						}, {
-							name: '新客减4'
-						}],
-						jklist: [{
-							name: '千卡',
-							value: '114'
-						}, {
-							name: '千克',
-							value: '1'
-						}],
-						tuijiansu: 80
-					},
-					{
-						title: '藕片2',
-						price: 12.0,
-						jieshao: '菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍...',
-						manjianlist: [{
-							name: '20减3 40减7'
-						}, {
-							name: '新客减4'
-						}],
-						jklist: [{
-							name: '千卡',
-							value: '114'
-						}, {
-							name: '千克',
-							value: '1'
-						}],
-						tuijiansu: 80
-					},
-					{
-						title: '藕片3',
-						price: 12.0,
-						jieshao: '菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍...',
-						manjianlist: [{
-							name: '20减3 40减7'
-						}, {
-							name: '新客减4'
-						}],
-						jklist: [{
-							name: '千卡',
-							value: '114'
-						}, {
-							name: '千克',
-							value: '1'
-						}],
-						tuijiansu: 80
+						remNumber: 80
 					}
 				]
 			}
 		},
-		async onLoad() {},
+		async onLoad() {
+			await this.$http
+				.post(`${productCategoryUrl}`, {
+					// pageNumber: 1,
+					// pageSize: 10,
+				})
+				.then(async r => {
+					//console.log(r);
+					const cArr = [];
+					r.data.forEach((item, index) => {
+					  cArr.push({
+							name: item.title,
+							id:item.id
+						})
+					});
+					this.$data.swiperlist=cArr;
+				})
+				.catch(err => {
+				});
+				
+			await this.$http
+				.post(`${productUrl}`, {
+					 page: 1,
+					 limit: 20,
+				})
+				.then(async r => {
+					console.log(r.data);
+					
+					this.$data.productList=r.data;
+				})
+				.catch(err => {
+				});
+		},
 		onShow() {
 			this.showPopup = false
 		},
@@ -254,7 +223,9 @@
 
 		},
 		methods: {
-			showInfo(item) {
+			showInfo(item,index) {
+				console.log(index)
+				this.$data.info = this.$data.productList[index];
 				this.showPopup = true
 			},
 			close() {
@@ -267,6 +238,10 @@
 					this.$mRouter.push({ route });
 				}
 			},
+			//拼接图片地址，临时使用需要统一整理为公用函数
+			getImageUrl(image) {
+			      return indexConfig.fileUrl + image;
+			    },
 		}
 	};
 </script>
@@ -424,7 +399,7 @@
 					width: 100%;
 					height: 900rpx;
 					margin-top: 20rpx;
-					background: url(https://img.js.design/assets/img/646ad8d90c416ea114c76135.png#75b80287004e87b795f79cfeb9fc631b);
+					// background: url(https://img.js.design/assets/img/646ad8d90c416ea114c76135.png#75b80287004e87b795f79cfeb9fc631b);
 					background-size: 100% 100%;
 				}
 			}
@@ -507,9 +482,15 @@
 
 				.diancan-item-up-left {
 					width: 264rpx;
-					height: 290rpx;
-					background: url(https://img.js.design/assets/img/62e7b277b3784b2dc60dbcd2.png);
+					height: 264rpx;
+					// background: url(https://img.js.design/assets/img/62e7b277b3784b2dc60dbcd2.png);
 					border-radius: 20rpx;
+					overflow: hidden;
+					
+					image {
+						width: 100%;
+						height: 100%;
+					}
 				}
 
 				.diancan-item-up-right {

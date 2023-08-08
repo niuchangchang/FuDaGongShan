@@ -26,6 +26,9 @@
 				<view class="navigators">
 					<view class="left">
 						<view class="jrtj">今日推荐</view>
+						<view v-for="(taday,tindex) in pagedata.tadayProduct" :key="tindex" class="pic">
+							<image :src="getImageUrl(taday.imageCover)"></image>
+						</view>
 					</view>
 					<view class="right">
 						<view class="waimai" @tap="navTo('/pages/menu/menu', 1)">
@@ -45,7 +48,8 @@
 					</view>
 				</view>
 				<view class="member-news">
-					<image src="https://img-shop.qmimg.cn/s23107/2020/04/27/0039bf41c9ebd50a2c.jpg"></image>
+					<!-- <image src="https://img-shop.qmimg.cn/s23107/2020/04/27/0039bf41c9ebd50a2c.jpg"></image> -->
+					<image v-for="(image, index) in pagedata.bottomBannerList" :src="getImageUrl(image.imageUrl)" :key="index"></image>
 				</view>
 			</view>
 		</content>
@@ -73,7 +77,8 @@
 </template>
 
 <script>
-	// import { testApi } from '@/api/test';
+	import { indexUrl } from '@/api/url';
+	import indexConfig from '@/config/index.config';
 	import {
 		mapState,
 		mapGetters
@@ -84,6 +89,11 @@
 			return {
 				list: this.$mConstDataConfig.tabbarList,
 				show: false,
+				pagedata:{
+					tadayProduct:[],
+					topBannerList:[],
+					bottomBannerList:[]
+				}
 			}
 
 		},
@@ -91,17 +101,19 @@
 			...mapState(['userInfo']),
 			...mapGetters(['hasLogin'])
 		},
-		// async onLoad() {
-		// 	await this.$http
-		// 		.post(`${testApi}`, {
-		// 			pageNumber: 1,
-		// 			pageSize: 10,
-		// 		})
-		// 		.then(async r => {
-		// 		})
-		// 		.catch(err => {
-		// 		});
-		// },
+		async onLoad() {
+			await this.$http
+				.post(`${indexUrl}`, {
+					// pageNumber: 1,
+					// pageSize: 10,
+				})
+				.then(async r => {
+					// console.log(r);
+					this.$data.pagedata=r.data;
+				})
+				.catch(err => {
+				});
+		},
 		methods: {
 			navTo(route, type) {
 				if (type) {
@@ -110,6 +122,10 @@
 					this.$mRouter.push({ route });
 				}
 			},
+			//拼接图片地址，临时使用需要统一整理为公用函数
+			getImageUrl(image) {
+			      return indexConfig.fileUrl + image;
+			    },
 		}
 	}
 </script>
@@ -251,10 +267,19 @@
 			width: 308rpx;
 			display: flex;
 			position: relative;
-			background: url(https://img.js.design/assets/img/6438e80f7b58e9fa27fdd984.jpg#34140443cfbe601060a2e2e593747c39);
+			//background: url(https://img.js.design/assets/img/6438e80f7b58e9fa27fdd984.jpg#34140443cfbe601060a2e2e593747c39);
 			background-size: 100% 100%;
 			box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7), inset -1px -1px 0px rgba(255, 255, 255, 1), inset 1px 1px 0px rgba(255, 255, 255, 1), -3px -3px 7px rgba(255, 255, 255, 1), 3px 3px 7px rgba(113, 173, 145, 0.5);
 
+			.pic{
+				width: 100%;
+				height: 100%;
+				
+				image {
+					width: 100%;
+					height: 100%;
+					}
+			}
 			.jrtj {
 				position: absolute;
 				top: 0;
@@ -268,6 +293,7 @@
 				text-align: center;
 				border-radius: 10px 0px 10px 0px;
 				background: rgba(255, 195, 0, 1);
+				z-index: 10;
 
 			}
 		}
