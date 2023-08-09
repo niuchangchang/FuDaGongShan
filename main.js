@@ -21,6 +21,7 @@ import $mGraceChecker from '@/utils/graceChecker';
 import $mHelper from '@/utils/helper';
 import $mRouter from '@/utils/router';
 import $mPayment from '@/utils/payment';
+import $mImgHost from '@/utils/image';
 
 // 全局组件
 import content from '@/components/content.vue';
@@ -90,6 +91,7 @@ Vue.prototype.$mRoutesConfig = $mRoutesConfig;
 Vue.prototype.$mConstDataConfig = $mConstDataConfig;
 Vue.prototype.$mGraceChecker = $mGraceChecker;
 Vue.prototype.$mHelper = $mHelper;
+Vue.prototype.$mImgHost = $mImgHost;
 Vue.prototype.$mRouter = $mRouter;
 Vue.prototype.$mPayment = $mPayment;
 

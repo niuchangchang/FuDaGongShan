@@ -26,6 +26,6 @@ export default {
 	},
 	login: {
 		name: '登录',
-		path: '/pages/public/login'
+		path: '/pages/login/login'
 	},
 };

@@ -30,7 +30,7 @@ let requests = [];
 http.interceptor.request(
 	config => {
 		/* 请求之前拦截器 */
-		config.header['token'] = uni.getStorageSync('accessToken');
+		config.header['Authorization'] = uni.getStorageSync('accessToken');
 		return config;
 	},
 	error => {
@@ -40,50 +40,57 @@ http.interceptor.request(
 
 http.interceptor.response(
 	async response => {
-		/* 请求之后拦截器 */
-		switch (response.data.code) {
-			case 0:
-				return response.data;
-			case 200:
-				return response.data;
-			case 400:
-				mHelper.toast('错误的请求');
-				return Promise.reject(response.data.message);
-				break;
-			case 401:
-				isRefreshing = false;
-				uni.removeStorageSync('accessToken');
-				await store.commit('logout');
-				uni.showModal({
-					content: '会话已过期，是否跳转登录页面？',
-					success: confirmRes => {
-						if (confirmRes.confirm) {
-							mHelper.backToLogin();
-							throw response.data.message;
+			/* 请求之后拦截器 */
+			switch (response.data.code) {
+				case 0:
+					// mHelper.toast(response.data.msg);
+					return response.data;
+				case 200:
+					// mHelper.toast(response.data.msg);
+					return response.data;
+				case 400:
+					mHelper.toast('错误的请求');
+					return Promise.reject(response.data.msg);
+					break;
+				case 401:
+					isRefreshing = false;
+					uni.removeStorageSync('accessToken');
+					await store.commit('logout');
+					uni.showModal({
+						content: '会话已过期，是否跳转登录页面？',
+						success: confirmRes => {
+							if (confirmRes.confirm) {
+								mHelper.backToLogin();
+								throw response.data.msg;
+							}
 						}
-					}
-				});
-				break;
-			case 405:
-				mHelper.toast('当前操作不被允许');
-				return Promise.reject(response.data.message);
-			case 404:
-				mHelper.toast(response.data.message);
-				return Promise.reject(response.data.message);
-			case 429:
-				mHelper.toast('请求过多，先休息一下吧');
-				return Promise.reject(response.data.message);
-			case 500:
-				mHelper.toast('服务器打瞌睡了');
-				return Promise.reject(response.data.message);
-			default:
-				mHelper.toast(response.data.message);
-				return Promise.reject(response.data.message);
+					});
+					break;
+				case 405:
+					mHelper.toast('当前操作不被允许');
+					return Promise.reject(response.data.msg);
+				case 404:
+					mHelper.toast(response.data.msg);
+					return Promise.reject(response.data.msg);
+				case 429:
+					mHelper.toast('请求过多，先休息一下吧');
+					return Promise.reject(response.data.msg);
+				case 500:
+					mHelper.toast('服务器打瞌睡了');
+					return Promise.reject(response.data.msg);
+				case 1001:
+					mHelper.backToLogin();
+					throw response.data.msg;
+				default:
+					mHelper.toast(response.data.msg);
+					return Promise.reject(response.data.msg);
+			}
+		},
+		error => {
+			return Promise.reject(error);
 		}
-	},
-	error => {
-		return Promise.reject(error);
-	}
 );
 
-export { http };
+export {
+	http
+};

@@ -7,64 +7,71 @@
 				<view class="swiper">
 					<u-tabs-swiper ref="tabs1" :list="swiperlist" gutter="80" :show-bar="false" font-size="28"
 						height="60" bg-color="#F2F7F0" active-color="#FFFFFF" inactive-color="#6E7C87"
-						:active-item-style="{background: '#71AD91', 'border-radius': '5px'}"></u-tabs-swiper>
+						:active-item-style="{background: '#71AD91', 'border-radius': '5px'}" name="name"
+						:current="current" @change="tabsChange"></u-tabs-swiper>
 				</view>
-				<view class="diancan-list">
-					<view v-for="(item, index) in productList" :key="index" class="diancan-item"
-						@click="showInfo(item,index)">
-						<view class="diancan-item-up">
-							<view class="diancan-item-up-left">
-								<image :src="getImageUrl(item.imageCover)"></image>
-							</view>
-							<view class="diancan-item-up-right">
-								<view class="diancan-item-up-right-jb">
-									<view class="diancan-item-up-right-bt">
-										{{item.title}}
+				<swiper :current="swiperCurrent" @transition="transition" @animationfinish="animationfinish"
+					class="swiper-box" duration="300">
+					<swiper-item class="tab-content" v-for="(tabItem, tabIndex) in swiperlist" :key="tabIndex">
+						<scroll-view class="diancan-list" scroll-y @scrolltolower="onreachBottom">
+							<view v-for="(item, index) in productList" :key="index" class="diancan-item"
+								@click="showInfo(item,index)">
+								<view class="diancan-item-up">
+									<view class="diancan-item-up-left">
+										<image :src="$mImgHost(item.imageCover)"></image>
 									</view>
-									<view class="diancan-item-up-right-jg">
-										￥{{item.pricesFormat}}
-									</view>
-								</view>
-								<view class="diancan-item-up-right-js">
-									{{item.remark}}
-								</view>
-								<view class="diancan-item-up-right-mj">
-									<view v-for="(manjianitem, manjianindex) in item.couponsList" :key="manjianindex"
-										class="manjian-item">
-										{{manjianitem}}
-									</view>
-								</view>
-								<view class="diancan-item-up-right-jk">
-									<view class="diancan-item-up-right-jk-up">
-										健康指数
-									</view>
-									<view class="diancan-item-up-right-jk-down">
-										<view v-for="(jkitem,jkindex) in item.health" :key="jkindex"
-											class="jk-down-item">
-											<view class="jk-down-item-up">
-												{{jkitem.key }}
+									<view class="diancan-item-up-right">
+										<view class="diancan-item-up-right-jb">
+											<view class="diancan-item-up-right-bt">
+												{{item.title}}
 											</view>
-											<view class="jk-down-item-down">
-												{{jkitem.value}}
+											<view class="diancan-item-up-right-jg">
+												￥{{item.pricesFormat}}
+											</view>
+										</view>
+										<view class="diancan-item-up-right-js">
+											{{item.remark}}
+										</view>
+										<view class="diancan-item-up-right-mj">
+											<view v-for="(manjianitem, manjianindex) in item.couponsList"
+												:key="manjianindex" class="manjian-item">
+												{{manjianitem}}
+											</view>
+										</view>
+										<view class="diancan-item-up-right-jk">
+											<view class="diancan-item-up-right-jk-up">
+												健康指数
+											</view>
+											<view class="diancan-item-up-right-jk-down">
+												<view v-for="(jkitem, jkindex) in item.health" :key="jkindex"
+													class="jk-down-item">
+													<view class="jk-down-item-up">
+														{{jkitem.key }}
+													</view>
+													<view class="jk-down-item-down">
+														{{jkitem.value}}
+													</view>
+												</view>
 											</view>
 										</view>
 									</view>
 								</view>
+								<view class="diancan-item-down">
+									<text class="diancan-item-down-label">推荐度 {{ item.remNumber }}%</text>
+									<u-line-progress class="diancan-item-down-jdt" active-color="#71AD91"
+										:percent="item.remNumber" height="14" inactive-color="#F2F7F0"
+										:show-percent="false"></u-line-progress>
+								</view>
+								<view class="add">
+									<u-icon name="plus-circle-fill" color="#4D716F" size="60"></u-icon>
+								</view>
 							</view>
-						</view>
-						<view class="diancan-item-down">
-							<text class="diancan-item-down-label">推荐度 {{item.remNumber}}%</text>
-							<u-line-progress class="diancan-item-down-jdt" active-color="#71AD91" :percent="70"
-								height="14" inactive-color="#F2F7F0" :show-percent="false"></u-line-progress>
-						</view>
-						<view class="add">
-							<u-icon name="plus-circle-fill" color="#4D716F" size="60"></u-icon>
-						</view>
-					</view>
-				</view>
+						</scroll-view>
+					</swiper-item>
+				</swiper>
 			</view>
 		</content>
-		<u-popup v-model="showPopup" mode="center" border-radius="16">
+		<u-popup v-model="showPopup" mode="center" border-radius="20" width="90%" height="80%">
 			<view class="info">
 				<view class="info-icon">
 					<view class="icon">
@@ -74,62 +81,65 @@
 						<u-icon name="close" size="20"></u-icon>
 					</view>
 				</view>
-				<view class="info-content">
-					<view class="info-up"></view>
-					<view class="info-center">
-						<view class="info-center-jb">
-							<view class="info-center-bt">
-								{{info.title}}
-							</view>
+				<scroll-view scroll-y="true" style="height: calc(100% - 140rpx);">
+					<view class="info-content">
+						<view class="info-up">
+							<u-swiper :list="info.imageUrlList" height="400" border-radius="0"></u-swiper>
 						</view>
-						<view class="info-center-mj">
-							<view v-for="(manjianitem, manjianindex) in info.couponsList" :key="manjianindex"
-								class="info-center-manjian">
-								{{manjianitem}}
+						<view class="info-center">
+							<view class="info-center-jb">
+								<view class="info-center-bt">
+									{{info.title}}
+								</view>
 							</view>
-						</view>
-						<view class="info-center-jg">
-							￥{{info.pricesFormat}}/份
-						</view>
-						<view class="info-center-jk">
-							<view class="info-center-jk-up">
-								健康指数
+							<view class="info-center-mj">
+								<view v-for="(manjianitem, manjianindex) in info.couponsList" :key="manjianindex"
+									class="info-center-manjian">
+									{{manjianitem}}
+								</view>
 							</view>
-							<view class="info-center-item-up-jk-down">
-								<view v-for="(jkitem,jkindex) in info.health" :key="jkindex"
-									class="info-center-jk-down-item">
-									<view class="info-center-jk-down-item-up">
-										{{jkitem.key }}
-									</view>
-									<view class="info-center-jk-down-item-down">
-										{{jkitem.value}}
+							<view class="info-center-jg">
+								￥{{info.pricesFormat}}/份
+							</view>
+							<view class="info-center-jk">
+								<view class="info-center-jk-up">
+									健康指数
+								</view>
+								<view class="info-center-item-up-jk-down">
+									<view v-for="(jkitem,jkindex) in info.health" :key="jkindex"
+										class="info-center-jk-down-item">
+										<view class="info-center-jk-down-item-up">
+											{{jkitem.key }}
+										</view>
+										<view class="info-center-jk-down-item-down">
+											{{jkitem.value}}
+										</view>
 									</view>
 								</view>
 							</view>
-						</view>
-						<view class="info-center-tjd">
-							<text class="info-center-label">推荐度 {{info.remNumber}}%</text>
-							<u-line-progress class="info-center-jdt" active-color="#71AD91" :percent="70" height="14"
-								inactive-color="#F2F7F0" :show-percent="false"></u-line-progress>
-						</view>
-						<view class="info-center-js">
-							<text>详细介绍</text>
-							<view class="info-center-js-content">
-								{{info.contents}}
+							<view class="info-center-tjd">
+								<text class="info-center-label">推荐度 {{ info.remNumber }}%</text>
+								<u-line-progress class="info-center-jdt" active-color="#71AD91"
+									:percent="info.remNumber" height="14" inactive-color="#F2F7F0"
+									:show-percent="false"></u-line-progress>
+							</view>
+							<view class="info-center-js">
+								<text>详细介绍</text>
+								<view v-html="info.contents" class="info-center-js-content"></view>
 							</view>
 						</view>
 					</view>
-				</view>
+				</scroll-view>
 				<view class="info-down">
 					<view class="info-down-left" @tap="navTo('/pages/cart/cart', 1)">
 						<u-icon name="shopping-cart" size="48"></u-icon>
 						购物车
 					</view>
 					<view class="info-down-right">
-						<view class="info-down-right-cart">
+						<view class="info-down-right-cart" @click="toAdd('cart')">
 							加入购物车
 						</view>
-						<view class="info-down-right-buy">
+						<view class="info-down-right-buy" @click="toAdd('buy')">
 							立即购买
 						</view>
 					</view>
@@ -141,80 +151,28 @@
 </template>
 
 <script>
-	import { productCategoryUrl,productUrl } from '@/api/url';
+	import {
+		productCategoryUrl,
+		productUrl,
+		addCart
+	} from '@/api/url';
 	import indexConfig from '@/config/index.config';
 	export default {
 		components: {},
 		data() {
 			return {
+				current: 0,
+				swiperCurrent: 0,
 				list: this.$mConstDataConfig.tabbarList,
 				swiperlist: [],
 				showPopup: false,
-				info: {
-					title: '藕片',
-					price: 12.0,
-					pricesFormat: 20,
-					remark: '菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍...',
-					couponsList: ['20减3 40减7', '新客减4'],
-					health: [{
-						key: '千卡',
-						value: '114'
-					}, {
-						key: '千克',
-						value: '1'
-					}],
-					remNumber: 80
-				},
-				productList: [{
-						title: '藕片',
-						price: 12.0,
-						pricesFormat: 20,
-						remark: '菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍菜品介绍...',
-						couponsList: ['20减3', '40减7', '新客减4'],
-						health: [{
-							key: '千卡',
-							value: '114'
-						}, {
-							key: '千克',
-							value: '1'
-						}],
-						remNumber: 80
-					}
-				]
+				info: null,
+				productList: []
 			}
 		},
 		async onLoad() {
-			await this.$http
-				.post(`${productCategoryUrl}`, {
-					// pageNumber: 1,
-					// pageSize: 10,
-				})
-				.then(async r => {
-					//console.log(r);
-					const cArr = [];
-					r.data.forEach((item, index) => {
-					  cArr.push({
-							name: item.title,
-							id:item.id
-						})
-					});
-					this.$data.swiperlist=cArr;
-				})
-				.catch(err => {
-				});
-				
-			await this.$http
-				.post(`${productUrl}`, {
-					 page: 1,
-					 limit: 20,
-				})
-				.then(async r => {
-					console.log(r.data);
-					
-					this.$data.productList=r.data;
-				})
-				.catch(err => {
-				});
+			await this.getProductCategory()
+			await this.getProductList()
 		},
 		onShow() {
 			this.showPopup = false
@@ -223,9 +181,63 @@
 
 		},
 		methods: {
-			showInfo(item,index) {
-				console.log(index)
-				this.$data.info = this.$data.productList[index];
+			// tabs通知swiper切换
+			tabsChange(index) {
+				this.swiperCurrent = index;
+				this.getProductList()
+			},
+			// swiper-item左右移动，通知tabs的滑块跟随移动
+			transition(e) {
+				let dx = e.detail.dx;
+				this.$refs.tabs1.setDx(dx);
+			},
+			// 由于swiper的内部机制问题，快速切换swiper不会触发dx的连续变化，需要在结束时重置状态
+			// swiper滑动结束，分别设置tabs和swiper的状态
+			animationfinish(e) {
+				let current = e.detail.current;
+				this.$refs.tabs1.setFinishCurrent(current);
+				this.swiperCurrent = current;
+				this.current = current;
+			},
+			// scroll-view到底部加载更多
+			onreachBottom() {
+
+			},
+			async getProductCategory() {
+				await this.$http
+					.post(`${productCategoryUrl}`)
+					.then(async r => {
+						const cArr = [];
+						r.data.forEach((item, index) => {
+							cArr.push({
+								name: item.title,
+								id: item.id
+							})
+						});
+						this.swiperlist = cArr;
+					})
+					.catch(err => {});
+			},
+			async getProductList() {
+				const categoryId = this.swiperlist[this.swiperCurrent].id
+				await this.$http
+					.post(`${productUrl}`, {
+						categoryId: categoryId,
+						page: 1,
+						limit: 20,
+					})
+					.then(async r => {
+						this.productList = r.data;
+					})
+					.catch(err => {});
+			},
+			showInfo(item, index) {
+				this.info = {
+					...item,
+					imageUrlList: item.imageUrlList.map(image => {
+						return this.$mImgHost(image)
+					})
+				}
 				this.showPopup = true
 			},
 			close() {
@@ -233,15 +245,36 @@
 			},
 			navTo(route, type) {
 				if (type) {
-					this.$mRouter.switchTab({ route });
+					this.$mRouter.switchTab({
+						route
+					});
 				} else {
-					this.$mRouter.push({ route });
+					this.$mRouter.push({
+						route
+					});
 				}
 			},
-			//拼接图片地址，临时使用需要统一整理为公用函数
-			getImageUrl(image) {
-			      return indexConfig.fileUrl + image;
-			    },
+			toAdd(type) {
+				switch (type) {
+					case 'buy':
+						break;
+					case 'cart':
+						this.addCart()
+						break;
+
+				}
+			},
+			async addCart() {
+				await this.$http
+					.post(`${addCart}`, {
+						productId: this.info.id,
+						quantity: 1
+					})
+					.then(async r => {
+						this.$mHelper.toast('购物车加入成功');
+					})
+					.catch(err => {});
+			}
 		}
 	};
 </script>
@@ -256,11 +289,16 @@
 		padding: 40rpx 32rpx;
 	}
 
+	.swiper-box {
+		height: calc(100% - 150rpx);
+	}
+
+	.tab-content {}
+
 	.info {
 		position: relative;
-		width: 670rpx;
-		height: 1300rpx;
-		border-radius: 20rpx;
+		width: 100%;
+		height: 100%;
 		background: #FFFFFF;
 
 		.info-icon {
@@ -269,6 +307,7 @@
 			right: 14rpx;
 			display: flex;
 			gap: 10rpx;
+			z-index: 10;
 
 			.icon {
 				width: 40rpx;
@@ -282,15 +321,15 @@
 		}
 
 		.info-content {
-			height: calc(100% - 140rpx);
-			overflow: auto;
+			// height: calc(100% - 140rpx);
+			// overflow: auto;
 		}
 
 		.info-up {
-			height: 400rpx;
-			border-radius: 10px 10px, 0px, 0px;
-			background: url(https://img.js.design/assets/img/6438e80e82fcf570063255d3.jpg#9c2b20dc156cd83fdd1ca51a15ffe57f);
-			background-size: 100% 100%;
+			// height: 400rpx;
+			// border-radius: 10px 10px, 0px, 0px;
+			// background: url(https://img.js.design/assets/img/6438e80e82fcf570063255d3.jpg#9c2b20dc156cd83fdd1ca51a15ffe57f);
+			// background-size: 100% 100%;
 		}
 
 		.info-center {
@@ -406,8 +445,8 @@
 		}
 
 		.info-down {
-			position: absolute;
-			bottom: 0;
+			// position: absolute;
+			// bottom: 0;
 			width: 100%;
 			height: 140rpx;
 			padding: 20rpx;
@@ -460,13 +499,12 @@
 	}
 
 	.diancan-list {
-		height: calc(100% - 150rpx);
+		height: 100%;
 		overflow-y: auto;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 40rpx;
-		padding: 0 40rpx 80rpx;
+		padding-bottom: 60rpx;
+		// display: flex;
+		// flex-direction: column;
+		// align-items: center;
 
 		.diancan-item {
 			position: relative;
@@ -474,6 +512,8 @@
 			border-radius: 16rpx;
 			box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7), inset -1px -1px 0px rgba(255, 255, 255, 1), inset 1px 1px 0px rgba(255, 255, 255, 1), -3px -3px 7px rgba(255, 255, 255, 1), 3px 3px 7px rgba(113, 173, 145, 0.5);
 			padding: 26rpx 26rpx 20rpx 22rpx;
+			margin-bottom: 40rpx;
+			margin: 0 40rpx 40rpx;
 
 			.diancan-item-up {
 				display: flex;
@@ -486,7 +526,7 @@
 					// background: url(https://img.js.design/assets/img/62e7b277b3784b2dc60dbcd2.png);
 					border-radius: 20rpx;
 					overflow: hidden;
-					
+
 					image {
 						width: 100%;
 						height: 100%;

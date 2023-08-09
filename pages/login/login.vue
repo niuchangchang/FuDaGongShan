@@ -1,24 +1,16 @@
 <template>
 	<view class="container">
-		<u-navbar 
-			title="登录" 
-			title-color="#FFFFFF" 
-			title-bold="true"
-			back-icon-color="#FFFFFF" 
-			border-bottom="false"
-			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"
-		></u-navbar>
+		<u-navbar title="登录" title-color="#FFFFFF" title-bold="true" back-icon-color="#FFFFFF" border-bottom="false"
+			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"></u-navbar>
 		<content>
 			<view class="intro">
 				<view class="intro-logo"></view>
-				<view class="wx-logo">
+				<button :loading="btnLoading" class="wx-logo" open-type="getPhoneNumber" @getphonenumber="toAuthLogin">
 					<image src="/static/images/wechat.png"></image>
-				</view>
+				</button>
 				<text class="text-login">微信手机号授权登录</text>
 				<view class="shouquan">
-					<u-checkbox-group v-model="checkboxValue" placement="column" @change="checkboxChange">
-						<u-checkbox v-for="(item, index) in checkboxList" :key="index" :name="item.name" activeColor="#4d716f" />
-					</u-checkbox-group>
+					<u-checkbox v-model="appAgreementDefaultSelect" size="30" active-color="#2B7365"></u-checkbox>
 					<text class="tongyi">我已阅读并同意</text>
 					<text class="xieyi" @click="show = true">《用户协议》</text>
 				</view>
@@ -41,19 +33,107 @@
 	import {
 		mapMutations
 	} from 'vuex'
+	import {
+		login
+	} from '@/api/url';
 
 	export default {
 		data() {
 			return {
-				checkboxValue: [],
-				checkboxList: [{
-					name: 'agree',
-				}],
+				appAgreementDefaultSelect: true,
 				show: false,
+				code: null,
+				btnLoading: false
 			}
+		},
+		onLoad() {
+			// 校验 session_key 是否过期
+			wx.checkSession({
+				success: () => {
+					console.log('session_key 未过期，并且在本生命周期一直有效')
+				},
+				fail: () => {
+					console.log('session_key 已经失效，需要重新执行登录流程')
+				}
+			})
+			// 微信登录
+			wx.login({
+				success: (loginRes) => {
+					this.code = loginRes.code;
+				},
+				fail: () => {
+					_this.$mHelper.log('暂不支持小程序登录');
+				}
+			});
 		},
 		methods: {
 			...mapMutations(['SET_MEMBER']),
+			// 授权登录
+			toAuthLogin(e) {
+				console.log('====loginCode', this.code)
+				const detail = e.detail
+				console.log('===detail', detail)
+				this.btnLoading = true;
+				if (!this.appAgreementDefaultSelect) {
+					this.$mHelper.toast('请阅读并同意协议', 1.5 * 1000);
+					this.btnLoading = false;
+					return;
+				}
+				const _this = this;
+				let params = {
+					loginCode: _this.code,
+					phoneCode: detail.phoneCode || '123',
+					encryptedData: detail.encryptedData || '123',
+					iv: detail.iv || '123'
+				};
+				_this.thirdPartyAuthLogin(params);
+				if (detail.errMsg === "getPhoneNumber:ok") {
+					console.log('====登录请求参数params', params)
+					// 登录
+					// _this.thirdPartyAuthLogin(params);
+				} else {
+					_this.btnLoading = false;
+				}
+			},
+			thirdPartyAuthLogin(params = {}) {
+				const _this = this;
+				_this.$http
+					.post(login, params)
+					.then(async r => {
+						console.log('=====登录返回结果', r)
+						_this.btnLoading = false;
+						if (r.data) {
+							await _this.$mStore.commit('login', r.data);
+							_this.$mHelper.toast('登录成功');
+							_this.toPage()
+						}
+					}).catch((err) => {
+						_this.btnLoading = false;
+					});
+			},
+			// 登录后跳转
+			toPage() {
+				const _this = this;
+				const backToPage = uni.getStorageSync('backToPage');
+				if (backToPage) {
+					if (
+						backToPage.indexOf('/pages/mine/mine') !== -1 ||
+						backToPage.indexOf('/pages/index/index') !== -1 ||
+						backToPage.indexOf('/pages/index/index_copy') !== -1 ||
+						backToPage.indexOf('/pages/menu/menu') !== -1 ||
+						backToPage.indexOf('/pages/cart/cart') !== -1
+					) {
+						_this.$mRouter.reLaunch(JSON.parse(backToPage));
+					} else {
+						_this.$mRouter.redirectTo(JSON.parse(backToPage));
+					}
+					uni.removeStorageSync('backToPage');
+				} else {
+					_this.$mRouter.reLaunch({
+						route: '/pages/index/index'
+					});
+				}
+			}
 		}
 	}
 </script>
@@ -79,6 +159,7 @@
 				font-size: 28rpx;
 				color: rgba(152, 161, 175, 1);
 			}
+
 			.xieyi {
 				font-size: 28rpx;
 				color: rgba(77, 113, 111, 1);
@@ -105,6 +186,8 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		padding: 0;
+		border: none;
 		border-radius: 10rpx;
 		background: rgba(40, 196, 69, 1);
 
@@ -135,5 +218,10 @@
 			text-align: center;
 			margin-bottom: 40rpx;
 		}
+	}
+</style>
+<style>
+	.u-checkbox {
+		width: 45rpx !important;
 	}
 </style>

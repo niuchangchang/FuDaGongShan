@@ -30,17 +30,15 @@ const store = new Vuex.Store({
 		},
 	},
 	mutations: {
-		login(state, provider) {
-			state.accessToken = provider;
-			uni.setStorageSync('accessToken', provider);
-			// state.userInfo = provider.userInfo;
-			// uni.setStorageSync('userInfo', provider.userInfo);
+		login(state, token) {
+			state.accessToken = token;
+			uni.setStorageSync('accessToken', token);
 		},
 		logout(state) {
 			state.accessToken = '';
 			state.userInfo = {};
 			uni.removeStorageSync('accessToken');
-			uni.removeTabBarBadge({ index: $mConstDataConfig.cartIndex });
+			// uni.removeTabBarBadge({ index: $mConstDataConfig.cartIndex });
 			uni.removeStorageSync('user');
 		},
 		setUserInfo(state, userInfo) {

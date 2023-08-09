@@ -33,7 +33,9 @@ export default {
 		uni.setStorageSync('backToPage', JSON.stringify(params));
 		// uni.removeTabBarBadge({ index: mConstDataConfig.cartIndex });
 		await mStore.commit('logout');
-		mRouter.push({ route: '/pages/public/login' });
+		mRouter.push({
+			route: '/pages/login/login'
+		});
 	},
 
 	/**
@@ -246,37 +248,37 @@ export default {
 		appShare(shareData, res => {});
 	},
 
-  // 去掉字符串中的空格
-  trim(str){
-    if (!str) {
-        return '';
-    }
-    return str.replace(/\s*/g,'');
-  },
+	// 去掉字符串中的空格
+	trim(str) {
+		if (!str) {
+			return '';
+		}
+		return str.replace(/\s*/g, '');
+	},
 
-  // 判断两个对象是否相同
-  isObjectValueEqual(x, y) {
-    // 指向同一内存时
-    if (x === y) {
-      return true;
-    } else if (
-      typeof x == 'object' &&
-      x != null &&
-      typeof y == 'object' && y != null
-    ) {
-      if (Object.keys(x).length != Object.keys(y).length) return false;
+	// 判断两个对象是否相同
+	isObjectValueEqual(x, y) {
+		// 指向同一内存时
+		if (x === y) {
+			return true;
+		} else if (
+			typeof x == 'object' &&
+			x != null &&
+			typeof y == 'object' && y != null
+		) {
+			if (Object.keys(x).length != Object.keys(y).length) return false;
 
-      for (var prop in x) {
-        if (y.hasOwnProperty(prop)) {
-          if (!this.isObjectValueEqual(x[prop], y[prop])) return false;
-        } else return false;
-      }
+			for (var prop in x) {
+				if (y.hasOwnProperty(prop)) {
+					if (!this.isObjectValueEqual(x[prop], y[prop])) return false;
+				} else return false;
+			}
 
-      return true;
-    } else return false;
-  },
+			return true;
+		} else return false;
+	},
 
-	platformGroupFilter () {
+	platformGroupFilter() {
 		let platformGroup = 'wechat';
 		// #ifdef H5
 		if ($mPayment.isWechat()) {

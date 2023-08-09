@@ -1,6 +1,7 @@
 <template>
 	<view class="container">
-		<u-navbar  :is-back="false" title="购物车" title-color="#FFFFFF" title-bold="true" back-icon-color="#FFFFFF" border-bottom="false"
+		<u-navbar :is-back="false" title="购物车" title-color="#FFFFFF" title-bold="true" back-icon-color="#FFFFFF"
+			border-bottom="false"
 			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"></u-navbar>
 		<content :has-top="true" :has-bottom="true">
 			<view class="cart-container">
@@ -11,25 +12,25 @@
 								shape="circle" active-color="#2B7365">
 							</u-checkbox>
 							<view class="cart-item-image">
-								<img :src="item.image" alt="">
+								<img :src="$mImgHost(item.imageCover)" alt="">
 							</view>
 							<view class="cart-item-content">
 								<view class="cart-item-content-up">
 									<view class="cart-item-content-bj">
 										<view class="title">
-											{{item.title}}
+											{{item.productTitle}}
 										</view>
 										<view class="sum-price">
-											¥{{item.price * item.num}}
+											¥{{item.totalPricesFormat}}
 										</view>
 									</view>
 									<view class="price">
-										¥{{item.price}}/份
+										¥{{item.pricesFormat}}/{{item.unit}}
 									</view>
 								</view>
 								<view class="cart-item-content-down">
-									<u-number-box v-model="item.num" min="1" size="24" bg-color="#4D716F"
-										color="#FFFFFF" @change="valChange"></u-number-box>
+									<u-number-box v-model="item.quantity" min="1" size="24" bg-color="#4D716F"
+										color="#FFFFFF" @change="valChange(item)"></u-number-box>
 								</view>
 							</view>
 						</view>
@@ -39,7 +40,7 @@
 							<u-checkbox @change="allCheckboxChange" v-model="allChecked" name="全选" shape="circle"
 								active-color="#2B7365" label-size="26">全选</u-checkbox>
 							<view class="sum">
-								合计：¥60.00
+								合计：¥{{ totalPrice }}
 							</view>
 						</view>
 						<view class="cart-buy" @tap="navTo('/pages/orders/create')">
@@ -54,50 +55,79 @@
 </template>
 
 <script>
+	import {
+		cartList,
+		updateCart,
+		removeCart
+	} from '@/api/url';
 	export default {
 		data() {
 			return {
 				list: this.$mConstDataConfig.tabbarList,
-				cartList: [{
-					title: '排骨',
-					price: 20.00,
-					image: 'https://img.js.design/assets/img/62e7b277b3784b2dc60dbcd2.png',
-					num: 1,
-					checked: false,
-				}, {
-					title: '排骨1',
-					price: 20,
-					image: 'https://img.js.design/assets/img/62e7b277b3784b2dc60dbcd2.png',
-					num: 1,
-					checked: false,
-				}, {
-					title: '排骨3',
-					price: 20,
-					image: 'https://img.js.design/assets/img/62e7b277b3784b2dc60dbcd2.png',
-					num: 1,
-					checked: false,
-				}],
-				allChecked: false
+				cartList: [],
+				allChecked: false,
+			}
+		},
+		onShow() {
+			this.allChecked = false
+			this.getCartList()
+		},
+		computed: {
+			totalPrice() {
+				const {
+					cartList
+				} = this
+				let price = 0
+				cartList.map(item => {
+					price += item.totalPricesFormat
+				})
+				return price
 			}
 		},
 		methods: {
+			async getCartList() {
+				await this.$http
+					.post(`${cartList}`)
+					.then(async r => {
+						this.cartList = r.data;
+					})
+					.catch(err => {});
+			},
 			// 选中某个复选框时，由checkbox时触发
 			checkboxChange(e) {
-				console.log(e);
+				this.$nextTick(()=> {
+					const isCheckAll = this.cartList.filter(item => {
+						return !item.checked
+					})
+					this.allChecked = !isCheckAll.length
+				})
 			},
 			// 选中全选时，由checkbox时触发
 			allCheckboxChange(e) {
-				console.log(e);
 				this.cartList.map(val => {
 					val.checked = e.value;
 				})
 			},
-			valChange(e) {
-				console.log('当前值为: ' + e.value)
+			// 数量变化
+			valChange(item) {
+				this.updateCart(item)
 			},
 			navTo(route) {
-				this.$mRouter.push({ route });
+				this.$mRouter.push({
+					route
+				});
 			},
+			async updateCart(item) {
+				await this.$http
+					.post(`${updateCart}`, {
+						id: item.cartId,
+						quantity: item.quantity
+					})
+					.then(async r => {
+						this.getCartList()
+					})
+					.catch(err => {});
+			}
 		}
 	}
 </script>
