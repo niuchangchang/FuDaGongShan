@@ -65,6 +65,7 @@
 			return {
 				list: this.$mConstDataConfig.tabbarList,
 				cartList: [],
+				checkedList: [],
 				allChecked: false,
 			}
 		},
@@ -79,7 +80,9 @@
 				} = this
 				let price = 0
 				cartList.map(item => {
-					price += item.totalPricesFormat
+					if (item.checked) {
+						price += item.totalPricesFormat
+					}
 				})
 				return price
 			}
@@ -95,7 +98,7 @@
 			},
 			// 选中某个复选框时，由checkbox时触发
 			checkboxChange(e) {
-				this.$nextTick(()=> {
+				this.$nextTick(() => {
 					const isCheckAll = this.cartList.filter(item => {
 						return !item.checked
 					})
