@@ -23,7 +23,9 @@ const updateCart = '/wx/orders/cartupdate';
 // 移除购物车
 const removeCart = '/wx/orders/cartremove';
 // 购物车列表
-const cartList = '/wx/orders/cartList';
+const cartList = '/wx/orders/cartlist';
+// 购物车数量
+const cartCount = '/wx/orders/cartcount';
 
 
 export {
@@ -36,4 +38,5 @@ export {
 	updateCart,
 	removeCart,
 	cartList,
+	cartCount
 };

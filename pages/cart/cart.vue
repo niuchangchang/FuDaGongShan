@@ -7,33 +7,35 @@
 			<view class="cart-container">
 				<view class="cart">
 					<view class="cart-list">
-						<view v-for="(item,index) in cartList" :key="index" class="cart-item">
-							<u-checkbox @change="checkboxChange" v-model="item.checked" :name="item.title"
-								shape="circle" active-color="#2B7365">
-							</u-checkbox>
-							<view class="cart-item-image">
-								<img :src="$mImgHost(item.imageCover)" alt="">
-							</view>
-							<view class="cart-item-content">
-								<view class="cart-item-content-up">
-									<view class="cart-item-content-bj">
-										<view class="title">
-											{{item.productTitle}}
+						<u-checkbox-group @change="checkboxGroupChange">
+							<view v-for="(item, index) in cartList" :key="index" class="cart-item">
+								<u-checkbox @change="checkboxChange" v-model="item.checked" :name="item.cartId"
+									shape="circle" active-color="#2B7365">
+								</u-checkbox>
+								<view class="cart-item-image">
+									<img :src="$mImgHost(item.imageCover)" alt="">
+								</view>
+								<view class="cart-item-content">
+									<view class="cart-item-content-up">
+										<view class="cart-item-content-bj">
+											<view class="title">
+												{{item.productTitle}}
+											</view>
+											<view class="sum-price">
+												¥{{item.totalPricesFormat}}
+											</view>
 										</view>
-										<view class="sum-price">
-											¥{{item.totalPricesFormat}}
+										<view class="price">
+											¥{{item.pricesFormat}}/{{item.unit}}
 										</view>
 									</view>
-									<view class="price">
-										¥{{item.pricesFormat}}/{{item.unit}}
+									<view class="cart-item-content-down">
+										<u-number-box v-model="item.quantity" min="1" size="24" bg-color="#4D716F"
+											color="#FFFFFF" @change="valChange(item)"></u-number-box>
 									</view>
 								</view>
-								<view class="cart-item-content-down">
-									<u-number-box v-model="item.quantity" min="1" size="24" bg-color="#4D716F"
-										color="#FFFFFF" @change="valChange(item)"></u-number-box>
-								</view>
 							</view>
-						</view>
+						</u-checkbox-group>
 					</view>
 					<view class="cart-sum">
 						<view class="cart-sum-up">
@@ -88,27 +90,43 @@
 			}
 		},
 		methods: {
+			checkboxGroupChange(e) {
+				this.checkedList = e
+				this.allChecked = this.checkedList.length === this.cartList.length
+			},
 			async getCartList() {
 				await this.$http
 					.post(`${cartList}`)
 					.then(async r => {
 						this.cartList = r.data;
+						// console.log('checkedList', this.checkedList)
+						if(this.checkedList.length) {
+							this.cartList.map(item => {
+								this.checkedList.map(checkedItem => {
+									if(item.cartId === checkedItem) {
+										item.checked = true
+									}
+								})
+							})
+						}
 					})
 					.catch(err => {});
 			},
 			// 选中某个复选框时，由checkbox时触发
 			checkboxChange(e) {
-				this.$nextTick(() => {
-					const isCheckAll = this.cartList.filter(item => {
-						return !item.checked
-					})
-					this.allChecked = !isCheckAll.length
-				})
+				// this.$nextTick(() => {
+				// 	const isCheckAll = this.cartList.filter(item => {
+				// 		return !item.checked
+				// 	})
+				// 	this.allChecked = !isCheckAll.length
+				// })
 			},
 			// 选中全选时，由checkbox时触发
 			allCheckboxChange(e) {
-				this.cartList.map(val => {
-					val.checked = e.value;
+				this.checkedList = []
+				this.cartList.map(item => {
+					item.checked = e.value;
+					this.checkedList.push(item.cartId)
 				})
 			},
 			// 数量变化

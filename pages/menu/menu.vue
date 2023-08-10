@@ -62,7 +62,7 @@
 										:percent="item.remNumber" height="14" inactive-color="#F2F7F0"
 										:show-percent="false"></u-line-progress>
 								</view>
-								<view class="add">
+								<view class="add" @click.stop="toAdd('cart', item)">
 									<u-icon name="plus-circle-fill" color="#4D716F" size="60"></u-icon>
 								</view>
 							</view>
@@ -136,10 +136,10 @@
 						购物车
 					</view>
 					<view class="info-down-right">
-						<view class="info-down-right-cart" @click="toAdd('cart')">
+						<view class="info-down-right-cart" @click="toAdd('cart', info)">
 							加入购物车
 						</view>
-						<view class="info-down-right-buy" @click="toAdd('buy')">
+						<view class="info-down-right-buy" @click="toAdd('buy', info)">
 							立即购买
 						</view>
 					</view>
@@ -154,7 +154,8 @@
 	import {
 		productCategoryUrl,
 		productUrl,
-		addCart
+		addCart,
+		cartCount
 	} from '@/api/url';
 	import indexConfig from '@/config/index.config';
 	export default {
@@ -167,7 +168,8 @@
 				swiperlist: [],
 				showPopup: false,
 				info: null,
-				productList: []
+				productList: [],
+				cartNum: 0
 			}
 		},
 		async onLoad() {
@@ -238,6 +240,7 @@
 						return this.$mImgHost(image)
 					})
 				}
+				// this.getCartCount()
 				this.showPopup = true
 			},
 			close() {
@@ -254,27 +257,35 @@
 					});
 				}
 			},
-			toAdd(type) {
+			toAdd(type, item) {
 				switch (type) {
 					case 'buy':
 						break;
 					case 'cart':
-						this.addCart()
+						this.addCart(item)
 						break;
-
 				}
 			},
-			async addCart() {
+			async addCart(item) {
 				await this.$http
 					.post(`${addCart}`, {
-						productId: this.info.id,
+						productId: item.id,
 						quantity: 1
 					})
 					.then(async r => {
 						this.$mHelper.toast('购物车加入成功');
 					})
 					.catch(err => {});
-			}
+			},
+			// async getCartCount() {
+			// 	await this.$http
+			// 		.post(`${cartCount}`, {})
+			// 		.then(async r => {
+			// 			console.log('===r', r.data)
+			// 			this.cartNum = r.data;
+			// 		})
+			// 		.catch(err => {});
+			// },
 		}
 	};
 </script>
