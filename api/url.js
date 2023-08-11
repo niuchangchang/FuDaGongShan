@@ -27,6 +27,9 @@ const cartList = '/wx/orders/cartlist';
 // 购物车数量
 const cartCount = '/wx/orders/cartcount';
 
+// 创建订单
+const orderCreate = '/wx/orders/orderscreate';
+
 
 export {
 	login,
@@ -38,5 +41,6 @@ export {
 	updateCart,
 	removeCart,
 	cartList,
-	cartCount
+	cartCount,
+	orderCreate
 };

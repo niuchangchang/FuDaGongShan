@@ -5,7 +5,7 @@
 			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"></u-navbar>
 		<content :has-top="true" :has-bottom="true">
 			<view class="cart-container">
-				<view class="cart">
+				<view v-if="cartList.length" class="cart">
 					<view class="cart-list">
 						<u-checkbox-group @change="checkboxGroupChange">
 							<view v-for="(item, index) in cartList" :key="index" class="cart-item">
@@ -39,16 +39,22 @@
 					</view>
 					<view class="cart-sum">
 						<view class="cart-sum-up">
-							<u-checkbox @change="allCheckboxChange" v-model="allChecked" name="全选" shape="circle"
-								active-color="#2B7365" label-size="26">全选</u-checkbox>
+							<view class="button">
+								<u-checkbox @change="allCheckboxChange" v-model="allChecked" name="全选" shape="circle"
+									active-color="#2B7365" label-size="26">全选</u-checkbox>
+								<view v-if="checkedList.length" class="remove" @click.stop="handleRemoveCart">删除</view>
+							</view>
 							<view class="sum">
 								合计：¥{{ totalPrice }}
 							</view>
 						</view>
-						<view class="cart-buy" @tap="navTo('/pages/orders/create')">
+						<view class="cart-buy" @tap="handleCreateOrder">
 							立即下单
 						</view>
 					</view>
+				</view>
+				<view v-else class="no-list">
+					购物车空空如也～
 				</view>
 			</view>
 		</content>
@@ -60,7 +66,8 @@
 	import {
 		cartList,
 		updateCart,
-		removeCart
+		removeCart,
+		orderCreate
 	} from '@/api/url';
 	export default {
 		data() {
@@ -72,7 +79,6 @@
 			}
 		},
 		onShow() {
-			this.allChecked = false
 			this.getCartList()
 		},
 		computed: {
@@ -90,27 +96,15 @@
 			}
 		},
 		methods: {
+			navTo(route) {
+				this.$mRouter.push({
+					route
+				});
+			},
+			// 整租复选框改变时，由checkbox-group时触发
 			checkboxGroupChange(e) {
 				this.checkedList = e
 				this.allChecked = this.checkedList.length === this.cartList.length
-			},
-			async getCartList() {
-				await this.$http
-					.post(`${cartList}`)
-					.then(async r => {
-						this.cartList = r.data;
-						// console.log('checkedList', this.checkedList)
-						if(this.checkedList.length) {
-							this.cartList.map(item => {
-								this.checkedList.map(checkedItem => {
-									if(item.cartId === checkedItem) {
-										item.checked = true
-									}
-								})
-							})
-						}
-					})
-					.catch(err => {});
 			},
 			// 选中某个复选框时，由checkbox时触发
 			checkboxChange(e) {
@@ -129,15 +123,32 @@
 					this.checkedList.push(item.cartId)
 				})
 			},
+			// 获取购物车列表
+			async getCartList() {
+				await this.$http
+					.post(`${cartList}`)
+					.then(async r => {
+						this.cartList = r.data;
+						console.log('checkedList', this.checkedList)
+						if (this.checkedList.length) {
+							this.cartList.map(item => {
+								this.checkedList.map(checkedItem => {
+									if (item.cartId === checkedItem) {
+										item.checked = true
+									}
+								})
+							})
+						} else {
+							this.allChecked = false
+						}
+					})
+					.catch(err => {});
+			},
 			// 数量变化
 			valChange(item) {
 				this.updateCart(item)
 			},
-			navTo(route) {
-				this.$mRouter.push({
-					route
-				});
-			},
+			// 修改购物车
 			async updateCart(item) {
 				await this.$http
 					.post(`${updateCart}`, {
@@ -146,6 +157,54 @@
 					})
 					.then(async r => {
 						this.getCartList()
+					})
+					.catch(err => {});
+			},
+			// 删除购物车
+			handleRemoveCart() {
+				// console.log('==checkedList', this.checkedList)
+				const _this = this
+				uni.showModal({
+					content: '确定要移除此商品吗？',
+					success: e => {
+						if (e.confirm) {
+							_this.checkedList.map(item => {
+								_this.removeCart(item)
+							})
+						}
+					}
+				});
+			},
+			// 移除购物车
+			async removeCart(item) {
+				await this.$http
+					.post(`${removeCart}/${item}`)
+					.then(async r => {
+						// 选中列表去除该项
+						this.checkedList.splice(this.checkedList.indexOf(item))
+						console.log('===checkedList', this.checkedList)
+						this.getCartList()
+					})
+					.catch(err => {});
+			},
+			// 创建订单
+			handleCreateOrder() {
+				if (!this.checkedList.length) {
+					this.$mHelper.toast('请先选择商品');
+					return;
+				}
+				this.navTo('/pages/orders/create')
+				// this.createOrder()
+			},
+			async createOrder() {
+				const params = {
+					productList: []
+				}
+				await this.$http
+					.post(`${orderCreate}`, params)
+					.then(async r => {
+						console.log('====r', r)
+						// this.navTo('/pages/orders/create')
 					})
 					.catch(err => {});
 			}
@@ -245,6 +304,16 @@
 					color: #2B7365;
 					font-size: 26rpx;
 					font-weight: 500;
+
+					.button {
+						display: flex;
+						align-items: baseline;
+
+						.remove {
+							font-size: 26rpx;
+							color: #fa3534;
+						}
+					}
 				}
 
 				.cart-buy {

@@ -134,6 +134,7 @@
 					<view class="info-down-left" @tap="navTo('/pages/cart/cart', 1)">
 						<u-icon name="shopping-cart" size="48"></u-icon>
 						购物车
+						<u-badge type="error" :count="cartNum" :offset="[-15, -15]"></u-badge>
 					</view>
 					<view class="info-down-right">
 						<view class="info-down-right-cart" @click="toAdd('cart', info)">
@@ -158,6 +159,7 @@
 		cartCount
 	} from '@/api/url';
 	import indexConfig from '@/config/index.config';
+	import { mapMutations } from 'vuex';
 	export default {
 		components: {},
 		data() {
@@ -169,7 +171,8 @@
 				showPopup: false,
 				info: null,
 				productList: [],
-				cartNum: 0
+				// cartNum: uni.getStorageSync('cartNum'),
+				cartNum: 0,
 			}
 		},
 		async onLoad() {
@@ -180,9 +183,9 @@
 			this.showPopup = false
 		},
 		computed: {
-
 		},
 		methods: {
+			...mapMutations(['setCartNum']),
 			// tabs通知swiper切换
 			tabsChange(index) {
 				this.swiperCurrent = index;
@@ -240,7 +243,7 @@
 						return this.$mImgHost(image)
 					})
 				}
-				// this.getCartCount()
+				this.getCartCount()
 				this.showPopup = true
 			},
 			close() {
@@ -274,18 +277,19 @@
 					})
 					.then(async r => {
 						this.$mHelper.toast('购物车加入成功');
+						this.getCartCount()
 					})
 					.catch(err => {});
 			},
-			// async getCartCount() {
-			// 	await this.$http
-			// 		.post(`${cartCount}`, {})
-			// 		.then(async r => {
-			// 			console.log('===r', r.data)
-			// 			this.cartNum = r.data;
-			// 		})
-			// 		.catch(err => {});
-			// },
+			async getCartCount() {
+				await this.$http
+					.post(`${cartCount}`)
+					.then(async r => {
+						this.cartNum = r.data
+						this.setCartNum(r.data);
+					})
+					.catch(err => {});
+			},
 		}
 	};
 </script>
@@ -467,13 +471,13 @@
 			align-items: center;
 
 			.info-down-left {
+				position: relative;
 				display: flex;
 				flex-direction: column;
 				align-items: center;
 				width: 72rpx;
 				font-size: 24rpx;
 				color: rgba(110, 124, 135, 1);
-
 			}
 
 			.info-down-right {

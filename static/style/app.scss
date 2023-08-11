@@ -37,25 +37,25 @@ button {
 		background-color: $color-primary;
 		color: #ffffff;
 		font-size: $font-size-base;
-		
+
 		&[disabled] {
-			background-color: #D1D78C;
+			background-color: #d1d78c;
 		}
-		
+
 		&[plain] {
 			color: $color-primary;
 			border: 1rpx solid $color-primary;
-			
+
 			&.button-hover {
 				color: rgba($color: $color-primary, $alpha: 0.5);
 				border: 1rpx solid rgba($color: $color-primary, $alpha: 0.5);
 			}
 		}
-		
+
 		&.button-hover {
 			background-color: #d5da91;
 		}
-		
+
 		&::after {
 			border: 0;
 		}
@@ -65,7 +65,7 @@ button {
 		&[plain] {
 			color: $text-color-assist;
 			border: 1rpx solid $text-color-assist;
-			
+
 			&.button-hover {
 				color: rgba($color: $text-color-assist, $alpha: 0.5);
 				border: 1rpx solid rgba($color: $text-color-assist, $alpha: 0.5);
@@ -82,7 +82,8 @@ uni-toast {
 	z-index: 10000;
 }
 
-uni-modal, uni-modal .uni-modal {
+uni-modal,
+uni-modal .uni-modal {
 	z-index: 10001;
 }
 
@@ -99,7 +100,7 @@ uni-modal, uni-modal .uni-modal {
 }
 
 .bg-transparent {
-  background-color: transparent !important;
+	background-color: transparent !important;
 }
 
 .bg-primary {
@@ -119,7 +120,7 @@ uni-modal, uni-modal .uni-modal {
 }
 
 .invisible {
-  visibility: hidden !important;
+	visibility: hidden !important;
 }
 
 .d-inline {
@@ -492,4 +493,11 @@ uni-modal, uni-modal .uni-modal {
 
 .p-10 {
 	padding: 10rpx;
+}
+
+.no-list {
+	text-align: center;
+	margin-top: 100rpx;
+	color: #4d716f;
+	font-weight: 500;
 }
