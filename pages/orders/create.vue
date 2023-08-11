@@ -23,15 +23,15 @@
 					<view class="detail-container">
 						<view class="sku-title">商品信息</view>
 						<view class="sku-list">
-							<view v-for="(sku, skuIndex) in orderInfo.skuList" :key="skuIndex" class="sku-item">
-								<image :src="sku.img"></image>
+							<view v-for="(sku, skuIndex) in orderInfo.productList" :key="skuIndex" class="sku-item">
+								<image :src="$mImgHost(sku.imageCover)"></image>
 								<view class="sku-content">
-									<view class="title">{{ sku.title }}</view>
-									<text>¥{{ sku.current }}/份</text>
+									<view class="title">{{ sku.productTitle }}</view>
+									<text>¥{{ sku.pricesFormat }}/{{ sku.unit }}</text>
 								</view>
-								<view class="content-num">x {{ sku.num }}</view>
+								<view class="content-num">x {{ sku.quantity }}</view>
 								<view class="content-price">
-									<text>¥{{ sku.current }}</text>
+									<text>¥{{ sku.totalPricesFormat }}</text>
 								</view>
 							</view>
 						</view>
@@ -47,11 +47,16 @@
 					</view>
 					<view class="price-container">
 						<view class="cell-list">
-							<view class="cell-item"><text>商品金额</text><text>¥80.00</text></view>
-							<view class="cell-item"><text>餐盒费</text><text>¥0.00</text></view>
-							<view class="cell-item"><text>配送费</text><text>¥0.00</text></view>
-							<view class="cell-item"><text>优惠费</text><text>¥0.00</text></view>
-							<view class="cell-item"><text>实付款</text><text>¥0.00</text></view>
+							<view class="cell-item">
+								<text>商品金额</text><text>¥{{ orderInfo.productPrices | emptyValue }}</text></view>
+							<view class="cell-item">
+								<text>餐盒费</text><text>¥{{ orderInfo.mealBoxFee | emptyValue }}</text></view>
+							<view class="cell-item">
+								<text>配送费</text><text>¥{{ orderInfo.deliveryFee | emptyValue }}</text></view>
+							<view class="cell-item">
+								<text>优惠费</text><text>¥{{ orderInfo.discountAmount | emptyValue }}</text></view>
+							<view class="cell-item"><text>实付款</text><text>¥{{ orderInfo.payAmount | emptyValue }}</text>
+							</view>
 						</view>
 					</view>
 					<view class="pay-container">
@@ -62,7 +67,7 @@
 										<u-icon name="integral" color="#C8C8C8" size="32"></u-icon>
 										<text>余额支付</text>
 									</view>
-									<text class="cell-item-value">余额不足</text>
+									<text class="cell-item-value">{{ orderInfo.userBalances && orderInfo.userBalances > orderInfo.payAmount ? orderInfo.userBalances : '余额不足' }}</text>
 								</view>
 								<view class="cell-item">
 									<view class="cell-item-title">
@@ -76,7 +81,7 @@
 					</view>
 				</view>
 				<view class="button-group">
-					<text>实付款：¥80.00</text>
+					<text>实付款：¥{{ orderInfo.payAmount | emptyValue }}</text>
 					<view class="buy-button" @tap="navTo('/pages/orders/pay')">去结算</view>
 				</view>
 			</view>
@@ -85,35 +90,53 @@
 </template>
 
 <script>
+	import {
+		orderCreate
+	} from '@/api/url';
 	export default {
 		components: {},
 		data() {
 			return {
-				orderInfo: {
-					orderId: 1,
-					orderNo: '3897497579795677689',
-					status: 4,
-					skuList: [{
-						skuId: 11,
-						title: '韩式炒年糕',
-						price: 39,
-						current: 29,
-						num: 1,
-						img: 'https://img.js.design/assets/img/62d27af891c472310a453e44.png'
-					}, {
-						skuId: 12,
-						title: '葱油拌面',
-						price: 39,
-						current: 35,
-						num: 2,
-						img: 'https://img.js.design/assets/img/62d27af8b10f3369c549297a.png'
-					}],
-				},
+				orderInfo: {},
 				value: 'weixin',
 			};
 		},
-		onLoad() {},
+		filters: {
+			// 数据格式化
+			emptyValue(val) {
+				if (val === undefined || val === null) {
+					return '-'
+				} else {
+					return val
+				}
+			}
+		},
+		onLoad(options) {
+			console.log('===options.cartIdList', options.cartIdList)
+			this.cartIdList = JSON.parse(options.cartIdList)
+			this.createOrder()
+		},
 		methods: {
+			// 创建订单
+			async createOrder() {
+				const params = {
+					productId: null,
+					cartIdList: this.cartIdList,
+					latitude: 0,
+					longitude: 0
+				}
+				console.log('===创建订单参数', params)
+				await this.$http
+					.post(`${orderCreate}`, params)
+					.then(async r => {
+						console.log('====orderInfo', r.data)
+						this.orderInfo = r.data
+					})
+					.catch(err => {
+						this.$mHelper.toast('订单创建失败，请稍后重试');
+						this.$mRouter.back();
+					});
+			},
 			radioGroupChange(e) {
 				console.log(e);
 			},
@@ -122,7 +145,9 @@
 				console.log(e);
 			},
 			navTo(route) {
-				this.$mRouter.push({ route });
+				this.$mRouter.push({
+					route
+				});
 			},
 		}
 	};
@@ -160,7 +185,7 @@
 					display: flex;
 					flex-direction: column;
 					gap: 20rpx;
-					
+
 					view {
 						display: flex;
 						align-items: baseline;

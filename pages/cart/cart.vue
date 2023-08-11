@@ -129,7 +129,6 @@
 					.post(`${cartList}`)
 					.then(async r => {
 						this.cartList = r.data;
-						console.log('checkedList', this.checkedList)
 						if (this.checkedList.length) {
 							this.cartList.map(item => {
 								this.checkedList.map(checkedItem => {
@@ -162,7 +161,6 @@
 			},
 			// 删除购物车
 			handleRemoveCart() {
-				// console.log('==checkedList', this.checkedList)
 				const _this = this
 				uni.showModal({
 					content: '确定要移除此商品吗？',
@@ -182,7 +180,6 @@
 					.then(async r => {
 						// 选中列表去除该项
 						this.checkedList.splice(this.checkedList.indexOf(item))
-						console.log('===checkedList', this.checkedList)
 						this.getCartList()
 					})
 					.catch(err => {});
@@ -193,21 +190,8 @@
 					this.$mHelper.toast('请先选择商品');
 					return;
 				}
-				this.navTo('/pages/orders/create')
-				// this.createOrder()
+				this.navTo(`/pages/orders/create?cartIdList=${JSON.stringify(this.checkedList)}`)
 			},
-			async createOrder() {
-				const params = {
-					productList: []
-				}
-				await this.$http
-					.post(`${orderCreate}`, params)
-					.then(async r => {
-						console.log('====r', r)
-						// this.navTo('/pages/orders/create')
-					})
-					.catch(err => {});
-			}
 		}
 	}
 </script>
