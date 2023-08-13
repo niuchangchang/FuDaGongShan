@@ -169,7 +169,7 @@
 				this.checkedList = []
 				this.cartList.map(item => {
 					item.checked = e.value;
-					this.checkedList.push(item.cartId)
+					if(e.value) this.checkedList.push(item.cartId)
 				})
 				// console.log('===allChecked', this.allChecked)
 				// console.log('====checkedList', this.checkedList)
@@ -321,7 +321,7 @@
 
 					.button {
 						display: flex;
-						align-items: baseline;
+						align-items: center;
 
 						.remove {
 							font-size: 26rpx;

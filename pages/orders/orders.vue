@@ -16,132 +16,118 @@
 					class="swiper-box" duration="300">
 					<swiper-item class="tab-content" v-for="(tabItem, tabIndex) in orderNavList" :key="tabIndex">
 						<scroll-view class="order-list" scroll-y @scrolltolower="onreachBottom">
-							<!-- <view class="order-list"> -->
-							<view v-for="(item, index) in orderList" :key="index" class="order-item"
-								@tap="navTo('/pages/orders/detail')">
-								<view class="order-title">
-									<view>订单号：{{ item.orderNo }}</view>
-									<view class="status">{{ item.status | orderStatus }}</view>
-								</view>
-								<view class="sku-list">
-									<view v-for="(sku, skuIndex) in item.skuList" :key="skuIndex" class="sku-item">
-										<image :src="sku.img"></image>
-										<view class="sku-content">
-											<view class="title">{{ sku.title }}</view>
-											<view class="content">
-												<view class="content-price">
-													<text>¥{{ sku.current }}</text>
-													<text>¥{{ sku.price }}</text>
+							<template v-if="orderList.length">
+								<view v-for="(item, index) in orderList" :key="index" class="order-item">
+									<view class="order-title">
+										<view>订单号：{{ item.orderNo }}</view>
+										<view class="status">{{ item.orderStatusDescription }}</view>
+									</view>
+									<view class="sku-list">
+										<view v-for="(sku, skuIndex) in item.orderProductList" :key="skuIndex"
+											class="sku-item">
+											<image :src="$mImgHost(sku.imageCover)"></image>
+											<view class="sku-content">
+												<view class="title">{{ sku.productTitle }}</view>
+												<view class="content">
+													<view class="content-price">
+														<text>¥{{ sku.payAmountFormat }}</text>
+														<!-- <text>¥{{ sku.price }}</text> -->
+													</view>
+													<view class="content-num">x {{ sku.quantity }}</view>
 												</view>
-												<view class="content-num">x {{ sku.num }}</view>
 											</view>
 										</view>
 									</view>
+									<!-- 待付款 -->
+									<view v-if="item.orderStatus === 0" class="button-group">
+										<u-button type="info"
+											:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">取消订单</u-button>
+										<u-button type="info"
+											:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}"
+											@click="navTo('/pages/orders/detail')">查看订单</u-button>
+										<u-button @click="handlePay(item)" type="info"
+											:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">付款</u-button>
+									</view>
+									<!-- 待配送 -->
+									<view v-if="item.orderStatus === 1" class="button-group">
+										<u-button type="info"
+											:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
+										<u-button type="info"
+											:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}"
+											@click="navTo('/pages/orders/detail')">查看订单</u-button>
+									</view>
+									<!-- 已完成 -->
+									<view v-if="item.orderStatus === 2" class="button-group">
+										<u-button type="info"
+											:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
+										<u-button type="info"
+											:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">删除订单</u-button>
+										<u-button type="info"
+											:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}"
+											@click="navTo('/pages/orders/detail')">查看订单</u-button>
+										<u-button type="info"
+											:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">待评价</u-button>
+									</view>
 								</view>
-								<!-- 待付款 -->
-								<view v-if="item.status === 1" class="button-group">
-									<u-button type="info"
-										:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
-									<u-button type="info"
-										:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">取消订单</u-button>
-									<u-button type="info"
-										:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">付款</u-button>
-								</view>
-								<!-- 待配送 -->
-								<view v-if="item.status === 2" class="button-group">
-									<u-button type="info"
-										:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
-									<u-button type="info"
-										:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">查看订单</u-button>
-									<u-button type="info"
-										:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">付款</u-button>
-								</view>
-								<!-- 已完成 -->
-								<view v-if="item.status === 3" class="button-group">
-									<u-button type="info"
-										:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
-									<u-button type="info"
-										:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">删除订单</u-button>
-									<u-button type="info"
-										:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">查看订单</u-button>
-									<u-button type="info"
-										:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">待评价</u-button>
-								</view>
-							</view>
-							<!-- </view> -->
+							</template>
+							<template v-else>
+								<view class="no-list">暂无订单</view>
+							</template>
 						</scroll-view>
 					</swiper-item>
 				</swiper>
-
 			</view>
 		</content>
 	</view>
 </template>
 
 <script>
-	import mConstDataConfig from '@/config/constData.config.js';
+	import {
+		orderList,
+		orderRePay
+	} from '@/api/url';
+	// import mConstDataConfig from '@/config/constData.config.js';
 	export default {
 		components: {},
 		data() {
 			return {
+				keyword: '',
 				current: 0,
 				swiperCurrent: 0,
 				orderNavList: this.$mConstDataConfig.orderNavList,
-				orderList: [{
-					orderId: 1,
-					orderNo: '3897497579795677689',
-					status: 1,
-					skuList: [{
-						skuId: 11,
-						title: '韩式炒年糕',
-						price: 39,
-						current: 29,
-						num: 1,
-						img: 'https://img.js.design/assets/img/62d27af891c472310a453e44.png'
-					}, {
-						skuId: 12,
-						title: '葱油拌面',
-						price: 39,
-						current: 35,
-						num: 2,
-						img: 'https://img.js.design/assets/img/62d27af8b10f3369c549297a.png'
-					}]
-				}, {
-					orderId: 2,
-					orderNo: '3897497579795677689',
-					status: 2,
-					skuList: [{
-						skuId: 11,
-						title: '韩式炒年糕',
-						price: 39,
-						current: 29,
-						num: 1,
-						img: 'https://img.js.design/assets/img/62d27af891c472310a453e44.png'
-					}]
-				}, {
-					orderId: 3,
-					orderNo: '3897497579795677689',
-					status: 3,
-					skuList: [{
-						skuId: 11,
-						title: '韩式炒年糕',
-						price: 39,
-						current: 29,
-						num: 1,
-						img: 'https://img.js.design/assets/img/62d27af891c472310a453e44.png'
-					}]
-				}],
+				orderList: [],
 			}
 		},
 		computed: {},
 		filters: {
-			orderStatus(val) {
-				console.log('====val', mConstDataConfig.orderStatus)
-				const statusText = mConstDataConfig.orderStatus.filter(item => item.key === val)[0].value
-				return statusText
-			}
+			// orderStatus(val) {
+			// 	console.log('====val', mConstDataConfig.orderStatus)
+			// 	const statusText = mConstDataConfig.orderStatus.filter(item => item.key === val)[0].value
+			// 	return statusText
+			// }
+		},
+		onShow() {
+			this.getOrderList()
+		},
+		onLoad(options) {
+			// console.log('===options', options.state)
+			this.current = Number(options.state) + 1
 		},
 		methods: {
+			async getOrderList() {
+				const orderStatus = this.orderNavList[this.swiperCurrent].state
+				await this.$http
+					.post(`${orderList}`, {
+						keyWord: this.keyword,
+						orderStatus: orderStatus,
+						page: 1,
+						limit: 20,
+					})
+					.then(async r => {
+						this.orderList = r.data;
+					})
+					.catch(err => {});
+			},
 			navTo(route) {
 				this.$mRouter.push({
 					route
@@ -150,6 +136,7 @@
 			// tabs通知swiper切换
 			tabsChange(index) {
 				this.swiperCurrent = index;
+				this.getOrderList()
 			},
 			// swiper-item左右移动，通知tabs的滑块跟随移动
 			transition(e) {
@@ -167,7 +154,25 @@
 			// scroll-view到底部加载更多
 			onreachBottom() {
 
-			}
+			},
+			// 结算
+			async handlePay(item) {
+				const params = {
+					orderId: item.id,
+					payType: item.payType
+				}
+				console.log('===结算参数', params)
+				await this.$http
+					.post(`${orderRePay}`, params)
+					.then(r => {
+						console.log('====pay result', r.data)
+						this.$mHelper.toast('订单支付成功');
+						this.getOrderList()
+					})
+					.catch(err => {
+						this.$mHelper.toast('订单支付失败，请重试');
+					});
+			},
 		}
 	}
 </script>
@@ -194,7 +199,8 @@
 			flex-direction: column;
 			gap: 34rpx;
 			height: 100%;
-			padding: 30rpx;
+			width: 100%;
+			padding-top: 30rpx;
 			overflow: auto;
 
 			.order-item {
@@ -202,6 +208,7 @@
 				flex-direction: column;
 				gap: 16rpx;
 				padding: 22rpx 20rpx 22rpx 10rpx;
+				margin: 0 40rpx 40rpx;
 				border-radius: 10px;
 				background: #FFFFFF;
 				box-shadow: 1px 1px 2px #FFFFFF, inset -1px -1px 0px #FFFFFF, inset 1px 1px 0px #FFFFFF, -3px -3px 7px #FFFFFF, 3px 3px 7px #71AD91;

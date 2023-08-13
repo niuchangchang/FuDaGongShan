@@ -20,31 +20,31 @@ export default {
 		{
 			title: '待付款',
 			icon: 'iconfont icon-qianbao',
-			url: '/pages/order/order?state=0',
+			url: '/pages/orders/orders?state=0',
 			num: null
 		},
 		{
 			title: '待配送',
 			icon: 'iconfont icon-wuliu',
-			url: '/pages/order/order?state=1',
+			url: '/pages/orders/orders?state=1',
 			num: null
 		},
 		{
 			title: '已完成',
 			icon: 'iconfont icon-wancheng',
-			url: '/pages/order/order?state=2',
+			url: '/pages/orders/orders?state=2',
 			num: null
 		},
 		{
 			title: '已取消',
 			icon: 'iconfont icon-shousuo',
-			url: '/pages/order/order?state=3',
+			url: '/pages/orders/orders?state=3',
 			num: null
 		},
 		{
 			title: '全部订单',
 			icon: 'iconfont icon-wenjian',
-			url: '/pages/order/order?state=0',
+			url: '/pages/orders/orders?state=-1',
 			num: null
 		},
 	],
@@ -59,11 +59,11 @@ export default {
 
 	// 订单状态
 	orderStatus: [
-		{ key: 1, value: '待付款' },
-		{ key: 2, value: '待配送' },
-		{ key: 3, value: '已完成' },
-		{ key: 4, value: '待评价' },
-		{ key: 5, value: '已取消' },
+		{ key: 0, value: '待付款' },
+		{ key: 1, value: '待配送' },
+		{ key: 2, value: '已完成' },
+		{ key: 3, value: '已取消' },
+		{ key: 4, value: '已退货' },
 	],
 
 	// 订单退货状态
@@ -85,16 +85,18 @@ export default {
 
 	// 订单状态导航
 	orderNavList: [
-		{ state: -1, text: '全部' },
+		{ state: null, text: '全部' },
 		{ state: 0, text: '待付款' },
 		{ state: 1, text: '待配送' },
 		{ state: 2, text: '已完成' },
-		{ state: 3, text: '已取消' }
+		{ state: 3, text: '已取消' },
+		{ state: 4, text: '已退货' },
 	],
 
 	// 支付方式
 	payTypeList: [
-		{ state: 1, text: '微信支付'},
+		{ state: 0, text: '余额'},
+		{ state: 1, text: '微信'},
 		{ state: 2, text: '其他'}
 	],
 

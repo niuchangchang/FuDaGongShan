@@ -112,6 +112,8 @@
 		components: {},
 		data() {
 			return {
+				productId: null,
+				cartIdList: null,
 				orderInfo: {},
 				sideboardList: [],
 				sideboardInfo: {},
@@ -132,15 +134,15 @@
 			}
 		},
 		onLoad(options) {
-			console.log('===options.cartIdList', options.cartIdList)
-			this.cartIdList = JSON.parse(options.cartIdList)
+			this.productId = options.productId
+			this.cartIdList = options.cartIdList ? JSON.parse(options.cartIdList) : null
 			this.createOrder()
 		},
 		methods: {
 			// 创建订单
 			async createOrder() {
 				const params = {
-					productId: null,
+					productId: this.productId,
 					cartIdList: this.cartIdList,
 					latitude: 0,
 					longitude: 0

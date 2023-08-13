@@ -263,6 +263,8 @@
 			toAdd(type, item) {
 				switch (type) {
 					case 'buy':
+						// console.log('===item', item)
+						this.navTo(`/pages/orders/create?productId=${item.id}`)
 						break;
 					case 'cart':
 						this.addCart(item)

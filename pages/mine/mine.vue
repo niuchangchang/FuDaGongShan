@@ -16,7 +16,7 @@
 						</view>
 					</view>
 					<view class="order-section">
-						<view v-for="(item,index) in orderSectionList" class="order-section-item" @tap="navTo('/pages/orders/orders')">
+						<view v-for="(item, index) in orderSectionList" :key="index" class="order-section-item" @tap="navTo(`${item.url}`)">
 							<i class="iconfont" :class="[item.icon]" />
 							<text>{{item.title}}</text>
 						</view>
@@ -25,7 +25,7 @@
 				<view class="public-container">
 					<view class="qb-title">我的钱包</view>
 					<view class="wdqianbao">
-						<view v-for="(item,index) in amountList" class="wdqianbao-item">
+						<view v-for="(item, index) in amountList" :key="index" class="wdqianbao-item">
 							<text>0</text>
 							<text>{{item.title}}</text>
 						</view>
@@ -61,6 +61,7 @@
 		onLoad() {},
 		methods: {
 			navTo(route) {
+				console.log('===route', route)
 				this.$mRouter.push({ route });
 			},
 		}
