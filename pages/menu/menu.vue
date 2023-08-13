@@ -287,6 +287,7 @@
 					.then(async r => {
 						this.cartNum = r.data
 						this.setCartNum(r.data);
+						this.list = this.$mConstDataConfig.tabbarList
 					})
 					.catch(err => {});
 			},

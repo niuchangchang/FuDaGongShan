@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
 Vue.use(Vuex)
+
+import $mConstDataConfig from '@/config/constData.config';
+
 
 const ACCESSTOKEN = uni.getStorageSync('accessToken') || '';
 const USERINFO = uni.getStorageSync('userInfo') || {};
@@ -49,7 +51,10 @@ const store = new Vuex.Store({
 		},
 		setCartNum(state, provider) {
 			state.cartNum = provider;
+			// 更新 tabbar 购物车数量
 			uni.setStorageSync('cartNum', provider);
+			$mConstDataConfig.tabbarList[3].count = provider
+
 		},
 	},
 	actions: {

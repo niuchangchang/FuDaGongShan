@@ -29,6 +29,10 @@ const cartCount = '/wx/orders/cartcount';
 
 // 创建订单
 const orderCreate = '/wx/orders/orderscreate';
+// 订单结算
+const orderPay = '/wx/orders/orderssettlement';
+// 订单重新结算
+const orderRePay = '/wx/orders/orderspayment';
 
 
 export {
@@ -42,5 +46,7 @@ export {
 	removeCart,
 	cartList,
 	cartCount,
-	orderCreate
+	orderCreate,
+	orderPay,
+	orderRePay
 };

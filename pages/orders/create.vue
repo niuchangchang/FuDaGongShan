@@ -5,18 +5,18 @@
 		<content :has-bottom="false">
 			<view class="order-container">
 				<view class="info-container">
-					<view class="confirm-container">
+					<view class="confirm-container" v-if="sideboardList.length">
 						<view class="address">
 							<view class="address-text">
-								<view>
-									<text>上海融创茂GO店</text>
+								<view @click="chooseSideboard">
+									<text>{{ sideboardInfo.title }}</text>
 									<u-icon name="arrow-right" size="40"></u-icon>
 								</view>
 								<view>
 									<u-icon name="map" size="30"></u-icon>
-									<text>距离您 0.2km</text>
+									<text>距离您{{ sideboardInfo.distance }}km</text>
 								</view>
-								<text>联系电话：15888886666</text>
+								<text>联系电话：{{ sideboardInfo.tel }}</text>
 							</view>
 						</view>
 					</view>
@@ -37,68 +37,88 @@
 						</view>
 
 						<view class="price-sum">
-							<view class="">合计: ¥80.00</view>
+							<view class="">合计: ¥{{ orderInfo.payAmountFormat }}</view>
 						</view>
 						<u-cell-group :border="false">
-							<u-cell-item title="卡券" value="请选择"></u-cell-item>
-							<u-cell-item title="红包" value="请选择"></u-cell-item>
+							<u-cell-item title="优惠券" :value="couponList.length ? (couponInfo.text || '请选择') : '暂无优惠券'" @click="chooseCoupon"></u-cell-item>
+							<!-- <u-cell-item title="红包" value="请选择"></u-cell-item> -->
 							<!-- <u-cell-item title="备注" :border-bottom="false"></u-cell-item> -->
 						</u-cell-group>
 					</view>
 					<view class="price-container">
 						<view class="cell-list">
 							<view class="cell-item">
-								<text>商品金额</text><text>¥{{ orderInfo.productPrices | emptyValue }}</text></view>
+								<text>商品金额</text><text>¥{{ orderInfo.productPricesFormat | emptyValue }}</text>
+							</view>
 							<view class="cell-item">
-								<text>餐盒费</text><text>¥{{ orderInfo.mealBoxFee | emptyValue }}</text></view>
+								<text>餐盒费</text><text>¥{{ orderInfo.mealBoxFeeFormat | emptyValue }}</text>
+							</view>
 							<view class="cell-item">
-								<text>配送费</text><text>¥{{ orderInfo.deliveryFee | emptyValue }}</text></view>
+								<text>配送费</text><text>¥{{ orderInfo.deliveryFeeFormat | emptyValue }}</text>
+							</view>
 							<view class="cell-item">
-								<text>优惠费</text><text>¥{{ orderInfo.discountAmount | emptyValue }}</text></view>
-							<view class="cell-item"><text>实付款</text><text>¥{{ orderInfo.payAmount | emptyValue }}</text>
+								<text>优惠费</text><text>¥{{ orderInfo.discountAmountFormat | emptyValue }}</text>
+							</view>
+							<view class="cell-item">
+								<text>实付款</text><text>¥{{ orderInfo.payAmountFormat | emptyValue }}</text>
 							</view>
 						</view>
 					</view>
 					<view class="pay-container">
-						<u-radio-group v-model="value" @change="radioGroupChange">
+						<u-radio-group v-model="orderInfo.payType" @change="radioGroupChange">
 							<view class="cell-list">
 								<view class="cell-item">
 									<view class="cell-item-title">
 										<u-icon name="integral" color="#C8C8C8" size="32"></u-icon>
 										<text>余额支付</text>
 									</view>
-									<text class="cell-item-value">{{ orderInfo.userBalances && orderInfo.userBalances > orderInfo.payAmount ? orderInfo.userBalances : '余额不足' }}</text>
+									<view class="cell-item-content">
+										<text class="cell-item-value">
+											{{ orderInfo.userBalancesFormat && orderInfo.userBalancesFormat > orderInfo.payAmountFormat ? orderInfo.userBalancesFormat : '余额不足' }}
+										</text>
+										<u-radio :name="0" active-color="#4D716F"></u-radio>
+									</view>
 								</view>
 								<view class="cell-item">
 									<view class="cell-item-title">
 										<u-icon name="weixin-circle-fill" color="#C8C8C8" size="32"></u-icon>
 										<text>微信支付</text>
 									</view>
-									<u-radio @change="radioChange" name="weixin" active-color="#4D716F"></u-radio>
+									<u-radio :name="1" active-color="#4D716F"></u-radio>
 								</view>
 							</view>
 						</u-radio-group>
 					</view>
 				</view>
 				<view class="button-group">
-					<text>实付款：¥{{ orderInfo.payAmount | emptyValue }}</text>
-					<view class="buy-button" @tap="navTo('/pages/orders/pay')">去结算</view>
+					<text>实付款：¥{{ orderInfo.payAmountFormat | emptyValue }}</text>
+					<view class="buy-button" @click="handlePay">去结算</view>
 				</view>
 			</view>
 		</content>
+		<!-- 选择取餐柜 -->
+		<u-action-sheet :list="sideboardList" v-model="showSideboard" @click="handleChooseSideboard"></u-action-sheet>
+		<!-- 选择优惠券 -->
+		<u-action-sheet :list="couponList" v-model="showCoupon" @click="handleChooseCoupon"></u-action-sheet>
 	</view>
 </template>
 
 <script>
 	import {
-		orderCreate
+		orderCreate,
+		orderPay
 	} from '@/api/url';
 	export default {
 		components: {},
 		data() {
 			return {
 				orderInfo: {},
-				value: 'weixin',
+				sideboardList: [],
+				sideboardInfo: {},
+				couponList: [],
+				couponInfo: {},
+				showSideboard: false,
+				showCoupon: false,
 			};
 		},
 		filters: {
@@ -128,26 +148,72 @@
 				console.log('===创建订单参数', params)
 				await this.$http
 					.post(`${orderCreate}`, params)
-					.then(async r => {
+					.then(r => {
 						console.log('====orderInfo', r.data)
 						this.orderInfo = r.data
+						this.sideboardList = this.orderInfo.sideboardList.map(item => {
+							return { ...item, text: item.title }
+						})
+						this.sideboardInfo = this.sideboardList.filter(item => item.id === this.orderInfo.sideboardId)[0]
+						// this.couponList = this.orderInfo.couponList.map(item => {
+						// 	return { ...item, text: item.name }
+						// })
+						this.couponList = [{
+							id: 0,
+							title: '优惠券一',
+							text: '优惠券一'
+						}, {
+							id: 1,
+							title: '优惠券二',
+							text: '优惠券二'
+						}]
+						// 找到默认显示的优惠券
+						this.couponInfo = this.couponList.filter(item => item.id === this.orderInfo.couponId)[0]
 					})
 					.catch(err => {
 						this.$mHelper.toast('订单创建失败，请稍后重试');
 						this.$mRouter.back();
 					});
 			},
+			// 选中任一radio时，由radio-group触发
 			radioGroupChange(e) {
 				console.log(e);
 			},
-			// 选中某个单选框时，由radio时触发
-			radioChange(e) {
-				console.log(e);
+			// 选择取餐点
+			chooseSideboard() {
+				if(!this.sideboardList.length) return false;
+				this.showSideboard = true
 			},
-			navTo(route) {
-				this.$mRouter.push({
-					route
-				});
+			handleChooseSideboard(index) {
+				this.sideboardInfo = this.sideboardList[index]
+				this.orderInfo.sideboardId = this.sideboardInfo.id
+			},
+			// 选择优惠券
+			chooseCoupon() {
+				if(!this.couponList.length) return false;
+				this.showCoupon = true
+			},
+			handleChooseCoupon(index) {
+				this.couponInfo = this.couponList[index]
+				this.orderInfo.couponId = this.couponInfo.id
+			},
+			// 结算
+			async handlePay() {
+				const params = {
+					...this.orderInfo
+				}
+				console.log('===结算参数', params)
+				await this.$http
+					.post(`${orderPay}`, params)
+					.then(r => {
+						console.log('====pay result', r.data)
+						this.$mHelper.toast('订单支付成功');
+						// this.$mRouter.redirectTo('/pages/orders/pay');
+						this.$mRouter.redirectTo({ route: '/pages/orders/pay' });
+					})
+					.catch(err => {
+						this.$mHelper.toast('订单支付失败，请重试');
+					});
 			},
 		}
 	};
@@ -364,6 +430,12 @@
 					display: flex;
 					align-items: center;
 					gap: 10rpx;
+				}
+				
+				.cell-item-content {
+					display: flex;
+					align-content: center;
+					gap: 20rpx;
 				}
 
 				.cell-item-value {

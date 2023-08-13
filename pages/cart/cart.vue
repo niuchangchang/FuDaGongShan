@@ -64,11 +64,13 @@
 
 <script>
 	import {
+		cartCount,
 		cartList,
 		updateCart,
 		removeCart,
 		orderCreate
 	} from '@/api/url';
+	import { mapMutations } from 'vuex';
 	export default {
 		data() {
 			return {
@@ -78,8 +80,9 @@
 				allChecked: false,
 			}
 		},
-		onShow() {
-			this.getCartList()
+		async onShow() {
+			await this.getCartCount()
+			await this.getCartList()
 		},
 		computed: {
 			totalPrice() {
@@ -96,24 +99,70 @@
 			}
 		},
 		methods: {
+			...mapMutations(['setCartNum']),
+			async getCartCount() {
+				await this.$http
+					.post(`${cartCount}`)
+					.then(async r => {
+						this.setCartNum(r.data);
+						this.list = this.$mConstDataConfig.tabbarList
+					})
+					.catch(err => {});
+			},
 			navTo(route) {
 				this.$mRouter.push({
 					route
 				});
 			},
-			// 整租复选框改变时，由checkbox-group时触发
+			// 获取购物车列表
+			async getCartList() {
+				await this.$http
+					.post(`${cartList}`)
+					.then(async r => {
+						this.cartList = r.data;
+						// 去除cartList没有的选中项
+						const newCheckedList = []
+						this.cartList.map(item => {
+							const hasItem = this.checkedList.filter(filterItem => filterItem === item.cartId)
+							if(hasItem.length) {
+								newCheckedList.push(item.cartId)
+							}
+						})
+						setTimeout(()=> {
+							this.checkedList = newCheckedList
+							if (this.checkedList.length) {
+								// 回显选中项
+								this.cartList.map(item => {
+									this.checkedList.map(checkedItem => {
+										if (item.cartId === checkedItem) {
+											item.checked = true
+										}
+									})
+								})
+								this.allChecked = this.checkedList.length === this.cartList.length
+							} else {
+								this.allChecked = false
+							}
+						}, 100)
+					})
+					.catch(err => {});
+			},
+			// 整组复选框改变时，由checkbox-group时触发
 			checkboxGroupChange(e) {
-				this.checkedList = e
-				this.allChecked = this.checkedList.length === this.cartList.length
+				// console.log('==整组选中数组', e)
+				// this.checkedList = e
+				// this.allChecked = this.checkedList.length === this.cartList.length
 			},
 			// 选中某个复选框时，由checkbox时触发
 			checkboxChange(e) {
-				// this.$nextTick(() => {
-				// 	const isCheckAll = this.cartList.filter(item => {
-				// 		return !item.checked
-				// 	})
-				// 	this.allChecked = !isCheckAll.length
-				// })
+				// console.log('===e', e.name, e.value)
+				if(e.value) {
+					this.checkedList.push(e.name)
+				} else {
+					this.checkedList.splice(this.checkedList.indexOf(e.value), 1)
+				}
+				// console.log('====checkedList', this.checkedList.length)
+				this.allChecked = this.checkedList.length === this.cartList.length
 			},
 			// 选中全选时，由checkbox时触发
 			allCheckboxChange(e) {
@@ -122,26 +171,8 @@
 					item.checked = e.value;
 					this.checkedList.push(item.cartId)
 				})
-			},
-			// 获取购物车列表
-			async getCartList() {
-				await this.$http
-					.post(`${cartList}`)
-					.then(async r => {
-						this.cartList = r.data;
-						if (this.checkedList.length) {
-							this.cartList.map(item => {
-								this.checkedList.map(checkedItem => {
-									if (item.cartId === checkedItem) {
-										item.checked = true
-									}
-								})
-							})
-						} else {
-							this.allChecked = false
-						}
-					})
-					.catch(err => {});
+				// console.log('===allChecked', this.allChecked)
+				// console.log('====checkedList', this.checkedList)
 			},
 			// 数量变化
 			valChange(item) {
@@ -169,6 +200,7 @@
 							_this.checkedList.map(item => {
 								_this.removeCart(item)
 							})
+							_this.getCartCount()
 						}
 					}
 				});
@@ -178,8 +210,6 @@
 				await this.$http
 					.post(`${removeCart}/${item}`)
 					.then(async r => {
-						// 选中列表去除该项
-						this.checkedList.splice(this.checkedList.indexOf(item))
 						this.getCartList()
 					})
 					.catch(err => {});

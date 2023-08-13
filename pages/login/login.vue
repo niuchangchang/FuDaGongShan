@@ -31,10 +31,11 @@
 
 <script>
 	import {
-		mapMutations
+		mapMutations,
 	} from 'vuex'
 	import {
-		login
+		login,
+		cartCount
 	} from '@/api/url';
 
 	export default {
@@ -68,6 +69,7 @@
 		},
 		methods: {
 			...mapMutations(['SET_MEMBER']),
+			...mapMutations(['setCartNum']),
 			// 授权登录
 			toAuthLogin(e) {
 				console.log('====loginCode', this.code)
@@ -105,7 +107,10 @@
 						if (r.data) {
 							await _this.$mStore.commit('login', r.data);
 							_this.$mHelper.toast('登录成功');
-							_this.toPage()
+							setTimeout(async() => {
+								await _this.getCartCount()
+								_this.toPage()
+							}, 100)
 						}
 					}).catch((err) => {
 						_this.btnLoading = false;
@@ -133,7 +138,15 @@
 						route: '/pages/index/index'
 					});
 				}
-			}
+			},
+			async getCartCount() {
+				await this.$http
+					.post(`${cartCount}`)
+					.then(async r => {
+						this.setCartNum(r.data);
+					})
+					.catch(err => {});
+			},
 		}
 	}
 </script>

@@ -128,6 +128,7 @@ export default {
 			iconPath: "shopping-cart",
 			selectedIconPath: "shopping-cart",
 			text: '购物车',
+			count: 0,
 			pagePath: "/pages/cart/cart"
 		},
 		{

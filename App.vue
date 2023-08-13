@@ -1,15 +1,31 @@
 <script>
-export default {
-	onLaunch: function() {
-		console.log('App Launch');
-	},
-	onShow: function() {
-		console.log('App Show');
-	},
-	onHide: function() {
-		console.log('App Hide');
-	}
-};
+	import {
+		cartCount,
+	} from '@/api/url';
+	import { mapMutations } from 'vuex';
+	export default {
+		onLaunch: function() {
+			console.log('App Launch');
+			this.getCartCount()
+		},
+		onShow: function() {
+			console.log('App Show');
+		},
+		onHide: function() {
+			console.log('App Hide');
+		},
+		methods: {
+			...mapMutations(['setCartNum']),
+			async getCartCount() {
+				await this.$http
+					.post(`${cartCount}`)
+					.then(async r => {
+						this.setCartNum(r.data);
+					})
+					.catch(err => {});
+			},
+		}
+	};
 </script>
 
 <style lang="scss">
