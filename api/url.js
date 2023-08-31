@@ -37,6 +37,22 @@ const orderRePay = '/wx/orders/orderspayment';
 const orderList = '/wx/orders/orderslist';
 
 
+// 中小企业餐饮定制
+const companyOrderCreate = '/wx/companyorder/add';
+
+
+
+// 配送
+
+// 配送列表
+const deliveryOrderList = '/wx/deliverys/list';
+// 接单
+const deliveryOrderReceive = '/wx/deliverys/receiving';
+// 存餐
+const deliveryOrderStorage = '/wx/deliverys/storage';
+
+
+
 export {
 	login,
 	indexUrl,
@@ -51,5 +67,9 @@ export {
 	orderCreate,
 	orderPay,
 	orderRePay,
-	orderList
+	orderList,
+	companyOrderCreate,
+	deliveryOrderList,
+	deliveryOrderReceive,
+	deliveryOrderStorage
 };

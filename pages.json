@@ -52,6 +52,16 @@
 				"navigationStyle": "custom"
 			}
 		}, {
+			"path": "pages/customize/customize",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/delivery/orders",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
 			"path": "pages/login/loading",
 			"style": {
 				"navigationStyle": "custom"

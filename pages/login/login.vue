@@ -105,7 +105,9 @@
 						console.log('=====登录返回结果', r)
 						_this.btnLoading = false;
 						if (r.data) {
-							await _this.$mStore.commit('login', r.data);
+							console.log('====r.data', r.data)
+							await _this.$mStore.commit('login', r.data.token);
+							await _this.$mStore.commit('setUserInfo', r.data.userInfo);
 							_this.$mHelper.toast('登录成功');
 							setTimeout(async() => {
 								await _this.getCartCount()

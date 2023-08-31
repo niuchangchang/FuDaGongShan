@@ -23,6 +23,14 @@
 						</view>
 					</view>
 				</view>
+				<view class="peisong" v-if="isDelivery" @tap="navTo('/pages/delivery/orders')">
+					<view class="navigators-left">
+						订单配送
+					</view>
+					<view class="navigators-right">
+						<u-icon name="arrow-right" size="34" color="#C4C4C4"></u-icon>
+					</view>
+				</view>
 				<view class="navigators">
 					<view class="left">
 						<view class="jrtj">今日推荐</view>
@@ -36,20 +44,25 @@
 								<view class="dazi">外卖点餐</view>
 								<view class="xiaozi">快递送达</view>
 							</view>
-							<view class="navigators-right"></view>
+							<view class="navigators-right">
+								<u-icon name="arrow-right" size="34" color="#C4C4C4"></u-icon>
+							</view>
 						</view>
-						<view class="dingzhi">
+						<view class="dingzhi" @tap="navTo('/pages/customize/customize')">
 							<view class="navigators-left">
 								<view class="dazi">中小企业餐饮定制</view>
 								<view class="xiaozi">企业专属订餐通道</view>
 							</view>
-							<view class="navigators-right"></view>
+							<view class="navigators-right">
+								<u-icon name="arrow-right" size="34" color="#C4C4C4"></u-icon>
+							</view>
 						</view>
 					</view>
 				</view>
 				<view class="member-news">
 					<!-- <image src="https://img-shop.qmimg.cn/s23107/2020/04/27/0039bf41c9ebd50a2c.jpg"></image> -->
-					<image v-for="(image, index) in pagedata.bottomBannerList" :src="getImageUrl(image.imageUrl)" :key="index"></image>
+					<image v-for="(image, index) in pagedata.bottomBannerList" :src="getImageUrl(image.imageUrl)"
+						:key="index"></image>
 				</view>
 			</view>
 		</content>
@@ -77,7 +90,9 @@
 </template>
 
 <script>
-	import { indexUrl } from '@/api/url';
+	import {
+		indexUrl
+	} from '@/api/url';
 	import indexConfig from '@/config/index.config';
 	import {
 		mapState,
@@ -88,20 +103,21 @@
 		data() {
 			return {
 				list: this.$mConstDataConfig.tabbarList,
+				isDelivery: false,
 				show: false,
-				pagedata:{
-					tadayProduct:[],
-					topBannerList:[],
-					bottomBannerList:[]
+				pagedata: {
+					tadayProduct: [],
+					topBannerList: [],
+					bottomBannerList: []
 				}
 			}
-
 		},
 		computed: {
 			...mapState(['userInfo']),
 			...mapGetters(['hasLogin'])
 		},
 		async onLoad() {
+			this.isDelivery = this.userInfo.isDelivery
 			await this.$http
 				.post(`${indexUrl}`, {
 					// pageNumber: 1,
@@ -109,23 +125,26 @@
 				})
 				.then(async r => {
 					// console.log(r);
-					this.$data.pagedata=r.data;
+					this.$data.pagedata = r.data;
 				})
-				.catch(err => {
-				});
+				.catch(err => {});
 		},
 		methods: {
 			navTo(route, type) {
 				if (type) {
-					this.$mRouter.switchTab({ route });
+					this.$mRouter.switchTab({
+						route
+					});
 				} else {
-					this.$mRouter.push({ route });
+					this.$mRouter.push({
+						route
+					});
 				}
 			},
 			//拼接图片地址，临时使用需要统一整理为公用函数
 			getImageUrl(image) {
-			      return indexConfig.fileUrl + image;
-			    },
+				return indexConfig.fileUrl + image;
+			},
 		}
 	}
 </script>
@@ -190,6 +209,13 @@
 	.content {
 		padding: 0 30rpx 40rpx;
 		margin-top: -60rpx;
+	}
+
+	.peisong {
+		color: #4D716F;
+		font-size: 40rpx;
+		margin-bottom: 40rpx;
+		background: #DAF2DD;
 	}
 
 	.entrance {
@@ -271,15 +297,16 @@
 			background-size: 100% 100%;
 			box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7), inset -1px -1px 0px rgba(255, 255, 255, 1), inset 1px 1px 0px rgba(255, 255, 255, 1), -3px -3px 7px rgba(255, 255, 255, 1), 3px 3px 7px rgba(113, 173, 145, 0.5);
 
-			.pic{
+			.pic {
 				width: 100%;
 				height: 100%;
-				
+
 				image {
 					width: 100%;
 					height: 100%;
-					}
+				}
 			}
+
 			.jrtj {
 				position: absolute;
 				top: 0;
@@ -304,41 +331,6 @@
 			flex-direction: column;
 			gap: 32rpx;
 
-			.waimai,
-			.dingzhi {
-				width: 100%;
-				display: flex;
-				flex: 1;
-				padding: 24rpx 18rpx 24rpx 30rpx;
-				align-items: center;
-				justify-content: space-between;
-				position: relative;
-				border-radius: 10rpx;
-				box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7), inset -1px -1px 0px rgba(255, 255, 255, 1), inset 1px 1px 0px rgba(255, 255, 255, 1), -3px -3px 7px rgba(255, 255, 255, 1), 3px 3px 7px rgba(113, 173, 145, 0.5);
-
-				.navigators-left {
-					background: none;
-					display: flex;
-					flex-direction: column;
-					gap: 12rpx;
-
-					.xiaozi {
-						font-size: 24rpx;
-						color: rgba(113, 130, 141, 1);
-					}
-
-					.dazi {
-						font-size: 32rpx;
-						color: rgba(113, 130, 141, 1);
-					}
-				}
-
-				.navigators-right {
-					width: 48rpx;
-					height: 48rpx;
-					background: rgba(255, 255, 255, 1);
-				}
-			}
 
 			.waimai {
 				background: rgba(228, 238, 232, 1);
@@ -352,6 +344,48 @@
 		}
 
 	}
+
+	.peisong,
+	.waimai,
+	.dingzhi {
+		width: 100%;
+		display: flex;
+		flex: 1;
+		padding: 24rpx 18rpx 24rpx 30rpx;
+		align-items: center;
+		justify-content: space-between;
+		position: relative;
+		border-radius: 10rpx;
+		box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7), inset -1px -1px 0px rgba(255, 255, 255, 1), inset 1px 1px 0px rgba(255, 255, 255, 1), -3px -3px 7px rgba(255, 255, 255, 1), 3px 3px 7px rgba(113, 173, 145, 0.5);
+
+		.navigators-left {
+			background: none;
+			display: flex;
+			flex-direction: column;
+			gap: 12rpx;
+
+			.xiaozi {
+				font-size: 24rpx;
+				color: rgba(113, 130, 141, 1);
+			}
+
+			.dazi {
+				font-size: 32rpx;
+				color: rgba(113, 130, 141, 1);
+			}
+		}
+
+		.navigators-right {
+			width: 48rpx;
+			height: 48rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background: rgba(255, 255, 255, 1);
+			border-radius: 50%;
+		}
+	}
+
 
 	.member-news {
 		width: 100%;

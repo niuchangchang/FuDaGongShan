@@ -2,11 +2,16 @@
 	import {
 		cartCount,
 	} from '@/api/url';
-	import { mapMutations } from 'vuex';
+	import { mapMutations, mapGetters } from 'vuex';
 	export default {
+		computed: {
+			...mapGetters(['hasLogin'])
+		},
 		onLaunch: function() {
 			console.log('App Launch');
-			this.getCartCount()
+			if(this.hasLogin) {
+				this.getCartCount()
+			} 
 		},
 		onShow: function() {
 			console.log('App Show');

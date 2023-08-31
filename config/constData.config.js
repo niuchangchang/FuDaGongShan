@@ -92,6 +92,22 @@ export default {
 		{ state: 3, text: '已取消' },
 		{ state: 4, text: '已退货' },
 	],
+	
+	// 配送订单状态导航
+	deliveryOrderNavList: [
+		{ state: 0, text: '待配送' },
+		{ state: 1, text: '配送中' },
+		{ state: 2, text: '已配送' },
+	],
+	
+	// 配送订单状态
+	deliveryOrderStatus: [
+		{ key: 0, value: '待配送' },
+		{ key: 1, value: '配送中' },
+		{ key: 2, value: '已配送' },
+		{ key: 3, value: '已取餐' },
+		{ key: 4, value: '已取消' },
+	],
 
 	// 支付方式
 	payTypeList: [

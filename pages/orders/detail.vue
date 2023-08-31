@@ -79,7 +79,7 @@
 							<image :src="sku.img"></image>
 							<view class="sku-content">
 								<view class="title">{{ sku.title }}</view>
-								<text>{{ sku.current }}份</text>
+								<text>{{ sku.current }}/份</text>
 							</view>
 							<view class="content-num">x {{ sku.num }}</view>
 							<view class="content-price">
