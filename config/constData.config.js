@@ -108,6 +108,17 @@ export default {
 		{ key: 3, value: '已取餐' },
 		{ key: 4, value: '已取消' },
 	],
+	
+	// 订单流程
+	orderProcessStatus: [
+		{ key: 0, value: '未通过' },
+		{ key: 1, value: '订单通过' },
+		{ key: 2, value: '订单已确认' },
+		{ key: 3, value: '制作完成' },
+		{ key: 4, value: '打包配送' },
+		{ key: 5, value: '已送达' },
+		{ key: 6, value: '已取餐' },
+	],
 
 	// 支付方式
 	payTypeList: [
@@ -131,14 +142,14 @@ export default {
 			pagePath: "/pages/index/index"
 		},
 		{
-			iconPath: "grid",
-			selectedIconPath: "grid",
+			iconPath: "list-dot",
+			selectedIconPath: "list-dot",
 			text: '点餐',
 			pagePath: "/pages/menu/menu"
 		},
 		{
-			iconPath: "plus-circle-fill",
-			selectedIconPath: "plus-circle-fill",
+			iconPath: "grid",
+			selectedIconPath: "grid",
 			midButton: true,
 			pagePath: "/pages/index/index_copy"
 		},

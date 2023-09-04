@@ -91,6 +91,13 @@ uni-modal .uni-modal {
 	z-index: 10002;
 }
 
+.u-loading {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-left: -10rpx;
+}
+
 .bg-base {
 	background-color: $bg-color;
 }

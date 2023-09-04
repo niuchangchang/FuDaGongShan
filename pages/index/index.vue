@@ -66,26 +66,7 @@
 				</view>
 			</view>
 		</content>
-		<u-popup v-model="show" mode="center" border-radius="16">
-			<view class="qucanma">
-				<text>取餐码</text>
-				<view class="address">
-					<u-icon name="photo" size="40"></u-icon>
-					<text>上海市黄浦区XX路30号写字楼...</text>
-				</view>
-				<view class="address">
-					<u-icon name="photo" size="40"></u-icon>
-					<text>5号柜31号格子</text>
-				</view>
-				<view class="divi"></view>
-				<view class="erweima">
-				</view>
-				<view class="close-button">
-					关闭
-				</view>
-			</view>
-		</u-popup>
-		<u-tabbar :list="list" :mid-button="true" active-color="#2AB07D" inactive-color="#C0C4CC"></u-tabbar>
+		<u-tabbar :list="list" :mid-button="true" mid-button-size="70" active-color="#2AB07D" inactive-color="#C0C4CC"></u-tabbar>
 	</view>
 </template>
 
@@ -104,7 +85,6 @@
 			return {
 				list: this.$mConstDataConfig.tabbarList,
 				isDelivery: false,
-				show: false,
 				pagedata: {
 					tadayProduct: [],
 					topBannerList: [],

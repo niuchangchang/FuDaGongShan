@@ -58,7 +58,7 @@
 				</view>
 			</view>
 		</content>
-		<u-tabbar :list="list" :mid-button="true" active-color="#2AB07D" inactive-color="#C0C4CC"></u-tabbar>
+		<u-tabbar :list="list" :mid-button="true" mid-button-size="70" active-color="#2AB07D" inactive-color="#C0C4CC"></u-tabbar>
 	</view>
 </template>
 

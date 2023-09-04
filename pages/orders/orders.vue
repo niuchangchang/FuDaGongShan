@@ -44,7 +44,7 @@
 											:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">取消订单</u-button>
 										<u-button type="info"
 											:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}"
-											@click="navTo('/pages/orders/detail')">查看订单</u-button>
+											@click="navTo(`/pages/orders/detail?orderId=${item.id}`)">查看订单</u-button>
 										<u-button @click="handlePay(item)" type="info"
 											:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">付款</u-button>
 									</view>
@@ -54,7 +54,7 @@
 											:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">再来一单</u-button>
 										<u-button type="info"
 											:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}"
-											@click="navTo('/pages/orders/detail')">查看订单</u-button>
+											@click="navTo(`/pages/orders/detail?orderId=${item.id}`)">查看订单</u-button>
 									</view>
 									<!-- 已完成 -->
 									<view v-if="item.orderStatus === 2" class="button-group">
@@ -64,13 +64,13 @@
 											:custom-style="{'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">删除订单</u-button>
 										<u-button type="info"
 											:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}"
-											@click="navTo('/pages/orders/detail')">查看订单</u-button>
+											@click="navTo(`/pages/orders/detail?orderId=${item.id}`)">查看订单</u-button>
 										<u-button type="info"
 											:custom-style="{'background': '#2B7365', 'width': '140rpx', 'height': '64rpx', 'font-size': '28rpx'}">待评价</u-button>
 									</view>
 								</view>
 							</template>
-							<template v-else>
+							<template v-if="!orderList.length && !loading">
 								<view class="no-list">暂无订单</view>
 							</template>
 						</scroll-view>
@@ -78,6 +78,7 @@
 				</swiper>
 			</view>
 		</content>
+		<u-loading :show="loading" mode="flower" class="u-loading"></u-loading>
 	</view>
 </template>
 
@@ -91,6 +92,7 @@
 		components: {},
 		data() {
 			return {
+				loading: false,
 				keyword: '',
 				current: 0,
 				swiperCurrent: 0,
@@ -107,15 +109,16 @@
 			// }
 		},
 		onShow() {
-			this.getOrderList()
 		},
 		onLoad(options) {
 			// console.log('===options', options.state)
 			this.current = Number(options.state) + 1
+			this.getOrderList()
 		},
 		methods: {
 			async getOrderList() {
-				const orderStatus = this.orderNavList[this.swiperCurrent].state
+				const orderStatus = this.orderNavList[this.current].state
+				this.loading = true
 				await this.$http
 					.post(`${orderList}`, {
 						keyWord: this.keyword,
@@ -125,8 +128,11 @@
 					})
 					.then(async r => {
 						this.orderList = r.data;
+						this.loading = false
 					})
-					.catch(err => {});
+					.catch(err => {
+						this.loading = false
+					});
 			},
 			navTo(route) {
 				this.$mRouter.push({
@@ -136,6 +142,7 @@
 			// tabs通知swiper切换
 			tabsChange(index) {
 				this.swiperCurrent = index;
+				this.current = index
 				this.getOrderList()
 			},
 			// swiper-item左右移动，通知tabs的滑块跟随移动

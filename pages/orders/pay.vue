@@ -8,7 +8,7 @@
 				</view>
 				<text class="pay-result">支付成功</text>
 				<text class="pay-tips">商家正在准备中~</text>
-				<view class="pay-order-button" @tap="navTo('/pages/orders/detail')">
+				<view class="pay-order-button" @tap="navTo(`/pages/orders/detail`)">
 					查看订单
 				</view>
 				<view class="more-list">

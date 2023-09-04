@@ -1,7 +1,9 @@
 <template>
 	<view class="container">
-		<u-navbar title="中小企业餐饮定制" title-color="#FFFFFF" title-bold="true" back-icon-color="#FFFFFF" :border-bottom="false"
-			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"></u-navbar>
+		<u-navbar title="中小企业餐饮定制" title-color="#FFFFFF" title-bold="true" back-icon-color="#FFFFFF"
+			:border-bottom="false"
+			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"
+			:custom-back="navTo"></u-navbar>
 		<content :has-top="true" :has-bottom="true">
 			<view class="content-container">
 				<view class="logo-container">
@@ -31,7 +33,8 @@
 				<text class="tel">服务热线：021-88888888</text>
 			</view>
 		</content>
-		<u-tabbar :list="list" :mid-button="true" active-color="#2AB07D" inactive-color="#C0C4CC"></u-tabbar>
+		<u-tabbar :list="list" :mid-button="true" mid-button-size="70" active-color="#2AB07D"
+			inactive-color="#C0C4CC"></u-tabbar>
 	</view>
 </template>
 
@@ -98,6 +101,12 @@
 		},
 		computed: {},
 		methods: {
+			navTo() {
+				const route = '/pages/index/index'
+				this.$mRouter.switchTab({
+					route
+				});
+			},
 			// 获取banner
 			async getBanner() {
 				const bannerType = 3
@@ -118,7 +127,8 @@
 							.then(async r => {
 								this.$mHelper.toast(r.msg);
 								setTimeout(() => {
-									this.$mRouter.back();
+									// this.$mRouter.back();
+									this.navTo()
 								}, 1000)
 							})
 							.catch(err => {

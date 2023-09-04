@@ -1,7 +1,8 @@
 <template>
 	<view class="container">
 		<u-navbar title="我的配送单" title-color="#FFFFFF" title-bold="true" back-icon-color="#FFFFFF" :border-bottom="false"
-			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"></u-navbar>
+			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"
+			:custom-back="navTo"></u-navbar>
 		<content :has-bottom="false">
 			<view class="order-container">
 				<view class="search-container">
@@ -34,15 +35,21 @@
 											</view>
 										</view>
 										<view class="cell-list">
-											<view class="cell-item"><text>门店</text><text>{{ item.storeName | emptyValue }}</text>
+											<view class="cell-item">
+												<text>门店</text><text>{{ item.storeName | emptyValue }}</text>
 											</view>
 											<view class="cell-item">
 												<text>取餐点</text><text>{{ item.sideboardName | emptyValue }}</text>
 											</view>
-											<view class="cell-item"><text>格子号</text><text>{{ item.cellNumber | emptyValue }}</text>
+											<view class="cell-item">
+												<text>格子号</text><text>{{ item.cellNumber | emptyValue }}</text>
 											</view>
-											<view class="cell-item"><text>送达时间</text><text>{{ item.sendTime | emptyValue }}</text></view>
-											<view class="cell-item"><text>取餐时间</text><text>{{ item.pickupTime | emptyValue }}</text></view>
+											<view class="cell-item">
+												<text>送达时间</text><text>{{ item.sendTime | emptyValue }}</text>
+											</view>
+											<view class="cell-item">
+												<text>取餐时间</text><text>{{ item.pickupTime | emptyValue }}</text>
+											</view>
 										</view>
 										<view class="button-group">
 											<u-button v-if="item.deliveryStatus === 0" type="info"
@@ -114,8 +121,9 @@
 					})
 					.catch(err => {});
 			},
-			navTo(route) {
-				this.$mRouter.push({
+			navTo() {
+				const route = '/pages/index/index'
+				this.$mRouter.switchTab({
 					route
 				});
 			},

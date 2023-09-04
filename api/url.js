@@ -35,6 +35,16 @@ const orderPay = '/wx/orders/orderssettlement';
 const orderRePay = '/wx/orders/orderspayment';
 // 订单列表
 const orderList = '/wx/orders/orderslist';
+// 订单详情
+const orderDetail = '/wx/orders/ordersdetail';
+
+// 取餐码列表-订单
+const erCodeList = '/wx/orders/pickupswithorderid';
+// 取餐码列表-用户
+const erCodeListByUser = '/wx/orders/pickupswithuserid';
+// 取餐
+const pickup = '/wx/orders/pickup';
+
 
 
 // 中小企业餐饮定制
@@ -68,6 +78,10 @@ export {
 	orderPay,
 	orderRePay,
 	orderList,
+	orderDetail,
+	erCodeList,
+  erCodeListByUser,
+	pickup,
 	companyOrderCreate,
 	deliveryOrderList,
 	deliveryOrderReceive,

@@ -8,15 +8,15 @@
 					<view class="confirm-container" v-if="sideboardList.length">
 						<view class="address">
 							<view class="address-text">
-								<view @click="chooseSideboard">
+								<view class="title" @click="chooseSideboard">
 									<text>{{ sideboardInfo.title }}</text>
 									<u-icon name="arrow-right" size="40"></u-icon>
 								</view>
-								<view>
+								<view class="distance">
 									<u-icon name="map" size="30"></u-icon>
 									<text>距离您{{ sideboardInfo.distance }}km</text>
 								</view>
-								<text>联系电话：{{ sideboardInfo.tel }}</text>
+								<text class="tel">联系电话：{{ sideboardInfo.tel }}</text>
 							</view>
 						</view>
 					</view>
@@ -40,7 +40,8 @@
 							<view class="">合计: ¥{{ orderInfo.payAmountFormat }}</view>
 						</view>
 						<u-cell-group :border="false">
-							<u-cell-item title="优惠券" :value="couponList.length ? (couponInfo.text || '请选择') : '暂无优惠券'" @click="chooseCoupon"></u-cell-item>
+							<u-cell-item title="优惠券" :value="couponList.length ? (couponInfo.text || '请选择') : '暂无优惠券'"
+								@click="chooseCoupon"></u-cell-item>
 							<!-- <u-cell-item title="红包" value="请选择"></u-cell-item> -->
 							<!-- <u-cell-item title="备注" :border-bottom="false"></u-cell-item> -->
 						</u-cell-group>
@@ -97,9 +98,56 @@
 			</view>
 		</content>
 		<!-- 选择取餐柜 -->
-		<u-action-sheet :list="sideboardList" v-model="showSideboard" @click="handleChooseSideboard"></u-action-sheet>
+		<!-- <u-action-sheet :list="sideboardList" v-model="showSideboard" @click="handleChooseSideboard"></u-action-sheet> -->
+		<u-popup v-model="showSideboard" mode="bottom" :closeable="true" border-radius="20">
+			<view class="popup-container">
+				<view class="popup-title">选择取餐点</view>
+				<scroll-view scroll-y="true" class="popup-content">
+					<template v-if="sideboardList.length">
+						<view v-for="(item, index) in sideboardList" :key="index" class="confirm-container"
+							@click="handleChooseSideboard(index)">
+							<view class="address">
+								<view class="address-text">
+									<view class="title">
+										<text>{{ item.title }}</text>
+										<view v-if="item.id === sideboardInfo.id" class="choose">当前选择</view>
+									</view>
+									<view class="distance">
+										<u-icon name="map" size="30"></u-icon>
+										<text>距离您{{ item.distance }}km</text>
+										<text> | </text>
+										<text>{{ item.address }}km</text>
+									</view>
+									<text class="tel">联系电话：{{ item.tel }}</text>
+								</view>
+							</view>
+						</view>
+					</template>
+					<template v-else>
+						<view>暂无取餐点哦～</view>
+					</template>
+				</scroll-view>
+			</view>
+		</u-popup>
 		<!-- 选择优惠券 -->
-		<u-action-sheet :list="couponList" v-model="showCoupon" @click="handleChooseCoupon"></u-action-sheet>
+		<!-- <u-action-sheet :list="couponList" v-model="showCoupon" @click="handleChooseCoupon"></u-action-sheet> -->
+		<u-popup v-model="showCoupon" mode="bottom" :closeable="true" border-radius="20">
+			<view class="popup-container">
+				<view class="popup-title">选择优惠券</view>
+				<scroll-view scroll-y="true" class="popup-content">
+					<template v-if="couponList.length">
+						<view v-for="(item, index) in couponList" :key="index" class="choose-container"
+							@click="handleChooseCoupon(index)">
+							<view>
+							</view>
+						</view>
+					</template>
+					<template v-else>
+						<view class="no-data">暂无可用优惠卷哦～</view>
+					</template>
+				</scroll-view>
+			</view>
+		</u-popup>
 	</view>
 </template>
 
@@ -147,28 +195,25 @@
 					latitude: 0,
 					longitude: 0
 				}
-				console.log('===创建订单参数', params)
+				// console.log('===创建订单参数', params)
 				await this.$http
 					.post(`${orderCreate}`, params)
 					.then(r => {
-						console.log('====orderInfo', r.data)
 						this.orderInfo = r.data
 						this.sideboardList = this.orderInfo.sideboardList.map(item => {
-							return { ...item, text: item.title }
+							return {
+								...item,
+								text: item.title
+							}
 						})
-						this.sideboardInfo = this.sideboardList.filter(item => item.id === this.orderInfo.sideboardId)[0]
-						// this.couponList = this.orderInfo.couponList.map(item => {
-						// 	return { ...item, text: item.name }
-						// })
-						this.couponList = [{
-							id: 0,
-							title: '优惠券一',
-							text: '优惠券一'
-						}, {
-							id: 1,
-							title: '优惠券二',
-							text: '优惠券二'
-						}]
+						this.sideboardInfo = this.sideboardList.filter(item => item.id === this.orderInfo
+							.sideboardId)[0]
+						this.couponList = this.orderInfo.couponList.map(item => {
+							return {
+								...item,
+								text: item.name
+							}
+						})
 						// 找到默认显示的优惠券
 						this.couponInfo = this.couponList.filter(item => item.id === this.orderInfo.couponId)[0]
 					})
@@ -183,7 +228,7 @@
 			},
 			// 选择取餐点
 			chooseSideboard() {
-				if(!this.sideboardList.length) return false;
+				// if (!this.sideboardList.length) return false;
 				this.showSideboard = true
 			},
 			handleChooseSideboard(index) {
@@ -192,7 +237,7 @@
 			},
 			// 选择优惠券
 			chooseCoupon() {
-				if(!this.couponList.length) return false;
+				// if (!this.couponList.length) return false;
 				this.showCoupon = true
 			},
 			handleChooseCoupon(index) {
@@ -211,7 +256,9 @@
 						console.log('====pay result', r.data)
 						this.$mHelper.toast('订单支付成功');
 						// this.$mRouter.redirectTo('/pages/orders/pay');
-						this.$mRouter.redirectTo({ route: '/pages/orders/pay' });
+						this.$mRouter.redirectTo({
+							route: '/pages/orders/pay'
+						});
 					})
 					.catch(err => {
 						this.$mHelper.toast('订单支付失败，请重试');
@@ -232,67 +279,6 @@
 			height: calc(100% - 120rpx);
 			overflow: auto;
 			padding: 40rpx 20rpx;
-		}
-
-		.confirm-container {
-			display: flex;
-			justify-content: space-between;
-			gap: 20rpx;
-			margin-bottom: 46rpx;
-			padding: 32rpx;
-			background: #FFFFFF;
-			border-radius: 10px;
-			box-shadow: 0px 10px 40px rgba(26, 77, 160, 0.16);
-
-			.address {
-				display: flex;
-				gap: 20rpx;
-				font-size: 24rpx;
-
-				.address-text {
-					display: flex;
-					flex-direction: column;
-					gap: 20rpx;
-
-					view {
-						display: flex;
-						align-items: baseline;
-						gap: 10rpx;
-					}
-
-					text:nth-child(1) {
-						font-size: 40rpx;
-					}
-
-					text:nth-child(2) {
-						font-size: 28rpx;
-						color: rgba(0, 0, 0, 0.5);
-					}
-
-					text:nth-child(3) {
-						font-size: 32rpx;
-						color: rgba(0, 0, 0, 0.8);
-					}
-				}
-			}
-
-			.er-code {
-				display: flex;
-				flex-direction: column;
-				gap: 10rpx;
-				align-items: center;
-
-				text {
-					color: #4D716F;
-				}
-
-				.er-code-image {
-					width: 100rpx;
-					height: 100rpx;
-					background: #000000;
-				}
-			}
-
 		}
 
 		.detail-container {
@@ -433,7 +419,7 @@
 					align-items: center;
 					gap: 10rpx;
 				}
-				
+
 				.cell-item-content {
 					display: flex;
 					align-content: center;
@@ -444,6 +430,117 @@
 					color: #999999;
 				}
 			}
+		}
+	}
+
+	.confirm-container {
+		display: flex;
+		justify-content: space-between;
+		gap: 20rpx;
+		margin-bottom: 46rpx;
+		padding: 32rpx;
+		background: #FFFFFF;
+		border-radius: 10px;
+		box-shadow: 0px 10px 40px rgba(26, 77, 160, 0.16);
+
+		.address {
+			display: flex;
+			gap: 20rpx;
+			font-size: 24rpx;
+
+			.address-text {
+				display: flex;
+				flex-direction: column;
+				gap: 20rpx;
+
+				view {
+					display: flex;
+					align-items: baseline;
+					gap: 10rpx;
+				}
+
+				.title {
+					display: flex;
+					align-items: center;
+					font-size: 40rpx;
+
+					.choose {
+						padding: 6rpx 40rpx;
+						border-radius: 20rpx 0px 20rpx 0px;
+						background: #2B7365;
+						color: #FFFFFF;
+						font-size: 24rpx;
+					}
+				}
+
+				.distance {
+					font-size: 28rpx;
+					color: rgba(0, 0, 0, 0.5);
+				}
+
+				.tel {
+					font-size: 32rpx;
+					color: rgba(0, 0, 0, 0.8);
+				}
+			}
+		}
+
+		.er-code {
+			display: flex;
+			flex-direction: column;
+			gap: 10rpx;
+			align-items: center;
+
+			text {
+				color: #4D716F;
+			}
+
+			.er-code-image {
+				width: 100rpx;
+				height: 100rpx;
+				background: #000000;
+			}
+		}
+
+	}
+
+	.popup-container {
+		display: flex;
+		flex-direction: column;
+		gap: 30rpx;
+		padding: 26rpx 0;
+
+		.popup-title {
+			flex: 1;
+			text-align: center;
+			font-size: 28rpx;
+			color: #4D716F;
+			font-weight: 700;
+		}
+
+		.popup-content {
+			max-height: 1000rpx;
+			// display: flex;
+			// flex-direction: column;
+		}
+
+		.confirm-container {
+			margin: 40rpx 26rpx;
+
+			&:first-child {
+				margin: 50rpx 26rpx 40rpx;
+			}
+
+			&:last-child {
+				margin: 40rpx 26rpx 80rpx;
+			}
+		}
+		
+		.no-data {
+			margin: 100rpx 0 160rpx;
+			text-align: center;
+			color: #808080;
+			font-size: 32rpx;
 		}
 	}
 </style>
