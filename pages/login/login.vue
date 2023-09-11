@@ -4,8 +4,8 @@
 			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"></u-navbar>
 		<content>
 			<view class="intro">
-				<view class="intro-logo"></view>
-				<button :loading="btnLoading" class="wx-logo" open-type="getPhoneNumber" @getphonenumber="toAuthLogin">
+				<image class="intro-logo" src="/static/logo.png"></image>
+				<button class="wx-logo" open-type="getPhoneNumber" @getphonenumber="toAuthLogin">
 					<image src="/static/images/wechat.png"></image>
 				</button>
 				<text class="text-login">微信手机号授权登录</text>
@@ -84,15 +84,14 @@
 				const _this = this;
 				let params = {
 					loginCode: _this.code,
-					phoneCode: detail.phoneCode || '123',
-					encryptedData: detail.encryptedData || '123',
-					iv: detail.iv || '123'
+					phoneCode: detail.code,
+					encryptedData: detail.encryptedData,
+					iv: detail.iv
 				};
-				_this.thirdPartyAuthLogin(params);
 				if (detail.errMsg === "getPhoneNumber:ok") {
 					console.log('====登录请求参数params', params)
 					// 登录
-					// _this.thirdPartyAuthLogin(params);
+					_this.thirdPartyAuthLogin(params);
 				} else {
 					_this.btnLoading = false;
 				}
@@ -188,10 +187,8 @@
 
 		.intro-logo {
 			width: 440rpx;
-			height: 360rpx;
-			opacity: 1;
-			background: url(https://img.js.design/assets/img/6479542fc53e8201f148e193.png#c3647572e7973da388e63df27b70a033);
-			background-size: 100% 100%;
+			height: 240rpx;
+			margin-bottom: 50rpx;
 		}
 	}
 

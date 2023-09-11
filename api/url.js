@@ -2,6 +2,12 @@
 
 // 登录
 const login = '/wx/users/login';
+// 用户详情
+const userInfo = '/wx/users/userinfo';
+// 用户积分
+const userPoint = '/wx/users/userpointcount';
+// 用户余额
+const userBalances = '/wx/users/userbalancescount';
 
 
 //首页
@@ -65,6 +71,9 @@ const deliveryOrderStorage = '/wx/deliverys/storage';
 
 export {
 	login,
+	userInfo,
+	userPoint,
+	userBalances,
 	indexUrl,
 	bannerUrl,
 	productCategoryUrl,

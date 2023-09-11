@@ -9,14 +9,15 @@
 						<view class="user-info-image">
 						</view>
 						<view class="user-info-pv">
-							<view class="user-info-iphone">132****1244</view>
+							<view class="user-info-iphone">{{ userInfo.phone }}</view>
 							<view class="user-info-vip">
 								<u-icon name="photo" size="60"></u-icon>
 							</view>
 						</view>
 					</view>
 					<view class="order-section">
-						<view v-for="(item, index) in orderSectionList" :key="index" class="order-section-item" @tap="navTo(`${item.url}`)">
+						<view v-for="(item, index) in orderSectionList" :key="index" class="order-section-item"
+							@tap="navTo(`${item.url}`)">
 							<i class="iconfont" :class="[item.icon]" />
 							<text>{{item.title}}</text>
 						</view>
@@ -26,7 +27,7 @@
 					<view class="qb-title">我的钱包</view>
 					<view class="wdqianbao">
 						<view v-for="(item, index) in amountList" :key="index" class="wdqianbao-item">
-							<text>0</text>
+							<text>{{ index | formatData }}</text>
 							<text>{{item.title}}</text>
 						</view>
 					</view>
@@ -39,15 +40,16 @@
 				</view>
 			</view>
 		</content>
-		<u-tabbar :list="list" :mid-button="true" mid-button-size="70" active-color="#2AB07D" inactive-color="#C0C4CC"></u-tabbar>
+		<u-tabbar :list="list" :mid-button="true" mid-button-size="70" active-color="#2AB07D"
+			inactive-color="#C0C4CC"></u-tabbar>
 	</view>
 </template>
 
 <script>
 	import {
-		mapState,
-		mapGetters
-	} from 'vuex'
+		userInfo,
+	} from '@/api/url';
+	let _this = this
 	export default {
 		data() {
 			return {
@@ -55,14 +57,52 @@
 				amountList: this.$mConstDataConfig.amountList,
 				orderSectionList: this.$mConstDataConfig.orderSectionList,
 				settingList: this.$mConstDataConfig.settingList,
+				userInfo: null,
 			}
 		},
 		computed: {},
+		filters: {
+			// 数据格式化
+			formatData(index) {
+				const { userInfo } = _this
+				switch (index) {
+					case 0:
+						return userInfo ? userInfo.pointsFormat : 0;
+					case 1:
+						return userInfo ? userInfo.balancesFormat : 0;
+					case 2:
+						return 0;
+					case 3:
+						return 0;
+					default:
+						return 0;
+				}
+			}
+		},
+		beforeCreate() {
+			_this = this
+		},
 		onLoad() {},
+		async onShow() {
+			await this.getUserInfo()
+		},
 		methods: {
 			navTo(route) {
-				console.log('===route', route)
-				this.$mRouter.push({ route });
+				this.$mRouter.push({
+					route
+				});
+			},
+			// 订单详情
+			async getUserInfo() {
+				await this.$http
+					.post(`${userInfo}`)
+					.then(r => {
+						this.userInfo = r.data
+					})
+					.catch(err => {
+						this.$mHelper.toast('获取用户详情出错，请稍后重试～');
+						this.$mRouter.back();
+					});
 			},
 		}
 	}
@@ -159,6 +199,7 @@
 			background: #FFFFFF;
 		}
 	}
+
 	.iconfont {
 		&::before {
 			font-size: 40rpx;
