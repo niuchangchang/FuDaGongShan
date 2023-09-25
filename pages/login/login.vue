@@ -4,9 +4,9 @@
 			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"></u-navbar>
 		<content>
 			<view class="intro">
-				<image class="intro-logo" src="/static/logo.png"></image>
+				<image class="intro-logo" :src="$mImgHost('/images/logo.png')"></image>
 				<button class="wx-logo" open-type="getPhoneNumber" @getphonenumber="toAuthLogin">
-					<image src="/static/images/wechat.png"></image>
+					<image :src="$mImgHost('/images/wechat.png')"></image>
 				</button>
 				<text class="text-login">微信手机号授权登录</text>
 				<view class="shouquan">
@@ -125,7 +125,7 @@
 					if (
 						backToPage.indexOf('/pages/mine/mine') !== -1 ||
 						backToPage.indexOf('/pages/index/index') !== -1 ||
-						backToPage.indexOf('/pages/index/index_copy') !== -1 ||
+						backToPage.indexOf('/pages/orders/orders') !== -1 ||
 						backToPage.indexOf('/pages/menu/menu') !== -1 ||
 						backToPage.indexOf('/pages/cart/cart') !== -1
 					) {
@@ -155,7 +155,7 @@
 <style lang="scss" scoped>
 	.intro {
 		width: 100%;
-		padding-top: 200rpx;
+		padding-top: 150rpx;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -186,8 +186,8 @@
 		}
 
 		.intro-logo {
-			width: 440rpx;
-			height: 240rpx;
+			width: 100%;
+			// height: 240rpx;
 			margin-bottom: 50rpx;
 		}
 	}

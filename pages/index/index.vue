@@ -48,7 +48,8 @@
 								<u-icon name="arrow-right" size="34" color="#C4C4C4"></u-icon>
 							</view>
 						</view>
-						<view class="dingzhi" @tap="navTo('/pages/customize/customize')">
+						<view class="dingzhi"
+							@tap="navTo(!isJoin ? '/pages/customize/customizeMy' : '/pages/customize/customizeNo')">
 							<view class="navigators-left">
 								<view class="dazi">中小企业餐饮定制</view>
 								<view class="xiaozi">企业专属订餐通道</view>
@@ -60,13 +61,13 @@
 					</view>
 				</view>
 				<view class="member-news">
-					<!-- <image src="https://img-shop.qmimg.cn/s23107/2020/04/27/0039bf41c9ebd50a2c.jpg"></image> -->
 					<image v-for="(image, index) in pagedata.bottomBannerList" :src="getImageUrl(image.imageUrl)"
 						:key="index"></image>
 				</view>
 			</view>
 		</content>
-		<u-tabbar :list="list" :mid-button="true" mid-button-size="70" active-color="#2AB07D" inactive-color="#C0C4CC"></u-tabbar>
+		<u-tabbar :list="list" :mid-button="true" mid-button-size="70" active-color="#2AB07D"
+			inactive-color="#C0C4CC"></u-tabbar>
 	</view>
 </template>
 

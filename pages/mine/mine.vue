@@ -17,7 +17,7 @@
 					</view>
 					<view class="order-section">
 						<view v-for="(item, index) in orderSectionList" :key="index" class="order-section-item"
-							@tap="navTo(`${item.url}`)">
+							@tap="navTo('/pages/orders/orders', item.state)">
 							<i class="iconfont" :class="[item.icon]" />
 							<text>{{item.title}}</text>
 						</view>
@@ -87,10 +87,11 @@
 			await this.getUserInfo()
 		},
 		methods: {
-			navTo(route) {
-				this.$mRouter.push({
+			navTo(route, state) {
+				this.$mRouter.switchTab({
 					route
 				});
+				uni.setStorageSync('orderState', state);
 			},
 			// 订单详情
 			async getUserInfo() {

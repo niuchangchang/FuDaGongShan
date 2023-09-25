@@ -21,30 +21,35 @@ export default {
 			title: '待付款',
 			icon: 'iconfont icon-qianbao',
 			url: '/pages/orders/orders?state=0',
+			state: 0,
 			num: null
 		},
 		{
 			title: '待配送',
 			icon: 'iconfont icon-wuliu',
 			url: '/pages/orders/orders?state=1',
+			state: 1,
 			num: null
 		},
 		{
 			title: '已完成',
 			icon: 'iconfont icon-wancheng',
 			url: '/pages/orders/orders?state=2',
+			state: 2,
 			num: null
 		},
 		{
 			title: '已取消',
 			icon: 'iconfont icon-shousuo',
 			url: '/pages/orders/orders?state=3',
+			state: 3,
 			num: null
 		},
 		{
 			title: '全部订单',
 			icon: 'iconfont icon-wenjian',
 			url: '/pages/orders/orders?state=-1',
+			state: -1,
 			num: null
 		},
 	],
@@ -151,7 +156,7 @@ export default {
 			iconPath: "grid",
 			selectedIconPath: "grid",
 			midButton: true,
-			pagePath: "/pages/index/index_copy"
+			pagePath: "/pages/orders/orders"
 		},
 		{
 			iconPath: "shopping-cart",

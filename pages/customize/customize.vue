@@ -2,8 +2,7 @@
 	<view class="container">
 		<u-navbar title="中小企业餐饮定制" title-color="#FFFFFF" title-bold="true" back-icon-color="#FFFFFF"
 			:border-bottom="false"
-			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"
-			:custom-back="navTo"></u-navbar>
+			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"></u-navbar>
 		<content :has-top="true" :has-bottom="true">
 			<view class="content-container">
 				<view class="logo-container">

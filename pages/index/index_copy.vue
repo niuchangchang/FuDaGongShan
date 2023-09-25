@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<content :has-top="false" :has-bottom="true">
+		<!-- <content :has-top="false" :has-bottom="true">
 			<view class="banner"></view>
 			<view class="content">
 				<view class="entrance">
@@ -60,7 +60,6 @@
 					</view>
 				</view>
 				<view class="member-news">
-					<!-- <image src="https://img-shop.qmimg.cn/s23107/2020/04/27/0039bf41c9ebd50a2c.jpg"></image> -->
 					<image v-for="(image, index) in pagedata.bottomBannerList" :src="getImageUrl(image.imageUrl)"
 						:key="index"></image>
 				</view>
@@ -98,7 +97,7 @@
 					关闭
 				</view>
 			</view>
-		</u-popup>
+		</u-popup> -->
 		<u-tabbar :list="list" @change="tabChange" :mid-button="true" mid-button-size="70" active-color="#2AB07D"
 			inactive-color="#C0C4CC"></u-tabbar>
 	</view>

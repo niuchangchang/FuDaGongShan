@@ -1,8 +1,9 @@
 <template>
 	<view class="container">
-		<u-navbar title="我的订单" title-color="#FFFFFF" title-bold="true" back-icon-color="#FFFFFF" :border-bottom="false"
+		<u-navbar title="我的订单" title-color="#FFFFFF" title-bold="true" back-icon-color="#FFFFFF" :is-back="false"
+			:border-bottom="false"
 			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"></u-navbar>
-		<content :has-bottom="false">
+		<content :has-bottom="true">
 			<view class="order-container">
 				<view class="search-container">
 					<u-search placeholder="请输入订单号" v-model="keyword" bg-color="#FFFFFF" height="80"
@@ -79,6 +80,8 @@
 			</view>
 		</content>
 		<u-loading :show="loading" mode="flower" class="u-loading"></u-loading>
+		<u-tabbar :list="list" :mid-button="true" mid-button-size="70" active-color="#2AB07D"
+			inactive-color="#C0C4CC"></u-tabbar>
 	</view>
 </template>
 
@@ -92,6 +95,7 @@
 		components: {},
 		data() {
 			return {
+				list: this.$mConstDataConfig.tabbarList,
 				loading: false,
 				keyword: '',
 				current: 0,
@@ -109,11 +113,15 @@
 			// }
 		},
 		onShow() {
+			const state = uni.getStorageSync('orderState') || 0;
+			this.current = Number(state) + 1
+			this.getOrderList()
 		},
 		onLoad(options) {
+			// switchTab 不支持传参数
 			// console.log('===options', options.state)
-			this.current = Number(options.state) + 1
-			this.getOrderList()
+			// this.current = Number(options.state) + 1
+			// this.getOrderList()
 		},
 		methods: {
 			async getOrderList() {
@@ -143,6 +151,7 @@
 			tabsChange(index) {
 				this.swiperCurrent = index;
 				this.current = index
+				uni.setStorageSync('orderState', index - 1);
 				this.getOrderList()
 			},
 			// swiper-item左右移动，通知tabs的滑块跟随移动
