@@ -102,6 +102,8 @@
 		<u-popup v-model="showSideboard" mode="bottom" :closeable="true" border-radius="20">
 			<view class="popup-container">
 				<view class="popup-title">选择取餐点</view>
+				
+								
 				<scroll-view scroll-y="true" class="popup-content">
 					<template v-if="sideboardList.length">
 						<view v-for="(item, index) in sideboardList" :key="index" class="confirm-container"
@@ -126,7 +128,12 @@
 					<template v-else>
 						<view>暂无取餐点哦～</view>
 					</template>
+					
 				</scroll-view>
+								
+								
+						
+				
 			</view>
 		</u-popup>
 		<!-- 选择优惠券 -->
@@ -148,6 +155,8 @@
 				</scroll-view>
 			</view>
 		</u-popup>
+		
+		
 	</view>
 </template>
 
@@ -156,10 +165,16 @@
 		orderCreate,
 		orderPay
 	} from '@/api/url';
+
 	export default {
 		components: {},
 		data() {
 			return {
+				items: ['餐柜寄存', '我的地址'],
+				activeColor: '#007aff',
+				styleType: 'text',
+				current: 0,
+				
 				productId: null,
 				cartIdList: null,
 				orderInfo: {},
@@ -186,7 +201,13 @@
 			this.cartIdList = options.cartIdList ? JSON.parse(options.cartIdList) : null
 			this.createOrder()
 		},
+		
 		methods: {
+			onClickItem(e) {
+				if (this.current !== e.currentIndex) {
+					this.current = e.currentIndex
+				}
+			},
 			// 创建订单
 			async createOrder() {
 				const params = {
@@ -225,6 +246,7 @@
 			// 选中任一radio时，由radio-group触发
 			radioGroupChange(e) {
 				console.log(e);
+				console.log(this)
 			},
 			// 选择取餐点
 			chooseSideboard() {
@@ -249,16 +271,55 @@
 				const params = {
 					...this.orderInfo
 				}
-				console.log('===结算参数', params)
+				 console.log('===结算参数', params)
+				// return false;
 				await this.$http
 					.post(`${orderPay}`, params)
 					.then(r => {
-						console.log('====pay result', r.data)
-						this.$mHelper.toast('订单支付成功');
-						// this.$mRouter.redirectTo('/pages/orders/pay');
-						this.$mRouter.redirectTo({
-							route: '/pages/orders/pay'
-						});
+						console.log(r);
+						const that = this;
+						if(r.data.payType==1){
+							//微信支付
+							if(!r.data.wxPayment){
+								this.$mHelper.toast('订单支付失败');
+								return false;
+							}							
+							// 调用支付方法										
+							uni.requestPayment({							    
+								"timeStamp": r.data.wxPayment.timeStamp,        // 时间戳（单位：秒）
+								"nonceStr": r.data.wxPayment.nonceStr, // 随机字符串
+								"package": r.data.wxPayment.package,        // 固定值
+								"signType": r.data.wxPayment.signType, // V3版本仅支持RSA
+								"paySign": r.data.wxPayment.paySign, // 签名，这里用的 MD5/RSA 签名
+								"appId": r.data.wxPayment.appId,  // 微信开放平台 - 应用 - AppId，注意和微信小程序、公众号 AppId 可能不一致								
+							    success(res) {
+									console.log('支付成功', res, this,that);
+									that.$mHelper.toast('订单支付成功');									
+									that.$mRouter.redirectTo({
+										route: '/pages/orders/pay'
+									});
+								},
+							    fail(e) {
+									console.log('支付失败', e);
+									that.$mHelper.toast('订单支付失败');
+									that.$mRouter.redirectTo({
+										route: `/pages/orders/detail?orderId=${r.data.orderId}`
+									});
+									
+								}
+							});
+							
+							
+							
+						}
+						else{
+							this.$mHelper.toast('订单支付成功');
+							// this.$mRouter.redirectTo('/pages/orders/pay');
+							this.$mRouter.redirectTo({
+								route: '/pages/orders/pay'
+							});
+						}
+
 					})
 					.catch(err => {
 						this.$mHelper.toast('订单支付失败，请重试');

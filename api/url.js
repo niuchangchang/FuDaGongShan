@@ -43,6 +43,8 @@ const orderRePay = '/wx/orders/orderspayment';
 const orderList = '/wx/orders/orderslist';
 // 订单详情
 const orderDetail = '/wx/orders/ordersdetail';
+// 取消订单
+const orderCancle = '/wx/orders/orderscancle';
 
 // 取餐码列表-订单
 const erCodeList = '/wx/orders/pickupswithorderid';
@@ -83,11 +85,14 @@ export {
 	removeCart,
 	cartList,
 	cartCount,
+	
 	orderCreate,
 	orderPay,
 	orderRePay,
 	orderList,
 	orderDetail,
+	orderCancle,
+	
 	erCodeList,
 	erCodeListByUser,
 	pickup,

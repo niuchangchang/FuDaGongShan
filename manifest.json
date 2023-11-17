@@ -60,9 +60,12 @@
         "appid" : "wx595f121bfd74b49e",
         "setting" : {
             "urlCheck" : false,
-            "es6" : false
+            "es6" : false,
+            "minified" : true,
+            "postcss" : true
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+        "permission" : {}
     },
     "mp-alipay" : {
         "usingComponents" : true

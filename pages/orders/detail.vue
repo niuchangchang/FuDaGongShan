@@ -6,11 +6,11 @@
 			<view class="order-container">
 				<view v-if="orderInfo.orderStatus === 0" class="status-container">
 					<view>
-						请在<text>9分59秒</text>内完成支付，过时订单将会取消
+						请在<text>10分钟</text>内完成支付，过时订单将会取消
 					</view>
 					<view class="status-button-group">
-						<view class="button">取消订单</view>
-						<view class="button submit-button">立即支付</view>
+						<view class="button" @click="orderCancel(item)">取消订单</view>
+						<view class="button submit-button" @click="handlePay(item)">立即支付</view>
 					</view>
 				</view>
 				<view v-if="orderInfo.orderProcess === 5" class="confirm-container">
@@ -128,7 +128,9 @@
 	import {
 		orderDetail,
 		erCodeList,
-		pickup
+		pickup,
+		orderCancle,
+		orderRePay
 	} from '@/api/url';
 	export default {
 		components: {},
@@ -162,6 +164,7 @@
 				await this.$http
 					.post(`${orderDetail}/${this.orderId}`)
 					.then(r => {
+						console.log(r.data);
 						this.orderInfo = r.data
 						this.orderInfo.orderProcessList.reverse()
 					})
@@ -218,6 +221,88 @@
 						this.$mHelper.toast('取餐出错，请重试～');
 					});
 			},
+			// 结算
+				async handlePay() {
+					const that=this;
+					const params = {
+						orderId: that.orderInfo.id,
+						payType: that.orderInfo.payType
+					}
+					console.log('===结算参数', params)
+					await this.$http
+						.post(`${orderRePay}`, params)
+						.then(r => {
+							console.log('====pay result', r.data)
+							// this.$mHelper.toast('订单支付成功');
+							// this.getOrderList()
+							if(r.data.payType==1){
+								//微信支付
+								if(!r.data.wxPayment){
+									this.$mHelper.toast('订单支付失败');
+									return false;
+								}							
+								// 调用支付方法										
+								uni.requestPayment({							    
+									"timeStamp": r.data.wxPayment.timeStamp,        // 时间戳（单位：秒）
+									"nonceStr": r.data.wxPayment.nonceStr, // 随机字符串
+									"package": r.data.wxPayment.package,        // 固定值
+									"signType": r.data.wxPayment.signType, // V3版本仅支持RSA
+									"paySign": r.data.wxPayment.paySign, // 签名，这里用的 MD5/RSA 签名
+									"appId": r.data.wxPayment.appId,  // 微信开放平台 - 应用 - AppId，注意和微信小程序、公众号 AppId 可能不一致								
+								    success(res) {
+										console.log('支付成功', res, this,that);
+										that.$mHelper.toast('订单支付成功');									
+										that.getOrderDetail();
+									},
+								    fail(e) {
+										console.log('支付失败', e);
+										that.$mHelper.toast('订单支付失败');
+										that.getOrderDetail();
+									}
+								});
+								
+								
+								
+							}
+							else{
+								this.$mHelper.toast('订单支付成功');
+								// this.$mRouter.redirectTo('/pages/orders/pay');
+								this.$mRouter.redirectTo({
+									route: '/pages/orders/pay'
+								});
+							}
+						})
+						.catch(err => {
+							this.$mHelper.toast('订单支付失败，请重试');
+						});
+				},
+				//取消订单
+				orderCancel(){
+					const _this = this
+					// 显示确认框
+					uni.showModal({
+						content: '确定要取消当前订单吗？',
+						success: e => {
+							if (e.confirm) {
+								_this.cancleOrderRequest();
+							}
+						}
+					});
+					
+				},
+				// 取消订单
+				async cancleOrderRequest() {
+					await this.$http
+						.post(`${orderCancle}/${this.orderInfo.id}`)
+						.then(async r => {
+							this.$mHelper.toast('订单取消成功');
+							this.getOrderDetail()
+						})
+						.catch(err => {
+							this.$mHelper.toast('操作失败');
+						});
+				},
+			
 		}
 	};
 </script>

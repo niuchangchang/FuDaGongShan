@@ -6,9 +6,10 @@
 			<view class="intro">
 				<image class="intro-logo" :src="$mImgHost('/images/logo.png')"></image>
 				<button class="wx-logo" open-type="getPhoneNumber" @getphonenumber="toAuthLogin">
-					<image :src="$mImgHost('/images/wechat.png')"></image>
+					<!-- <image :src="$mImgHost('/images/wechat.png')"></image> -->
+					<text class="text-login">手机号快捷登录</text>
 				</button>
-				<text class="text-login">微信手机号授权登录</text>
+				
 				<view class="shouquan">
 					<u-checkbox v-model="appAgreementDefaultSelect" size="30" active-color="#2B7365"></u-checkbox>
 					<text class="tongyi">我已阅读并同意</text>
@@ -182,7 +183,7 @@
 
 		.text-login {
 			font-size: 24rpx;
-			color: rgba(128, 128, 128, 1);
+			color: #fff;
 		}
 
 		.intro-logo {
@@ -193,8 +194,8 @@
 	}
 
 	.wx-logo {
-		width: 100rpx;
-		height: 100rpx;
+		width: 300rpx;
+		height: 60rpx;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -202,6 +203,7 @@
 		border: none;
 		border-radius: 10rpx;
 		background: rgba(40, 196, 69, 1);
+		color:#fffff;
 
 		image {
 			width: 64rpx;

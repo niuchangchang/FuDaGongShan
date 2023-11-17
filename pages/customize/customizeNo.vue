@@ -28,10 +28,10 @@
 					</view>
 				</view>
 				<view class="submit-dis">
-					<view class="submit" @tap="navTo('/pages/customize/customize')">
+					<view class="submit">
 						企业入驻
 					</view>
-					<view class="submit" @tap="navTo('/pages/customize/customizeQyList')">
+					<view class="submit">
 						加入企业
 					</view>
 				</view>
