@@ -275,7 +275,7 @@
 				await this.$http
 					.post(`${addCart}`, {
 						productId: item.id,
-						quantity: 1
+						quantity: 5
 					})
 					.then(async r => {
 						this.$mHelper.toast('购物车加入成功');

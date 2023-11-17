@@ -30,7 +30,7 @@
 										</view>
 									</view>
 									<view class="cart-item-content-down">
-										<u-number-box v-model="item.quantity" min="1" size="24" bg-color="#4D716F"
+										<u-number-box v-model="item.quantity" min="5" size="24" bg-color="#4D716F"
 											color="#FFFFFF" @change="valChange(item)"></u-number-box>
 									</view>
 								</view>
