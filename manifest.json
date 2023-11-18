@@ -65,7 +65,12 @@
             "postcss" : true
         },
         "usingComponents" : true,
-        "permission" : {}
+        "permission" : {
+			"scope.userLocation": {
+				"desc": "小程序将使用定位功能"
+			}
+		},
+		"requiredPrivateInfos": ["getLocation"]
     },
     "mp-alipay" : {
         "usingComponents" : true
@@ -76,5 +81,14 @@
     "mp-toutiao" : {
         "usingComponents" : true
     },
-    "vueVersion" : "2"
+    "vueVersion" : "2",
+    "h5" : {
+        "sdkConfigs" : {
+            "maps" : {
+                "qqmap" : {
+                    "key" : ""
+                }
+            }
+        }
+    }
 }

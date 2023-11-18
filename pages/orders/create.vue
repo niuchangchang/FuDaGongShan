@@ -102,38 +102,59 @@
 		<u-popup v-model="showSideboard" mode="bottom" :closeable="true" border-radius="20">
 			<view class="popup-container">
 				<view class="popup-title">选择取餐点</view>
-				
-								
+				<u-tabs :list="list" :is-scroll="false"
+					:active-item-style="{'color': '#FFFFFF', 'background': '#4D716F'}" active-color="#4D716F"
+					inactive-color='#4D716F' bar-width='50%' height="60" font-size="24" v-model="current"
+					@change="change"></u-tabs>
 				<scroll-view scroll-y="true" class="popup-content">
-					<template v-if="sideboardList.length">
-						<view v-for="(item, index) in sideboardList" :key="index" class="confirm-container"
-							@click="handleChooseSideboard(index)">
-							<view class="address">
-								<view class="address-text">
-									<view class="title">
-										<text>{{ item.title }}</text>
-										<view v-if="item.id === sideboardInfo.id" class="choose">当前选择</view>
+					<template v-if="current === 0">
+						<template v-if="sideboardList.length">
+							<view v-for="(item, index) in sideboardList" :key="index" class="confirm-container"
+								@click="handleChooseSideboard(index)">
+								<view class="address">
+									<view class="address-text">
+										<view class="title">
+											<text>{{ item.title }}</text>
+											<view v-if="item.id === sideboardInfo.id" class="choose">当前选择</view>
+										</view>
+										<view class="distance">
+											<u-icon name="map" size="30"></u-icon>
+											<text>距离您{{ item.distance }}km</text>
+											<text> | </text>
+											<text>{{ item.address }}km</text>
+										</view>
+										<text class="tel">联系电话：{{ item.tel }}</text>
 									</view>
-									<view class="distance">
-										<u-icon name="map" size="30"></u-icon>
-										<text>距离您{{ item.distance }}km</text>
-										<text> | </text>
-										<text>{{ item.address }}km</text>
-									</view>
-									<text class="tel">联系电话：{{ item.tel }}</text>
 								</view>
 							</view>
-						</view>
+						</template>
+						<template v-else>
+							<view>暂无取餐点哦～</view>
+						</template>
 					</template>
 					<template v-else>
-						<view>暂无取餐点哦～</view>
+						<template v-if="sideboardList.length">
+							<view v-for="(item, index) in addressList" :key="index" class="confirm-container"
+								@click="handleChooseAddress(index)">
+								<view class="address">
+									<view class="address-text">
+										<view class="title">
+											<text>{{ item.title }}</text>
+											<!-- <view v-if="item.id === sideboardInfo.id" class="choose">当前选择</view> -->
+										</view>
+										<view class="distance">
+											<text>{{ item.name }}</text>
+										</view>
+										<text class="tel">联系电话：{{ item.tel }}</text>
+									</view>
+								</view>
+							</view>
+						</template>
+						<template v-else>
+							<view>暂无收货地址哦～</view>
+						</template>
 					</template>
-					
 				</scroll-view>
-								
-								
-						
-				
 			</view>
 		</u-popup>
 		<!-- 选择优惠券 -->
@@ -155,8 +176,8 @@
 				</scroll-view>
 			</view>
 		</u-popup>
-		
-		
+
+
 	</view>
 </template>
 
@@ -165,6 +186,7 @@
 		orderCreate,
 		orderPay
 	} from '@/api/url';
+	import permission from '@/utils/permission.js';
 
 	export default {
 		components: {},
@@ -173,8 +195,12 @@
 				items: ['餐柜寄存', '我的地址'],
 				activeColor: '#007aff',
 				styleType: 'text',
+				list: [{
+					name: '餐柜'
+				}, {
+					name: '收货地址'
+				}],
 				current: 0,
-				
 				productId: null,
 				cartIdList: null,
 				orderInfo: {},
@@ -184,6 +210,15 @@
 				couponInfo: {},
 				showSideboard: false,
 				showCoupon: false,
+				addressList: [{
+					title: '上海市浦东新区',
+					tel: '18909876789',
+					name: '王女士'
+				}, {
+					title: '上海市浦东新区',
+					tel: '17909876786',
+					name: '刘女士'
+				}]
 			};
 		},
 		filters: {
@@ -200,14 +235,22 @@
 			this.productId = options.productId
 			this.cartIdList = options.cartIdList ? JSON.parse(options.cartIdList) : null
 			this.createOrder()
+
+			// 获取当前位置
+			permission.getUserPermission('scope.userLocation').then(() => {
+				// 用户已授权获取地理位置
+				console.log('===用户已授权获取地理位置')
+				permission.getLocation().then((res) => {
+					console.log('===res', res)
+				})
+			}).catch(() => {
+				// 用户未授权/拒绝获取地理位置
+				console.log('===用户拒绝授权位置信息')
+				// 需要提示用户手动打开设置去授权
+			})
 		},
-		
+
 		methods: {
-			onClickItem(e) {
-				if (this.current !== e.currentIndex) {
-					this.current = e.currentIndex
-				}
-			},
 			// 创建订单
 			async createOrder() {
 				const params = {
@@ -221,6 +264,9 @@
 					.post(`${orderCreate}`, params)
 					.then(r => {
 						this.orderInfo = r.data
+						// 默认支付方式为微信支付
+						this.orderInfo.payType = 1
+
 						this.sideboardList = this.orderInfo.sideboardList.map(item => {
 							return {
 								...item,
@@ -256,6 +302,10 @@
 			handleChooseSideboard(index) {
 				this.sideboardInfo = this.sideboardList[index]
 				this.orderInfo.sideboardId = this.sideboardInfo.id
+				this.showSideboard = false
+			},
+			change(index) {
+				console.log("index", index);
 			},
 			// 选择优惠券
 			chooseCoupon() {
@@ -271,48 +321,48 @@
 				const params = {
 					...this.orderInfo
 				}
-				 console.log('===结算参数', params)
+				console.log('===结算参数', params)
 				// return false;
 				await this.$http
 					.post(`${orderPay}`, params)
 					.then(r => {
 						console.log(r);
 						const that = this;
-						if(r.data.payType==1){
+						if (r.data.payType == 1) {
 							//微信支付
-							if(!r.data.wxPayment){
+							if (!r.data.wxPayment) {
 								this.$mHelper.toast('订单支付失败');
 								return false;
-							}							
+							}
 							// 调用支付方法										
-							uni.requestPayment({							    
-								"timeStamp": r.data.wxPayment.timeStamp,        // 时间戳（单位：秒）
+							uni.requestPayment({
+								"timeStamp": r.data.wxPayment.timeStamp, // 时间戳（单位：秒）
 								"nonceStr": r.data.wxPayment.nonceStr, // 随机字符串
-								"package": r.data.wxPayment.package,        // 固定值
+								"package": r.data.wxPayment.package, // 固定值
 								"signType": r.data.wxPayment.signType, // V3版本仅支持RSA
 								"paySign": r.data.wxPayment.paySign, // 签名，这里用的 MD5/RSA 签名
-								"appId": r.data.wxPayment.appId,  // 微信开放平台 - 应用 - AppId，注意和微信小程序、公众号 AppId 可能不一致								
-							    success(res) {
-									console.log('支付成功', res, this,that);
-									that.$mHelper.toast('订单支付成功');									
+								"appId": r.data.wxPayment
+									.appId, // 微信开放平台 - 应用 - AppId，注意和微信小程序、公众号 AppId 可能不一致								
+								success(res) {
+									console.log('支付成功', res, this, that);
+									that.$mHelper.toast('订单支付成功');
 									that.$mRouter.redirectTo({
 										route: '/pages/orders/pay'
 									});
 								},
-							    fail(e) {
+								fail(e) {
 									console.log('支付失败', e);
 									that.$mHelper.toast('订单支付失败');
 									that.$mRouter.redirectTo({
 										route: `/pages/orders/detail?orderId=${r.data.orderId}`
 									});
-									
+
 								}
 							});
-							
-							
-							
-						}
-						else{
+
+
+
+						} else {
 							this.$mHelper.toast('订单支付成功');
 							// this.$mRouter.redirectTo('/pages/orders/pay');
 							this.$mRouter.redirectTo({
@@ -566,6 +616,7 @@
 	}
 
 	.popup-container {
+		// min-height: 55vh;
 		display: flex;
 		flex-direction: column;
 		gap: 30rpx;
@@ -596,7 +647,7 @@
 				margin: 40rpx 26rpx 80rpx;
 			}
 		}
-		
+
 		.no-data {
 			margin: 100rpx 0 160rpx;
 			text-align: center;
