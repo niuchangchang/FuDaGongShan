@@ -126,7 +126,8 @@
 							</view>
 							<view class="info-center-js">
 								<text>详细介绍</text>
-								<view v-html="info.contents" class="info-center-js-content"></view>
+								<view v-html="infoContent"
+									class="info-center-js-content"></view>
 							</view>
 						</view>
 					</view>
@@ -164,6 +165,7 @@
 	import {
 		mapMutations
 	} from 'vuex';
+
 	export default {
 		components: {},
 		data() {
@@ -186,7 +188,13 @@
 		onShow() {
 			this.showPopup = false
 		},
-		computed: {},
+		computed: {
+			infoContent() {
+				const { info } = this
+				const Content = info?.contents?.replace(/<img/g, '<img style="width: 100%;"');
+				return Content
+			}
+		},
 		methods: {
 			...mapMutations(['setCartNum']),
 			// tabs通知swiper切换
@@ -462,26 +470,6 @@
 					margin-top: 20rpx;
 					background-size: 100% 100%;
 					line-height: 150%;
-
-					image {
-						max-width: 300px;
-					}
-
-					img {
-						max-width: 300px;
-					}
-				}
-
-				.info-center-js-content>* {
-					max-width: 300px;
-				}
-
-				.info-center-js-content>img {
-					max-width: 300px;
-				}
-
-				.info-center-js-content::v-deep img {
-					width: 300px;
 				}
 			}
 		}
@@ -681,25 +669,5 @@
 				right: 20rpx;
 			}
 		}
-	}
-</style>
-
-<style>
-	.info-center-js-content {
-		width: 100%;
-		margin-top: 20rpx;
-		background-size: 100% 100%;
-	}
-
-	.info-center-js-content>* {
-		max-width: 300px;
-	}
-
-	.info-center-js-content>img {
-		max-width: 300px;
-	}
-
-	.info-center-js-content>image {
-		max-width: 300px;
 	}
 </style>
