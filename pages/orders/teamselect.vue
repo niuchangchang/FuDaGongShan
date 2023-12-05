@@ -7,7 +7,6 @@
 			<view class="newbtn" @click="newClick">发起新的团购</view>
 		</view>
 		<scroll-view scroll-y="true" class="teamlist">
-
 			<template v-if="temalist.length">
 				<view v-for="(item, index) in temalist" :key="index" class="teamitem" @click="handleChooseTeam(index)">
 					<view class="teamiteminfo">
@@ -32,7 +31,6 @@
 								<view class="btnbox">
 									<view class="btn">去拼团</view>
 								</view>
-
 							</view>
 						</view>
 					</view>
@@ -58,30 +56,24 @@
 								<u-input v-model="teamInfo.orderNumber" border="none" type="number" />
 							</u-form-item>
 							<u-form-item label="结束时间:" prop="endTime">
-								<u-input v-model="teamInfo.endTime" border />
+								<u-input v-model="teamInfo.endTime" border disabled placeholder="请选择时间"
+									@click="showEndDatetimePicker = true" />
 							</u-form-item>
-
 							<u-form-item label="送餐时间:" prop="deliveryTime">
 								<u-input v-model="teamInfo.deliveryTime" border />
 							</u-form-item>
-
-
 							<view class="submit" @click="handleNewTeam">
 								发起团购
 							</view>
 							<text class="tel">团购规则</text>
-
 						</u-form>
 					</view>
 				</template>
 			</view>
 		</u-popup>
+		<u-picker v-model="showEndDatetimePicker" mode="time" :params="timeParams" @confirm="timeConfirm"></u-picker>
 	</view>
-
-
-
 </template>
-
 
 <script>
 	import indexConfig from '@/config/index.config';
@@ -94,7 +86,6 @@
 	import {
 		teamNew
 	} from '@/api/url'
-
 
 	export default {
 		components: {},
@@ -113,7 +104,16 @@
 					deliveryTime: '',
 
 				},
-				selectedDate: '请选择时间'
+				selectedDate: '请选择时间',
+				showEndDatetimePicker: false,
+				timeParams: {
+					year: true,
+					month: true,
+					day: true,
+					hour: true,
+					minute: true,
+					second: false
+				}
 			}
 		},
 		onLoad(options) {
@@ -139,6 +139,10 @@
 			},
 			newClick() {
 				this.showTeam = true;
+			},
+			timeConfirm(e) {
+				this.showEndDatetimePicker = false
+				console.log('====showEndDatetimePicker result', e)
 			},
 			onDateChange(e) {
 				// 处理日期时间改变的回调
