@@ -36,6 +36,10 @@
 					<u-cell-group :border="false">
 						<u-cell-item v-for="(item, index) in settingList" :key="index" icon="gift-fill"
 							:title="item.title" :border-bottom="index !== settingList.length - 1"></u-cell-item>
+							
+							
+							<u-cell-item icon="gift-fill" @click="logout"
+								title="退出登录" :border-bottom="index !== settingList.length - 1"></u-cell-item>
 					</u-cell-group>
 				</view>
 			</view>
@@ -105,6 +109,11 @@
 						this.$mRouter.back();
 					});
 			},
+			async logout(){
+				await this.$mStore.commit('login', null);
+				await this.$mStore.commit('setUserInfo', null);
+				this.navTo('pages/index/index')
+			}
 		}
 	}
 </script>

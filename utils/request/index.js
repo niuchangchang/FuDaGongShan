@@ -81,6 +81,8 @@ http.interceptor.response(
 				case 1001:
 					mHelper.backToLogin();
 					throw response.data.msg;
+				case 10000:
+						return Promise.reject(response.data.msg);
 				default:
 					mHelper.toast(response.data.msg);
 					return Promise.reject(response.data.msg);

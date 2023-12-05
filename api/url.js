@@ -2,6 +2,7 @@
 
 // 登录
 const login = '/wx/users/login';
+const loginwitcode = '/wx/users/loginwitcode';
 // 用户详情
 const userInfo = '/wx/users/userinfo';
 // 用户积分
@@ -69,10 +70,12 @@ const deliveryOrderReceive = '/wx/deliverys/receiving';
 // 存餐
 const deliveryOrderStorage = '/wx/deliverys/storage';
 
-
+//发起团购
+const teamNew='/wx/orderteams/newteam'
 
 export {
 	login,
+	loginwitcode,
 	userInfo,
 	userPoint,
 	userBalances,
@@ -99,5 +102,8 @@ export {
 	companyOrderCreate,
 	deliveryOrderList,
 	deliveryOrderReceive,
-	deliveryOrderStorage
+	deliveryOrderStorage,
+	
+	
+	teamNew,
 };

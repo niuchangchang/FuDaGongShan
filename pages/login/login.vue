@@ -4,12 +4,12 @@
 			:background="{ backgroundImage: 'linear-gradient(to bottom, rgb(128, 172, 148), rgb(145, 187, 170))' }"></u-navbar>
 		<content>
 			<view class="intro">
-				<image class="intro-logo" :src="$mImgHost('/images/logo.png')"></image>
+				<image class="intro-logo" :src="$mImgHost('/images/logo.png?t=2')"></image>
 				<button class="wx-logo" open-type="getPhoneNumber" @getphonenumber="toAuthLogin">
 					<!-- <image :src="$mImgHost('/images/wechat.png')"></image> -->
 					<text class="text-login">手机号快捷登录</text>
 				</button>
-				
+
 				<view class="shouquan">
 					<u-checkbox v-model="appAgreementDefaultSelect" size="30" active-color="#2B7365"></u-checkbox>
 					<text class="tongyi">我已阅读并同意</text>
@@ -36,6 +36,7 @@
 	} from 'vuex'
 	import {
 		login,
+		loginwitcode,
 		cartCount
 	} from '@/api/url';
 
@@ -48,7 +49,7 @@
 				btnLoading: false
 			}
 		},
-		onLoad() {
+		async onLoad() {
 			// 校验 session_key 是否过期
 			wx.checkSession({
 				success: () => {
@@ -58,10 +59,15 @@
 					console.log('session_key 已经失效，需要重新执行登录流程')
 				}
 			})
+			let _this = this;
 			// 微信登录
 			wx.login({
-				success: (loginRes) => {
-					this.code = loginRes.code;
+				success: async (loginRes) => {
+					// this.code = loginRes.code;
+					let params = {
+						"code": loginRes.code,
+					};
+					await _this.loginRequest(loginwitcode, params);
 				},
 				fail: () => {
 					_this.$mHelper.log('暂不支持小程序登录');
@@ -73,29 +79,46 @@
 			...mapMutations(['setCartNum']),
 			// 授权登录
 			toAuthLogin(e) {
-				console.log('====loginCode', this.code)
-				const detail = e.detail
-				console.log('===detail', detail)
-				this.btnLoading = true;
-				if (!this.appAgreementDefaultSelect) {
-					this.$mHelper.toast('请阅读并同意协议', 1.5 * 1000);
-					this.btnLoading = false;
-					return;
-				}
-				const _this = this;
-				let params = {
-					loginCode: _this.code,
-					phoneCode: detail.code,
-					encryptedData: detail.encryptedData,
-					iv: detail.iv
-				};
-				if (detail.errMsg === "getPhoneNumber:ok") {
-					console.log('====登录请求参数params', params)
-					// 登录
-					_this.thirdPartyAuthLogin(params);
-				} else {
-					_this.btnLoading = false;
-				}
+				// 微信登录
+				wx.login({
+					success: (loginRes) => {
+						this.code = loginRes.code;
+
+						console.log('====loginCode', this.code)
+						const detail = e.detail
+						console.log('===detail', detail)
+
+						//return false;
+
+						this.btnLoading = true;
+						if (!this.appAgreementDefaultSelect) {
+							this.$mHelper.toast('请阅读并同意协议', 1.5 * 1000);
+							this.btnLoading = false;
+							return;
+						}
+						const _this = this;
+						let params = {
+							loginCode: _this.code,
+							phoneCode: detail.code,
+							encryptedData: detail.encryptedData,
+							iv: detail.iv
+						};
+						if (detail.errMsg === "getPhoneNumber:ok") {
+							console.log('====登录请求参数params', params)
+							// 登录
+							_this.thirdPartyAuthLogin(params);
+						} else {
+							_this.btnLoading = false;
+						}
+
+
+					},
+					fail: () => {
+						_this.$mHelper.log('暂不支持小程序登录');
+					}
+				});
+
+
 			},
 			thirdPartyAuthLogin(params = {}) {
 				const _this = this;
@@ -109,7 +132,7 @@
 							await _this.$mStore.commit('login', r.data.token);
 							await _this.$mStore.commit('setUserInfo', r.data.userInfo);
 							_this.$mHelper.toast('登录成功');
-							setTimeout(async() => {
+							setTimeout(async () => {
 								await _this.getCartCount()
 								_this.toPage()
 							}, 100)
@@ -149,6 +172,28 @@
 					})
 					.catch(err => {});
 			},
+			//用户登录请求操作
+			async loginRequest(url, params = {}) {
+				const _this = this;
+				_this.$http
+					.post(url, params)
+					.then(async r => {
+						console.log('=====登录返回结果', r)
+						_this.btnLoading = false;
+						if (r.data) {
+							console.log('====r.data', r.data)
+							await _this.$mStore.commit('login', r.data.token);
+							await _this.$mStore.commit('setUserInfo', r.data.userInfo);
+							_this.$mHelper.toast('登录成功');
+							setTimeout(async () => {
+								await _this.getCartCount()
+								_this.toPage()
+							}, 100)
+						}
+					}).catch((err) => {
+						_this.btnLoading = false;
+					});
+			}
 		}
 	}
 </script>
@@ -187,7 +232,8 @@
 		}
 
 		.intro-logo {
-			width: 100%;
+			width: 288rpx;
+			height: 288rpx;
 			// height: 240rpx;
 			margin-bottom: 50rpx;
 		}
@@ -203,7 +249,7 @@
 		border: none;
 		border-radius: 10rpx;
 		background: rgba(40, 196, 69, 1);
-		color:#fffff;
+		color: #fffff;
 
 		image {
 			width: 64rpx;

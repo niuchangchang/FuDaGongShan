@@ -102,6 +102,7 @@
 		mapState,
 		mapGetters
 	} from 'vuex'
+	
 
 	export default {
 		data() {
@@ -121,11 +122,21 @@
 			...mapGetters(['hasLogin'])
 		},
 		async onLoad() {
-			
-			
-
-			  
-			this.isDelivery = this.userInfo.isDelivery
+			let uInfo={
+				balancesFormat: 848,
+				id: 7122116227614282,
+				identity: 0,
+				isDelivery: false,
+				loginCount: 0,
+				nickName: "一点半",
+				openId: "1",
+				phone: "15996398125",
+				pointsFormat: 0
+			}
+			// await this.$mStore.commit('login', "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyZThkN2UxOC0zM2YzLTQ1ODMtYWI2Mi0yMTgxZmU0NTkyMjQiLCJpYXQiOiIxNzAxNTAwNTkzIiwibmJmIjoiMTcwMTUwMDU5MyIsImV4cCI6MTcwMTcxNjU5MywiaXNzIjoiUXlJc3N1ZXIiLCJhdWQiOlsiUXlBdWRpZW5jZSIsIlF5QXVkaWVuY2UiXSwiVXNlciI6IjU4MjE0QUQxMDU1QTM2MTI2QkJGRTAwNzg4QTY4QkIxQjcwMTkzOTBDQTM3QjYzNDQxMzQzODQxRTEwQzE2NEQ0REQzODM4QTJBRTlGNUVBRjJGM0RCRjQ2QzEyOTgwNjlBMTJCM0FGMTgzODY2NzU4QkZGMjcwNjZEMkQ3MjUwMUEyOTg1MTQ0NzQ1RTM5Rjk2OUQ5MjA5NzlCMTg5NzMyMjY5ODQ0RENCQTlCMjAyRjAyQUMyOEZBMEFDNzI5NEE4Njc3RTgyRDRENzVEMTBFNDY1OUY0MkYwQzY3QUE5NTM2NkMxQTczNDQwNEUzRDVDMjlERjkyOTJFNzcyNUZCQjYyNjNFN0VBMjc1QkU0NTA0NTU0NjFCMjkxOEQ2QjQ4ODIyMDVDMzM4RTMwODYifQ.lPmrtULt-HMu1Hu9jpJBDvV5ZpsV-nq9sKs6PHkNDJ8");
+			// await this.$mStore.commit('setUserInfo', uInfo)
+						  
+			this.isDelivery = this.userInfo&&this.userInfo.isDelivery;
 			await this.$http
 				.post(`${indexUrl}`, {
 					// pageNumber: 1,

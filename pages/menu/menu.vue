@@ -62,7 +62,8 @@
 										:percent="item.remNumber" height="14" inactive-color="#F2F7F0"
 										:show-percent="false"></u-line-progress>
 								</view>
-								<view class="add" @click.stop="toAdd('cart', item)">
+								<!-- <view class="add" @click.stop="toAdd('cart', item)"> -->
+								<view class="add">
 									<u-icon name="plus-circle-fill" color="#4D716F" size="60"></u-icon>
 								</view>
 							</view>
@@ -84,7 +85,7 @@
 				<scroll-view scroll-y="true" style="height: calc(100% - 140rpx);">
 					<view class="info-content">
 						<view class="info-up">
-							<u-swiper :list="info.imageUrlList" height="400" border-radius="0"></u-swiper>
+							<u-swiper :list="info.imageUrlList" height="700" border-radius="0"></u-swiper>
 						</view>
 						<view class="info-center">
 							<view class="info-center-jb">
@@ -147,7 +148,8 @@
 				</view>
 			</view>
 		</u-popup>
-		<u-tabbar :list="list" :mid-button="true" mid-button-size="70" active-color="#2AB07D" inactive-color="#C0C4CC"></u-tabbar>
+		<u-tabbar :list="list" :mid-button="true" mid-button-size="70" active-color="#2AB07D"
+			inactive-color="#C0C4CC"></u-tabbar>
 	</view>
 </template>
 
@@ -159,7 +161,9 @@
 		cartCount
 	} from '@/api/url';
 	import indexConfig from '@/config/index.config';
-	import { mapMutations } from 'vuex';
+	import {
+		mapMutations
+	} from 'vuex';
 	export default {
 		components: {},
 		data() {
@@ -169,7 +173,7 @@
 				list: this.$mConstDataConfig.tabbarList,
 				swiperlist: [],
 				showPopup: false,
-				info: null,
+				info: {},
 				productList: [],
 				// cartNum: uni.getStorageSync('cartNum'),
 				cartNum: 0,
@@ -182,8 +186,7 @@
 		onShow() {
 			this.showPopup = false
 		},
-		computed: {
-		},
+		computed: {},
 		methods: {
 			...mapMutations(['setCartNum']),
 			// tabs通知swiper切换
@@ -232,11 +235,13 @@
 						limit: 20,
 					})
 					.then(async r => {
+						console.log('productlist:', r.data)
 						this.productList = r.data;
 					})
 					.catch(err => {});
 			},
 			showInfo(item, index) {
+
 				this.info = {
 					...item,
 					imageUrlList: item.imageUrlList.map(image => {
@@ -275,7 +280,7 @@
 				await this.$http
 					.post(`${addCart}`, {
 						productId: item.id,
-						quantity: 5
+						quantity: 1
 					})
 					.then(async r => {
 						this.$mHelper.toast('购物车加入成功');
@@ -454,10 +459,29 @@
 
 				.info-center-js-content {
 					width: 100%;
-					height: 900rpx;
 					margin-top: 20rpx;
-					// background: url(https://img.js.design/assets/img/646ad8d90c416ea114c76135.png#75b80287004e87b795f79cfeb9fc631b);
 					background-size: 100% 100%;
+					line-height: 150%;
+
+					image {
+						max-width: 300px;
+					}
+
+					img {
+						max-width: 300px;
+					}
+				}
+
+				.info-center-js-content>* {
+					max-width: 300px;
+				}
+
+				.info-center-js-content>img {
+					max-width: 300px;
+				}
+
+				.info-center-js-content::v-deep img {
+					width: 300px;
 				}
 			}
 		}
@@ -544,6 +568,7 @@
 					// background: url(https://img.js.design/assets/img/62e7b277b3784b2dc60dbcd2.png);
 					border-radius: 20rpx;
 					overflow: hidden;
+					border: 1px solid #eee;
 
 					image {
 						width: 100%;
@@ -656,5 +681,25 @@
 				right: 20rpx;
 			}
 		}
+	}
+</style>
+
+<style>
+	.info-center-js-content {
+		width: 100%;
+		margin-top: 20rpx;
+		background-size: 100% 100%;
+	}
+
+	.info-center-js-content>* {
+		max-width: 300px;
+	}
+
+	.info-center-js-content>img {
+		max-width: 300px;
+	}
+
+	.info-center-js-content>image {
+		max-width: 300px;
 	}
 </style>
